@@ -1,2075 +1,1786 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0a0a0a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="OGUN">
-    <link rel="manifest" href="manifest.json">
-    <title>OGUN V5 — GODMODE SECURITY</title>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        :root {
-            --bg-void: #030303;
-            --bg-base: #0a0a0a;
-            --bg-primary: #0d0d0d;
-            --bg-secondary: #111111;
-            --bg-tertiary: #161616;
-            --bg-elevated: #1a1a1a;
-            --bg-card: #0f0f0f;
-            
-            --accent-safe: #10b981;
-            --accent-info: #3b82f6;
-            --accent-low: #22d3ee;
-            --accent-medium: #f59e0b;
-            --accent-high: #f97316;
-            --accent-critical: #ef4444;
-            --accent-ogun: #dc2626;
-            
-            --text-primary: #fafafa;
-            --text-secondary: #a1a1aa;
-            --text-muted: #52525b;
-            --text-dim: #3f3f46;
-            
-            --border-subtle: rgba(255,255,255,0.04);
-            --border-light: rgba(255,255,255,0.08);
-            
-            --safe-top: env(safe-area-inset-top, 0px);
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-        }
-        
-        html, body {
-            height: 100%;
-            overflow: hidden;
-            background: var(--bg-void);
-        }
-        
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            color: var(--text-primary);
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-        }
-        
-        .app {
-            display: flex;
-            flex-direction: column;
-            height: 100dvh;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        /* Critical Flash Animation */
-        .app.critical-alert::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: rgba(239, 68, 68, 0.2);
-            animation: critical-flash 0.4s ease infinite;
-            pointer-events: none;
-            z-index: 999;
-        }
-        
-        @keyframes critical-flash {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.4; }
-        }
-        
-        /* Header */
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 16px;
-            padding-top: calc(var(--safe-top) + 10px);
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-subtle);
-            flex-shrink: 0;
-            z-index: 100;
-        }
-        
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .brand-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--accent-ogun), #991b1b);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        
-        .brand-icon::after {
-            content: '⚔';
-            font-size: 18px;
-        }
-        
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .brand-name {
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
-            font-size: 15px;
-            letter-spacing: 3px;
-            color: var(--accent-ogun);
-        }
-        
-        .brand-mode {
-            font-size: 9px;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            font-weight: 500;
-        }
-        
-        .header-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .icon-btn {
-            width: 38px;
-            height: 38px;
-            border: none;
-            background: var(--bg-tertiary);
-            border-radius: 10px;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .icon-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .icon-btn svg {
-            width: 18px;
-            height: 18px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-        }
-        
-        .icon-btn.recording {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--accent-critical);
-            animation: rec-pulse 1s ease infinite;
-        }
-        
-        @keyframes rec-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        /* Status Bar */
-        .status-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 16px;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-subtle);
-            flex-shrink: 0;
-        }
-        
-        .status-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .status-pill {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 12px;
-            background: var(--bg-tertiary);
-            border-radius: 100px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--text-muted);
-        }
-        
-        .app.listening .status-dot {
-            background: var(--accent-safe);
-            box-shadow: 0 0 10px var(--accent-safe);
-            animation: pulse-dot 1.5s ease infinite;
-        }
-        
-        @keyframes pulse-dot {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-        }
-        
-        .threat-badge {
-            padding: 5px 12px;
-            border-radius: 100px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .threat-badge.clear {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--accent-safe);
-        }
-        
-        .threat-badge.low {
-            background: rgba(34, 211, 238, 0.15);
-            color: var(--accent-low);
-        }
-        
-        .threat-badge.medium {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--accent-medium);
-        }
-        
-        .threat-badge.high {
-            background: rgba(249, 115, 22, 0.2);
-            color: var(--accent-high);
-        }
-        
-        .threat-badge.critical {
-            background: rgba(239, 68, 68, 0.25);
-            color: var(--accent-critical);
-            animation: threat-pulse 0.5s ease infinite;
-        }
-        
-        @keyframes threat-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-        
-        .status-right {
-            display: flex;
-            gap: 12px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            color: var(--text-muted);
-        }
-        
-        .status-right strong {
-            color: var(--text-secondary);
-        }
-        
-        /* Language Strip */
-        .lang-strip {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 8px 16px;
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-subtle);
-            flex-shrink: 0;
-        }
-        
-        .lang-chip {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
-            background: var(--bg-tertiary);
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-        
-        .lang-chip.active {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--accent-safe);
-        }
-        
-        /* Evidence Banner */
-        .evidence-banner {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: rgba(239, 68, 68, 0.15);
-            border-bottom: 1px solid rgba(239, 68, 68, 0.3);
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--accent-critical);
-            flex-shrink: 0;
-        }
-        
-        .evidence-banner.active {
-            display: flex;
-            animation: rec-pulse 1s ease infinite;
-        }
-        
-        .evidence-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-critical);
-            border-radius: 50%;
-        }
-        
-        /* Main Content */
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            padding: 12px;
-        }
-        
-        .transcript {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding-bottom: 12px;
-        }
-        
-        .transcript::-webkit-scrollbar {
-            width: 3px;
-        }
-        
-        .transcript::-webkit-scrollbar-thumb {
-            background: var(--bg-elevated);
-            border-radius: 3px;
-        }
-        
-        /* Entry Card */
-        .entry {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 12px 14px;
-            animation: entry-slide 0.3s ease;
-        }
-        
-        @keyframes entry-slide {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .entry.threat-low {
-            border-left: 3px solid var(--accent-low);
-        }
-        
-        .entry.threat-medium {
-            border-left: 3px solid var(--accent-medium);
-            background: rgba(245, 158, 11, 0.05);
-        }
-        
-        .entry.threat-high {
-            border-left: 3px solid var(--accent-high);
-            background: rgba(249, 115, 22, 0.08);
-        }
-        
-        .entry.threat-critical {
-            border-left: 3px solid var(--accent-critical);
-            background: rgba(239, 68, 68, 0.1);
-            animation: entry-slide 0.3s ease, critical-glow 1s ease infinite;
-        }
-        
-        @keyframes critical-glow {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-            50% { box-shadow: 0 0 20px 0 rgba(239, 68, 68, 0.3); }
-        }
-        
-        .entry-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-        
-        .entry-lang {
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--accent-safe);
-        }
-        
-        .entry-time {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            color: var(--text-dim);
-        }
-        
-        .entry-original {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-style: italic;
-            margin-bottom: 6px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-        
-        .entry-translation {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-primary);
-            line-height: 1.5;
-        }
-        
-        .entry-threat {
-            margin-top: 10px;
-            padding: 8px 10px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 8px;
-        }
-        
-        .entry-threat-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 6px;
-        }
-        
-        .entry-threat-level {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-        
-        .entry-threat-level.low { background: rgba(34, 211, 238, 0.2); color: var(--accent-low); }
-        .entry-threat-level.medium { background: rgba(245, 158, 11, 0.2); color: var(--accent-medium); }
-        .entry-threat-level.high { background: rgba(249, 115, 22, 0.2); color: var(--accent-high); }
-        .entry-threat-level.critical { background: rgba(239, 68, 68, 0.25); color: var(--accent-critical); }
-        
-        .entry-threat-confidence {
-            font-size: 10px;
-            color: var(--text-muted);
-        }
-        
-        .entry-threat-category {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-        
-        /* Empty State */
-        .empty-state {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 40px;
-        }
-        
-        .empty-icon {
-            width: 70px;
-            height: 70px;
-            background: var(--bg-secondary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            font-size: 30px;
-        }
-        
-        .empty-state h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-        
-        .empty-state p {
-            font-size: 13px;
-            color: var(--text-muted);
-            max-width: 280px;
-        }
-        
-        /* Controls */
-        .controls {
-            padding: 12px 16px;
-            padding-bottom: calc(var(--safe-bottom) + 12px);
-            flex-shrink: 0;
-        }
-        
-        .main-btn {
-            width: 100%;
-            height: 58px;
-            border: none;
-            border-radius: 16px;
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.2s;
-        }
-        
-        .main-btn:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-activate {
-            background: linear-gradient(135deg, var(--accent-ogun), #991b1b);
-            color: white;
-            box-shadow: 0 0 40px -10px var(--accent-ogun);
-        }
-        
-        .btn-deactivate {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-light);
-            color: var(--text-primary);
-        }
-        
-        .app.listening .btn-activate { display: none; }
-        .app:not(.listening) .btn-deactivate { display: none; }
-        
-        /* Alert Overlay */
-        .alert-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-        }
-        
-        .alert-overlay.active {
-            display: flex;
-            animation: alert-fade 0.2s ease;
-        }
-        
-        @keyframes alert-fade {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .alert-icon {
-            width: 90px;
-            height: 90px;
-            background: rgba(239, 68, 68, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 24px;
-            animation: alert-icon-pulse 0.5s ease infinite;
-            font-size: 40px;
-        }
-        
-        @keyframes alert-icon-pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 0 40px 10px rgba(239, 68, 68, 0.2); }
-        }
-        
-        .alert-level {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--accent-critical);
-            margin-bottom: 16px;
-        }
-        
-        .alert-message {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text-primary);
-            text-align: center;
-            margin-bottom: 8px;
-        }
-        
-        .alert-category {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-        }
-        
-        .alert-transcript-box {
-            width: 100%;
-            max-width: 350px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-light);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .alert-transcript-label {
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-        
-        .alert-transcript-text {
-            font-size: 15px;
-            color: var(--text-primary);
-            line-height: 1.5;
-        }
-        
-        .alert-location {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-        
-        .alert-dismiss {
-            padding: 16px 40px;
-            background: var(--accent-critical);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--bg-elevated);
-            border: 1px solid var(--border-light);
-            border-radius: 100px;
-            padding: 12px 20px;
-            font-size: 13px;
-            font-weight: 500;
-            z-index: 500;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-        }
-        
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-        
-        .toast.success { background: rgba(16, 185, 129, 0.2); color: var(--accent-safe); }
-        .toast.error { background: rgba(239, 68, 68, 0.2); color: var(--accent-critical); }
-        .toast.warning { background: rgba(245, 158, 11, 0.2); color: var(--accent-medium); }
-        
-        /* Settings Modal */
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 200;
-            display: none;
-            align-items: flex-end;
-        }
-        
-        .modal.active {
-            display: flex;
-        }
-        
-        .modal-content {
-            width: 100%;
-            max-height: 90vh;
-            background: var(--bg-primary);
-            border-radius: 20px 20px 0 0;
-            animation: modal-slide 0.3s ease;
-            overflow: hidden;
-        }
-        
-        @keyframes modal-slide {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 20px;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-        
-        .modal-title {
-            font-size: 17px;
-            font-weight: 600;
-        }
-        
-        .modal-close {
-            width: 32px;
-            height: 32px;
-            border: none;
-            background: var(--bg-tertiary);
-            border-radius: 8px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-        
-        .modal-body {
-            padding: 20px;
-            overflow-y: auto;
-            max-height: calc(90vh - 70px);
-        }
-        
-        .setting-section {
-            margin-bottom: 28px;
-        }
-        
-        .setting-section-title {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--accent-ogun);
-            margin-bottom: 14px;
-        }
-        
-        .setting-group {
-            margin-bottom: 16px;
-        }
-        
-        .setting-label {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-            display: block;
-        }
-        
-        .setting-input {
-            width: 100%;
-            padding: 14px 16px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-light);
-            border-radius: 10px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            color: var(--text-primary);
-            outline: none;
-        }
-        
-        .setting-input:focus {
-            border-color: var(--accent-ogun);
-        }
-        
-        .setting-hint {
-            font-size: 11px;
-            color: var(--text-dim);
-            margin-top: 4px;
-        }
-        
-        .role-btns {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .role-btn {
-            flex: 1;
-            padding: 14px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-light);
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            text-align: center;
-        }
-        
-        .role-btn.active {
-            background: rgba(220, 38, 38, 0.15);
-            border-color: var(--accent-ogun);
-            color: var(--accent-ogun);
-        }
-        
-        .toggle-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-        
-        .toggle-row:last-child {
-            border-bottom: none;
-        }
-        
-        .toggle-label {
-            font-size: 14px;
-        }
-        
-        .toggle {
-            width: 48px;
-            height: 28px;
-            background: var(--bg-tertiary);
-            border-radius: 14px;
-            position: relative;
-            cursor: pointer;
-        }
-        
-        .toggle::after {
-            content: '';
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            background: var(--text-muted);
-            border-radius: 50%;
-            top: 3px;
-            left: 3px;
-            transition: all 0.3s;
-        }
-        
-        .toggle.active {
-            background: var(--accent-safe);
-        }
-        
-        .toggle.active::after {
-            background: white;
-            transform: translateX(20px);
-        }
-        
-        /* Briefing Modal */
-        .briefing-badge {
-            position: fixed;
-            top: calc(var(--safe-top) + 70px);
-            right: 16px;
-            display: none;
-            padding: 8px 14px;
-            background: rgba(245, 158, 11, 0.2);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 100px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--accent-medium);
-            cursor: pointer;
-            z-index: 50;
-        }
-        
-        .briefing-badge.active {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="OGUN">
+<link rel="manifest" href="manifest.json">
+<title>OGUN V5 — GODMODE SECURITY</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+*, *::before, *::after {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+-webkit-tap-highlight-color: transparent;
+}
+:root {
+--bg-void: #030303;
+--bg-base: #0a0a0a;
+--bg-primary: #0d0d0d;
+--bg-secondary: #111111;
+--bg-tertiary: #161616;
+--bg-elevated: #1a1a1a;
+--bg-card: #0f0f0f;
+--accent-safe: #10b981;
+--accent-info: #3b82f6;
+--accent-low: #22d3ee;
+--accent-medium: #f59e0b;
+--accent-high: #f97316;
+--accent-critical: #ef4444;
+--accent-ogun: #dc2626;
+--text-primary: #fafafa;
+--text-secondary: #a1a1aa;
+--text-muted: #52525b;
+--text-dim: #3f3f46;
+--border-subtle: rgba(255,255,255,0.04);
+--border-light: rgba(255,255,255,0.08);
+--safe-top: env(safe-area-inset-top, 0px);
+--safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+html, body {
+height: 100%;
+overflow: hidden;
+background: var(--bg-void);
+}
+body {
+font-family: 'Inter', -apple-system, sans-serif;
+color: var(--text-primary);
+line-height: 1.5;
+-webkit-font-smoothing: antialiased;
+}
+.app {
+display: flex;
+flex-direction: column;
+height: 100dvh;
+position: relative;
+overflow: hidden;
+}
+/* Critical Flash Animation */
+.app.critical-alert::before {
+content: '';
+position: fixed;
+inset: 0;
+background: rgba(239, 68, 68, 0.2);
+animation: critical-flash 0.4s ease infinite;
+pointer-events: none;
+z-index: 999;
+}
+@keyframes critical-flash {
+0%, 100% { opacity: 0.2; }
+50% { opacity: 0.4; }
+}
+/* Header */
+.header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 10px 16px;
+padding-top: calc(var(--safe-top) + 10px);
+background: var(--bg-primary);
+border-bottom: 1px solid var(--border-subtle);
+flex-shrink: 0;
+z-index: 100;
+}
+.brand {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.brand-icon {
+width: 36px;
+height: 36px;
+background: linear-gradient(135deg, var(--accent-ogun), #991b1b);
+border-radius: 8px;
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+}
+.brand-icon::after {
+content: '⚔';
+font-size: 18px;
+}
+.brand-text {
+display: flex;
+flex-direction: column;
+}
+.brand-name {
+font-family: 'JetBrains Mono', monospace;
+font-weight: 700;
+font-size: 15px;
+letter-spacing: 3px;
+color: var(--accent-ogun);
+}
+.brand-mode {
+font-size: 9px;
+color: var(--text-muted);
+letter-spacing: 1px;
+font-weight: 500;
+}
+.header-actions {
+display: flex;
+gap: 8px;
+}
+.icon-btn {
+width: 38px;
+height: 38px;
+border: none;
+background: var(--bg-tertiary);
+border-radius: 10px;
+color: var(--text-secondary);
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: all 0.2s;
+}
+.icon-btn:active {
+transform: scale(0.95);
+}
+.icon-btn svg {
+width: 18px;
+height: 18px;
+stroke: currentColor;
+fill: none;
+stroke-width: 2;
+}
+.icon-btn.recording {
+background: rgba(239, 68, 68, 0.2);
+color: var(--accent-critical);
+animation: rec-pulse 1s ease infinite;
+}
+@keyframes rec-pulse {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.5; }
+}
+/* Status Bar */
+.status-bar {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 10px 16px;
+background: var(--bg-secondary);
+border-bottom: 1px solid var(--border-subtle);
+flex-shrink: 0;
+}
+.status-left {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.status-pill {
+display: flex;
+align-items: center;
+gap: 6px;
+padding: 5px 12px;
+background: var(--bg-tertiary);
+border-radius: 100px;
+font-size: 11px;
+font-weight: 600;
+}
+.status-dot {
+width: 8px;
+height: 8px;
+border-radius: 50%;
+background: var(--text-muted);
+}
+.app.listening .status-dot {
+background: var(--accent-safe);
+box-shadow: 0 0 10px var(--accent-safe);
+animation: pulse-dot 1.5s ease infinite;
+}
+@keyframes pulse-dot {
+0%, 100% { transform: scale(1); }
+50% { transform: scale(1.3); }
+}
+.threat-badge {
+padding: 5px 12px;
+border-radius: 100px;
+font-size: 10px;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+.threat-badge.clear {
+background: rgba(16, 185, 129, 0.15);
+color: var(--accent-safe);
+}
+.threat-badge.low {
+background: rgba(34, 211, 238, 0.15);
+color: var(--accent-low);
+}
+.threat-badge.medium {
+background: rgba(245, 158, 11, 0.2);
+color: var(--accent-medium);
+}
+.threat-badge.high {
+background: rgba(249, 115, 22, 0.2);
+color: var(--accent-high);
+}
+.threat-badge.critical {
+background: rgba(239, 68, 68, 0.25);
+color: var(--accent-critical);
+animation: threat-pulse 0.5s ease infinite;
+}
+@keyframes threat-pulse {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.6; }
+}
+.status-right {
+display: flex;
+gap: 12px;
+font-family: 'JetBrains Mono', monospace;
+font-size: 10px;
+color: var(--text-muted);
+}
+.status-right strong {
+color: var(--text-secondary);
+}
+/* Language Strip */
+.lang-strip {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+padding: 8px 16px;
+background: var(--bg-primary);
+border-bottom: 1px solid var(--border-subtle);
+flex-shrink: 0;
+}
+.lang-chip {
+display: flex;
+align-items: center;
+gap: 5px;
+padding: 4px 10px;
+background: var(--bg-tertiary);
+border-radius: 6px;
+font-size: 11px;
+font-weight: 500;
+color: var(--text-secondary);
+}
+.lang-chip.active {
+background: rgba(16, 185, 129, 0.15);
+color: var(--accent-safe);
+}
+/* Evidence Banner */
+.evidence-banner {
+display: none;
+align-items: center;
+justify-content: center;
+gap: 8px;
+padding: 8px 16px;
+background: rgba(239, 68, 68, 0.15);
+border-bottom: 1px solid rgba(239, 68, 68, 0.3);
+font-size: 11px;
+font-weight: 600;
+color: var(--accent-critical);
+flex-shrink: 0;
+}
+.evidence-banner.active {
+display: flex;
+animation: rec-pulse 1s ease infinite;
+}
+.evidence-dot {
+width: 8px;
+height: 8px;
+background: var(--accent-critical);
+border-radius: 50%;
+}
+/* Main Content */
+.main {
+flex: 1;
+display: flex;
+flex-direction: column;
+overflow: hidden;
+padding: 12px;
+}
+.transcript {
+flex: 1;
+overflow-y: auto;
+display: flex;
+flex-direction: column;
+gap: 10px;
+padding-bottom: 12px;
+}
+.transcript::-webkit-scrollbar {
+width: 3px;
+}
+.transcript::-webkit-scrollbar-thumb {
+background: var(--bg-elevated);
+border-radius: 3px;
+}
+/* Entry Card */
+.entry {
+background: var(--bg-card);
+border: 1px solid var(--border-subtle);
+border-radius: 12px;
+padding: 12px 14px;
+animation: entry-slide 0.3s ease;
+}
+@keyframes entry-slide {
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+.entry.threat-low {
+border-left: 3px solid var(--accent-low);
+}
+.entry.threat-medium {
+border-left: 3px solid var(--accent-medium);
+background: rgba(245, 158, 11, 0.05);
+}
+.entry.threat-high {
+border-left: 3px solid var(--accent-high);
+background: rgba(249, 115, 22, 0.08);
+}
+.entry.threat-critical {
+border-left: 3px solid var(--accent-critical);
+background: rgba(239, 68, 68, 0.1);
+animation: entry-slide 0.3s ease, critical-glow 1s ease infinite;
+}
+@keyframes critical-glow {
+0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+50% { box-shadow: 0 0 20px 0 rgba(239, 68, 68, 0.3); }
+}
+.entry-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 8px;
+}
+.entry-lang {
+font-size: 10px;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+color: var(--accent-safe);
+}
+.entry-time {
+font-family: 'JetBrains Mono', monospace;
+font-size: 10px;
+color: var(--text-dim);
+}
+.entry-original {
+font-size: 12px;
+color: var(--text-muted);
+font-style: italic;
+margin-bottom: 6px;
+padding-bottom: 6px;
+border-bottom: 1px solid var(--border-subtle);
+}
+.entry-translation {
+font-size: 14px;
+font-weight: 500;
+color: var(--text-primary);
+line-height: 1.5;
+}
+.entry-threat {
+margin-top: 10px;
+padding: 8px 10px;
+background: rgba(0,0,0,0.3);
+border-radius: 8px;
+}
+.entry-threat-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 6px;
+}
+.entry-threat-level {
+font-size: 10px;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+padding: 3px 8px;
+border-radius: 4px;
+}
+.entry-threat-level.low { background: rgba(34, 211, 238, 0.2); color: var(--accent-low); }
+.entry-threat-level.medium { background: rgba(245, 158, 11, 0.2); color: var(--accent-medium); }
+.entry-threat-level.high { background: rgba(249, 115, 22, 0.2); color: var(--accent-high); }
+.entry-threat-level.critical { background: rgba(239, 68, 68, 0.25); color: var(--accent-critical); }
+.entry-threat-confidence {
+font-size: 10px;
+color: var(--text-muted);
+}
+.entry-threat-category {
+font-size: 11px;
+color: var(--text-secondary);
+}
+/* Empty State */
+.empty-state {
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+text-align: center;
+padding: 40px;
+}
+.empty-icon {
+width: 70px;
+height: 70px;
+background: var(--bg-secondary);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+margin-bottom: 20px;
+font-size: 30px;
+}
+.empty-state h3 {
+font-size: 18px;
+font-weight: 600;
+color: var(--text-primary);
+margin-bottom: 8px;
+}
+.empty-state p {
+font-size: 13px;
+color: var(--text-muted);
+max-width: 280px;
+}
+/* Controls */
+.controls {
+padding: 12px 16px;
+padding-bottom: calc(var(--safe-bottom) + 12px);
+flex-shrink: 0;
+}
+.main-btn {
+width: 100%;
+height: 58px;
+border: none;
+border-radius: 16px;
+font-family: 'Inter', sans-serif;
+font-size: 15px;
+font-weight: 700;
+letter-spacing: 1px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+transition: all 0.2s;
+}
+.main-btn:active {
+transform: scale(0.98);
+}
+.btn-activate {
+background: linear-gradient(135deg, var(--accent-ogun), #991b1b);
+color: white;
+box-shadow: 0 0 40px -10px var(--accent-ogun);
+}
+.btn-deactivate {
+background: var(--bg-tertiary);
+border: 1px solid var(--border-light);
+color: var(--text-primary);
+}
+.app.listening .btn-activate { display: none; }
+.app:not(.listening) .btn-deactivate { display: none; }
+/* Alert Overlay */
+.alert-overlay {
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.95);
+z-index: 1000;
+display: none;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 24px;
+}
+.alert-overlay.active {
+display: flex;
+animation: alert-fade 0.2s ease;
+}
+@keyframes alert-fade {
+from { opacity: 0; }
+to { opacity: 1; }
+}
+.alert-icon {
+width: 90px;
+height: 90px;
+background: rgba(239, 68, 68, 0.2);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+margin-bottom: 24px;
+animation: alert-icon-pulse 0.5s ease infinite;
+font-size: 40px;
+}
+@keyframes alert-icon-pulse {
+0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+50% { transform: scale(1.05); box-shadow: 0 0 40px 10px rgba(239, 68, 68, 0.2); }
+}
+.alert-level {
+font-size: 12px;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 3px;
+color: var(--accent-critical);
+margin-bottom: 16px;
+}
+.alert-message {
+font-size: 22px;
+font-weight: 700;
+color: var(--text-primary);
+text-align: center;
+margin-bottom: 8px;
+}
+.alert-category {
+font-size: 14px;
+color: var(--text-secondary);
+margin-bottom: 24px;
+}
+.alert-transcript-box {
+width: 100%;
+max-width: 350px;
+background: var(--bg-secondary);
+border: 1px solid var(--border-light);
+border-radius: 12px;
+padding: 16px;
+margin-bottom: 24px;
+}
+.alert-transcript-label {
+font-size: 10px;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 1px;
+color: var(--text-muted);
+margin-bottom: 8px;
+}
+.alert-transcript-text {
+font-size: 15px;
+color: var(--text-primary);
+line-height: 1.5;
+}
+.alert-location {
+font-size: 12px;
+color: var(--text-muted);
+margin-bottom: 20px;
+}
+.alert-dismiss {
+padding: 16px 40px;
+background: var(--accent-critical);
+border: none;
+border-radius: 12px;
+color: white;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+}
+/* Toast */
+.toast {
+position: fixed;
+bottom: 100px;
+left: 50%;
+transform: translateX(-50%) translateY(20px);
+background: var(--bg-elevated);
+border: 1px solid var(--border-light);
+border-radius: 100px;
+padding: 12px 20px;
+font-size: 13px;
+font-weight: 500;
+z-index: 500;
+opacity: 0;
+pointer-events: none;
+transition: all 0.3s ease;
+}
+.toast.show {
+opacity: 1;
+transform: translateX(-50%) translateY(0);
+}
+.toast.success { background: rgba(16, 185, 129, 0.2); color: var(--accent-safe); }
+.toast.error { background: rgba(239, 68, 68, 0.2); color: var(--accent-critical); }
+.toast.warning { background: rgba(245, 158, 11, 0.2); color: var(--accent-medium); }
+/* Settings Modal */
+.modal {
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.9);
+z-index: 200;
+display: none;
+align-items: flex-end;
+}
+.modal.active {
+display: flex;
+}
+.modal-content {
+width: 100%;
+max-height: 90vh;
+background: var(--bg-primary);
+border-radius: 20px 20px 0 0;
+animation: modal-slide 0.3s ease;
+overflow: hidden;
+}
+@keyframes modal-slide {
+from { transform: translateY(100%); }
+to { transform: translateY(0); }
+}
+.modal-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 18px 20px;
+border-bottom: 1px solid var(--border-subtle);
+}
+.modal-title {
+font-size: 17px;
+font-weight: 600;
+}
+.modal-close {
+width: 32px;
+height: 32px;
+border: none;
+background: var(--bg-tertiary);
+border-radius: 8px;
+color: var(--text-secondary);
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 18px;
+}
+.modal-body {
+padding: 20px;
+overflow-y: auto;
+max-height: calc(90vh - 70px);
+}
+.setting-section {
+margin-bottom: 28px;
+}
+.setting-section-title {
+font-size: 11px;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 1px;
+color: var(--accent-ogun);
+margin-bottom: 14px;
+}
+.setting-group {
+margin-bottom: 16px;
+}
+.setting-label {
+font-size: 13px;
+font-weight: 500;
+color: var(--text-secondary);
+margin-bottom: 6px;
+display: block;
+}
+.setting-input {
+width: 100%;
+padding: 14px 16px;
+background: var(--bg-secondary);
+border: 1px solid var(--border-light);
+border-radius: 10px;
+font-family: 'JetBrains Mono', monospace;
+font-size: 13px;
+color: var(--text-primary);
+outline: none;
+}
+.setting-input:focus {
+border-color: var(--accent-ogun);
+}
+.setting-hint {
+font-size: 11px;
+color: var(--text-dim);
+margin-top: 4px;
+}
+.role-btns {
+display: flex;
+gap: 8px;
+}
+.role-btn {
+flex: 1;
+padding: 14px;
+background: var(--bg-secondary);
+border: 1px solid var(--border-light);
+border-radius: 10px;
+font-size: 12px;
+font-weight: 600;
+color: var(--text-secondary);
+cursor: pointer;
+text-align: center;
+}
+.role-btn.active {
+background: rgba(220, 38, 38, 0.15);
+border-color: var(--accent-ogun);
+color: var(--accent-ogun);
+}
+.toggle-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 0;
+border-bottom: 1px solid var(--border-subtle);
+}
+.toggle-row:last-child {
+border-bottom: none;
+}
+.toggle-label {
+font-size: 14px;
+}
+.toggle {
+width: 48px;
+height: 28px;
+background: var(--bg-tertiary);
+border-radius: 14px;
+position: relative;
+cursor: pointer;
+}
+.toggle::after {
+content: '';
+position: absolute;
+width: 22px;
+height: 22px;
+background: var(--text-muted);
+border-radius: 50%;
+top: 3px;
+left: 3px;
+transition: all 0.3s;
+}
+.toggle.active {
+background: var(--accent-safe);
+}
+.toggle.active::after {
+background: white;
+transform: translateX(20px);
+}
+/* Briefing Modal */
+.briefing-badge {
+position: fixed;
+top: calc(var(--safe-top) + 70px);
+right: 16px;
+display: none;
+padding: 8px 14px;
+background: rgba(245, 158, 11, 0.2);
+border: 1px solid rgba(245, 158, 11, 0.3);
+border-radius: 100px;
+font-size: 11px;
+font-weight: 600;
+color: var(--accent-medium);
+cursor: pointer;
+z-index: 50;
+}
+.briefing-badge.active {
+display: flex;
+align-items: center;
+gap: 6px;
+}
+</style>
 </head>
 <body>
-    <div class="app" id="app">
-        
-        <!-- Briefing Badge -->
-        <div class="briefing-badge" id="briefingBadge">
-            📋 <span id="briefingCount">0</span> items for review
-        </div>
-        
-        <!-- Header -->
-        <header class="header">
-            <div class="brand">
-                <div class="brand-icon"></div>
-                <div class="brand-text">
-                    <span class="brand-name">OGUN</span>
-                    <span class="brand-mode">V5 GODMODE — <span id="roleDisplay">ADMIN</span></span>
-                </div>
-            </div>
-            <div class="header-actions">
-                <button class="icon-btn" id="btnBriefing" title="Daily Briefing">
-                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                </button>
-                <button class="icon-btn" id="btnSettings" title="Settings">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                </button>
-            </div>
-        </header>
-        
-        <!-- Status Bar -->
-        <div class="status-bar">
-            <div class="status-left">
-                <div class="status-pill">
-                    <div class="status-dot"></div>
-                    <span id="statusText">Ready</span>
-                </div>
-                <div class="threat-badge clear" id="threatBadge">CLEAR</div>
-            </div>
-            <div class="status-right">
-                <span><strong id="statPhrases">0</strong> phrases</span>
-                <span><strong id="statAlerts">0</strong> alerts</span>
-            </div>
-        </div>
-        
-        <!-- Language Strip -->
-        <div class="lang-strip">
-            <div class="lang-chip" id="langChip">
-                <span>🌍</span>
-                <span id="langName">Detecting...</span>
-            </div>
-            <span style="color: var(--text-dim);">→</span>
-            <div class="lang-chip">
-                <span>🇬🇧</span>
-                <span>English</span>
-            </div>
-        </div>
-        
-        <!-- Evidence Banner -->
-        <div class="evidence-banner" id="evidenceBanner">
-            <div class="evidence-dot"></div>
-            EVIDENCE RECORDING LOCKED
-        </div>
-        
-        <!-- Main Content -->
-        <main class="main">
-            <div class="transcript" id="transcript">
-                <div class="empty-state" id="emptyState">
-                    <div class="empty-icon">⚔</div>
-                    <h3>OGUN Standing By</h3>
-                    <p>Activate to begin continuous translation and autonomous threat monitoring. All alerts will be escalated.</p>
-                </div>
-            </div>
-        </main>
-        
-        <!-- Controls -->
-        <div class="controls">
-            <button class="main-btn btn-activate" id="btnActivate">
-                ⚔ ACTIVATE OGUN
-            </button>
-            <button class="main-btn btn-deactivate" id="btnDeactivate">
-                ■ DEACTIVATE
-            </button>
-        </div>
-        
-        <!-- Alert Overlay -->
-        <div class="alert-overlay" id="alertOverlay">
-            <div class="alert-icon">⚠️</div>
-            <div class="alert-level" id="alertLevelText">CRITICAL THREAT</div>
-            <div class="alert-message" id="alertMessage">Threat Detected</div>
-            <div class="alert-category" id="alertCategory">Category: Unknown</div>
-            <div class="alert-transcript-box">
-                <div class="alert-transcript-label">Intercepted Speech</div>
-                <div class="alert-transcript-text" id="alertTranscript">—</div>
-            </div>
-            <div class="alert-location" id="alertLocation">📍 Location: Acquiring...</div>
-            <button class="alert-dismiss" id="alertDismiss">ACKNOWLEDGE</button>
-        </div>
-        
-        <!-- Toast -->
-        <div class="toast" id="toast"></div>
-        
-        <!-- Settings Modal -->
-        <div class="modal" id="settingsModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="modal-title">OGUN Configuration</span>
-                    <button class="modal-close" id="closeSettings">✕</button>
-                </div>
-                <div class="modal-body">
-                    
-                    <!-- Role Selection -->
-                    <div class="setting-section">
-                        <div class="setting-section-title">User Role</div>
-                        <div class="role-btns">
-                            <div class="role-btn" data-role="operations">Operations</div>
-                            <div class="role-btn" data-role="security">Security</div>
-                            <div class="role-btn active" data-role="admin">Admin</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Device Identity -->
-                    <div class="setting-section">
-                        <div class="setting-section-title">Device Identity</div>
-                        <div class="setting-group">
-                            <label class="setting-label">Device Name</label>
-                            <input type="text" class="setting-input" id="deviceName" placeholder="e.g., Alpha-1, Bravo-2">
-                            <p class="setting-hint">Identifies this device in team alerts</p>
-                        </div>
-                    </div>
-                    
-                    <!-- API Keys -->
-                    <div class="setting-section">
-                        <div class="setting-section-title">API Configuration</div>
-                        <div class="setting-group">
-                            <label class="setting-label">Groq API Key</label>
-                            <input type="password" class="setting-input" id="groqKey" placeholder="gsk_...">
-                            <p class="setting-hint">For Whisper speech recognition</p>
-                        </div>
-                        <div class="setting-group">
-                            <label class="setting-label">GhanaNLP Translation Key</label>
-                            <input type="password" class="setting-input" id="ghanaNlpKey" placeholder="Enter key">
-                        </div>
-                        <div class="setting-group">
-                            <label class="setting-label">GhanaNLP ASR Key</label>
-                            <input type="password" class="setting-input" id="ghanaNlpAsrKey" placeholder="Enter key">
-                        </div>
-                    </div>
-                    
-                    <!-- Alert Settings -->
-                    <div class="setting-section">
-                        <div class="setting-section-title">Alert Behavior</div>
-                        <div class="toggle-row">
-                            <span class="toggle-label">Loud Audio Alerts</span>
-                            <div class="toggle active" data-setting="audioAlert"></div>
-                        </div>
-                        <div class="toggle-row">
-                            <span class="toggle-label">Vibration</span>
-                            <div class="toggle active" data-setting="vibrate"></div>
-                        </div>
-                        <div class="toggle-row">
-                            <span class="toggle-label">TTS Translation Readout</span>
-                            <div class="toggle active" data-setting="tts"></div>
-                        </div>
-                        <div class="toggle-row">
-                            <span class="toggle-label">Auto-Lock Evidence on Threat</span>
-                            <div class="toggle active" data-setting="autoEvidence"></div>
-                        </div>
-                        <div class="toggle-row">
-                            <span class="toggle-label">Keep Screen Awake</span>
-                            <div class="toggle active" data-setting="wakeLock"></div>
-                        </div>
-                    </div>
-                    
-                    <!-- Email Configuration -->
-                    <div class="setting-section">
-                        <div class="setting-section-title">Email Alerts (Admin/Security)</div>
-                        <div class="setting-group">
-                            <label class="setting-label">Admin Email</label>
-                            <input type="email" class="setting-input" id="adminEmail" placeholder="admin@example.com">
-                        </div>
-                        <div class="setting-group">
-                            <label class="setting-label">Security Team Email</label>
-                            <input type="email" class="setting-input" id="securityEmail" placeholder="security@example.com">
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-        
-    </div>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
-    
-    <script>
-        // ================================================================
-        // OGUN V5 — GODMODE SECURITY INTELLIGENCE SYSTEM
-        // ================================================================
-        
-        // Firebase Configuration (Your credentials)
-        const firebaseConfig = {
-            apiKey: "AIzaSyAiI07Y2Erzo7TIOoyOiXpiZIk7HoUyn8c",
-            authDomain: "ogun-guardian-v1.firebaseapp.com",
-            projectId: "ogun-guardian-v1",
-            storageBucket: "ogun-guardian-v1.firebasestorage.app",
-            messagingSenderId: "875607675728",
-            appId: "1:875607675728:web:e52603a7ae927a58ead255",
-            databaseURL: "https://ogun-guardian-v1-default-rtdb.europe-west1.firebasedatabase.app"
-        };
-        
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        
-        // ================================================================
-        // CONFIGURATION
-        // ================================================================
-        
-        const CONFIG = {
-            GROQ_API: 'https://api.groq.com/openai/v1/audio/transcriptions',
-            GHANA_NLP_TRANSLATE: 'https://translation-api.ghananlp.org/v1/translate',
-            GHANA_NLP_ASR: 'https://asr-api.ghananlp.org/v1/transcribe',
-            WHISPER_MODEL: 'whisper-large-v3',
-            CHUNK_DURATION: 4000,
-            SCRUB_INTERVAL: 24 * 60 * 60 * 1000, // 24 hours
-            EVIDENCE_RETENTION_DAYS: 3,
-            
-            LANGUAGES: {
-                'tw': { name: 'Twi', flag: '🇬🇭' },
-                'ak': { name: 'Akan', flag: '🇬🇭' },
-                'ee': { name: 'Ewe', flag: '🇬🇭' },
-                'gaa': { name: 'Ga', flag: '🇬🇭' },
-                'dag': { name: 'Dagbani', flag: '🇬🇭' },
-                'ha': { name: 'Hausa', flag: '🇳🇬' },
-                'yo': { name: 'Yoruba', flag: '🇳🇬' },
-                'nzi': { name: 'Nzema', flag: '🇬🇭' },
-                'kas': { name: 'Kasem', flag: '🇬🇭' },
-                'dga': { name: 'Dagaare', flag: '🇬🇭' },
-                'pcm': { name: 'Pidgin', flag: '🇬🇭' },
-                'en': { name: 'English', flag: '🇬🇧' }
-            }
-        };
-        
-        // ================================================================
-        // GALAMSEY-AWARE THREAT ONTOLOGY
-        // ================================================================
-        
-        const THREAT_PATTERNS = {
-            critical: {
-                patterns: [
-                    // Direct violence / immediate danger
-                    /\b(kill|attack|shoot|stab|hurt|beat|harm|finish)\s+(them|those|him|her|the\s+\w+)/i,
-                    /\b(gun|knife|cutlass|machete|weapon)\b.{0,20}\b(ready|get|bring|use|have)/i,
-                    /\bambush|intercept|block\s+them|trap\s+them/i,
-                    /\b(do\s+it|move|strike|attack)\s+(now|tonight|today)/i,
-                    /\blet'?s\s+(go|do\s+it|move|finish)/i,
-                    /\bno\s+witness/i,
-                    /\bkill\s+the\s+(light|generator)/i
-                ],
-                category: 'DIRECT THREAT / VIOLENCE',
-                urgency: 'CRITICAL',
-                weight: 100
-            },
-            
-            high: {
-                patterns: [
-                    // Surveillance / following
-                    /\b(follow|watch|track|monitor)\s+(them|those|the\s+\w+|him|her)/i,
-                    /\bwhere\s+(do\s+)?(they|them|he|she)\s+(stay|sleep|live|go|keep)/i,
-                    /\bwhen\s+(do\s+)?(they|them|he|she)\s+(leave|go|come|arrive|move)/i,
-                    /\bwhat\s+time\b.{0,15}\b(leave|go|come|move)/i,
-                    // Theft planning
-                    /\b(take|steal|grab|collect|remove)\s+(the\s+)?(gold|equipment|bags|money|things|machine)/i,
-                    /\b(gold|equipment|bags|money)\b.{0,15}\b(take|steal|grab|easy|ours)/i,
-                    // Insider threat
-                    /\bthey\s+(don'?t|do\s+not)\s+know/i,
-                    /\bdon'?t\s+(tell|say|mention)\s+(them|to\s+them|anything)/i,
-                    /\bwait\s+(till|until)\b.{0,15}\b(later|gone|leave|night|dark)/i,
-                    /\bthey\s+trust\s+(us|me|him|her)/i,
-                    /\bhe\s+told\s+(them|us|me)/i,
-                    /\bshe\s+(doesn'?t|does\s+not)\s+know/i,
-                    // Coordination
-                    /\bcall\s+(the\s+)?(others|boys|men|people|them)/i,
-                    /\bget\s+(more|the\s+)?(others|boys|men|people)/i,
-                    /\bbring\s+(the\s+)?(boys|men|others)/i
-                ],
-                category: 'TARGETING / COORDINATION / INSIDER',
-                urgency: 'HIGH',
-                weight: 75
-            },
-            
-            medium: {
-                patterns: [
-                    // Subject references (team identification)
-                    /\b(those|these)\s+(people|ones|men|women)/i,
-                    /\bthe\s+(team|cleanup|gold|outsiders?|foreigners?|strangers?|visitors?)/i,
-                    /\bthe\s+ones?\s+(from|with|working|doing)/i,
-                    /\b(they|them)\s+(came|arrived|are\s+here|just\s+came)/i,
-                    /\bpeople\s+with\s+(the\s+)?(machines?|equipment|trucks?|vehicles?|security)/i,
-                    /\bthe\s+people\s+(at|from|doing)\s+the/i,
-                    // Operational exposure
-                    /\b(saw|see|seen|noticed)\s+(the\s+)?(gold|equipment|bags|money|machine)/i,
-                    /\bhow\s+much\b.{0,15}\b(gold|money|pay|worth|value)/i,
-                    /\b(rich|money|wealthy|plenty)\b.{0,15}\b(them|those|they|people|foreigners)/i,
-                    // Deception
-                    /\bpretend|act\s+(like|friendly|nice)/i,
-                    /\b(fool|trick|deceive)\s+(them|those)/i,
-                    /\b(friendly|nice)\b.{0,10}\b(first|now|for\s+now)/i,
-                    // Information gathering
-                    /\bask\s+(them|him|her|about)/i,
-                    /\bfind\s+out\b.{0,15}\b(how|what|where|when|who)/i,
-                    /\bhow\s+many\b.{0,15}\b(security|guards?|people|police)/i,
-                    // Code switching indicator
-                    /\bspeak\s+(english|twi|local)\b/i,
-                    /\bthey\s+(understand|hear|know)\s+(twi|local|our\s+language)/i
-                ],
-                category: 'RECONNAISSANCE / DECEPTION / EXPOSURE',
-                urgency: 'MEDIUM',
-                weight: 50
-            },
-            
-            low: {
-                patterns: [
-                    // General mentions
-                    /\b(strangers?|visitors?|new\s+people|new\s+faces)/i,
-                    /\b(from\s+)?(outside|abroad|overseas|foreign|different\s+place)/i,
-                    /\bnot\s+from\s+(here|this\s+place|around)/i,
-                    // Resource mentions
-                    /\bgold|tailings?|mining|galamsey|changfang?/i,
-                    /\bequipment|machines?|trucks?|vehicles?/i,
-                    // Movement mentions
-                    /\b(coming|going|leaving|arriving|moving)\s+(today|tomorrow|soon)/i,
-                    /\bwhen\s+(are|is)\s+(they|he|she|it)\s+(coming|going|leaving)/i,
-                    // Attention markers
-                    /\bcareful|quiet|watch\s+out|be\s+careful/i,
-                    /\blower\s+(your\s+)?voice/i,
-                    /\bsomeone\s+(is\s+)?(coming|here|watching)/i
-                ],
-                category: 'AWARENESS / MENTIONS',
-                urgency: 'LOW',
-                weight: 25
-            },
-            
-            coded: {
-                patterns: [
-                    // Galamsey specific
-                    /\bchangfan|ghetto|the\s+site|the\s+pit/i,
-                    /\bboss\s*man|chairman|chief|sponsor|financier/i,
-                    /\bthe\s+thing|the\s+matter|the\s+issue|that\s+thing/i,
-                    /\byou\s+know\s+what|you\s+understand/i,
-                    /\bdo\s+(the\s+)?work|finish\s+(the\s+)?work/i,
-                    // Proverbs / indirect
-                    /\bthe\s+(snake|hawk|lion|eagle)\b/i,
-                    /\beyes?\s+(are|is)\s+(watching|open|everywhere)/i,
-                    /\bwalls\s+have\s+ears/i,
-                    /\bbig\s+(fish|man|people)/i,
-                    /\bsmall\s+fish/i
-                ],
-                category: 'CODED SPEECH / GALAMSEY',
-                urgency: 'MEDIUM',
-                weight: 45
-            }
-        };
-        
-        // ================================================================
-        // STATE
-        // ================================================================
-        
-        const state = {
-            isListening: false,
-            mediaRecorder: null,
-            audioContext: null,
-            wakeLock: null,
-            currentLocation: null,
-            currentThreatLevel: 'clear',
-            previousLanguage: null,
-            languageSwitchCount: 0,
-            
-            stats: {
-                phrases: 0,
-                alerts: 0
-            },
-            
-            // Rolling audio buffer (last 30 chunks)
-            audioBuffer: [],
-            
-            // Locked evidence
-            evidence: [],
-            
-            // Daily logs for briefing
-            dailyLogs: [],
-            
-            // Last scrub time
-            lastScrub: Date.now(),
-            
-            settings: {
-                role: 'admin',
-                deviceName: 'Device-1',
-                groqKey: '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',
-                ghanaNlpKey: '',
-                ghanaNlpAsrKey: '',
-                audioAlert: true,
-                vibrate: true,
-                tts: true,
-                autoEvidence: true,
-                wakeLock: true,
-                adminEmail: '',
-                securityEmail: ''
-            }
-        };
-        
-        // ================================================================
-        // DOM ELEMENTS
-        // ================================================================
-        
-        const app = document.getElementById('app');
-        const btnActivate = document.getElementById('btnActivate');
-        const btnDeactivate = document.getElementById('btnDeactivate');
-        const btnSettings = document.getElementById('btnSettings');
-        const btnBriefing = document.getElementById('btnBriefing');
-        const settingsModal = document.getElementById('settingsModal');
-        const closeSettings = document.getElementById('closeSettings');
-        const transcript = document.getElementById('transcript');
-        const emptyState = document.getElementById('emptyState');
-        const statusText = document.getElementById('statusText');
-        const threatBadge = document.getElementById('threatBadge');
-        const langChip = document.getElementById('langChip');
-        const langName = document.getElementById('langName');
-        const evidenceBanner = document.getElementById('evidenceBanner');
-        const alertOverlay = document.getElementById('alertOverlay');
-        const alertDismiss = document.getElementById('alertDismiss');
-        const toast = document.getElementById('toast');
-        const briefingBadge = document.getElementById('briefingBadge');
-        const roleDisplay = document.getElementById('roleDisplay');
-        
-        // ================================================================
-        // INITIALIZATION
-        // ================================================================
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            loadSettings();
-            setupEventListeners();
-            setupToggles();
-            setupRoles();
-            setupFirebaseListeners();
-            checkDailyScrub();
-            requestLocation();
-        });
-        
-        function loadSettings() {
-            const saved = localStorage.getItem('ogun_v5_settings');
-            if (saved) {
-                Object.assign(state.settings, JSON.parse(saved));
-            }
-            
-            // Load evidence
-            const savedEvidence = localStorage.getItem('ogun_v5_evidence');
-            if (savedEvidence) {
-                state.evidence = JSON.parse(savedEvidence);
-            }
-            
-            // Load daily logs
-            const savedLogs = localStorage.getItem('ogun_v5_daily_logs');
-            if (savedLogs) {
-                state.dailyLogs = JSON.parse(savedLogs);
-                updateBriefingBadge();
-            }
-            
-            // Populate inputs
-            document.getElementById('deviceName').value = state.settings.deviceName || '';
-            document.getElementById('groqKey').value = state.settings.groqKey || '';
-            document.getElementById('ghanaNlpKey').value = state.settings.ghanaNlpKey || '';
-            document.getElementById('ghanaNlpAsrKey').value = state.settings.ghanaNlpAsrKey || '';
-            document.getElementById('adminEmail').value = state.settings.adminEmail || '';
-            document.getElementById('securityEmail').value = state.settings.securityEmail || '';
-            
-            // Set role display
-            roleDisplay.textContent = state.settings.role.toUpperCase();
-            
-            // Set toggles
-            document.querySelectorAll('.toggle[data-setting]').forEach(toggle => {
-                const setting = toggle.dataset.setting;
-                toggle.classList.toggle('active', state.settings[setting]);
-            });
-            
-            // Set role buttons
-            document.querySelectorAll('.role-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.role === state.settings.role);
-            });
-        }
-        
-        function saveSettings() {
-            state.settings.deviceName = document.getElementById('deviceName').value.trim() || 'Device-1';
-            state.settings.groqKey = document.getElementById('groqKey').value.trim();
-            state.settings.ghanaNlpKey = document.getElementById('ghanaNlpKey').value.trim();
-            state.settings.ghanaNlpAsrKey = document.getElementById('ghanaNlpAsrKey').value.trim();
-            state.settings.adminEmail = document.getElementById('adminEmail').value.trim();
-            state.settings.securityEmail = document.getElementById('securityEmail').value.trim();
-            
-            localStorage.setItem('ogun_v5_settings', JSON.stringify(state.settings));
-            roleDisplay.textContent = state.settings.role.toUpperCase();
-            showToast('Settings saved', 'success');
-        }
-        
-        function setupEventListeners() {
-            btnActivate.addEventListener('click', activate);
-            btnDeactivate.addEventListener('click', deactivate);
-            btnSettings.addEventListener('click', () => settingsModal.classList.add('active'));
-            closeSettings.addEventListener('click', () => {
-                saveSettings();
-                settingsModal.classList.remove('active');
-            });
-            alertDismiss.addEventListener('click', dismissAlert);
-            btnBriefing.addEventListener('click', showBriefing);
-            briefingBadge.addEventListener('click', showBriefing);
-        }
-        
-        function setupToggles() {
-            document.querySelectorAll('.toggle[data-setting]').forEach(toggle => {
-                toggle.addEventListener('click', () => {
-                    toggle.classList.toggle('active');
-                    state.settings[toggle.dataset.setting] = toggle.classList.contains('active');
-                });
-            });
-        }
-        
-        function setupRoles() {
-            document.querySelectorAll('.role-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    state.settings.role = btn.dataset.role;
-                });
-            });
-        }
-        
-        // ================================================================
-        // FIREBASE REAL-TIME SYNC
-        // ================================================================
-        
-        function setupFirebaseListeners() {
-            // Listen for alerts from other devices
-            const alertsRef = database.ref('alerts');
-            
-            alertsRef.orderByChild('timestamp').startAt(Date.now()).on('child_added', (snapshot) => {
-                const alert = snapshot.val();
-                
-                // Don't show own alerts
-                if (alert.deviceName === state.settings.deviceName) return;
-                
-                // Only Admin and Security see all alerts
-                if (state.settings.role === 'operations' && alert.urgency === 'LOW') return;
-                
-                // Show alert from team member
-                showTeamAlert(alert);
-            });
-        }
-        
-        function broadcastAlert(alertData) {
-            const alertRef = database.ref('alerts').push();
-            alertRef.set({
-                ...alertData,
-                deviceName: state.settings.deviceName,
-                timestamp: Date.now(),
-                location: state.currentLocation
-            });
-        }
-        
-        function showTeamAlert(alert) {
-            // Play alert sound
-            if (state.settings.audioAlert) {
-                playAlertSound(alert.urgency);
-            }
-            
-            // Vibrate
-            if (state.settings.vibrate && 'vibrate' in navigator) {
-                navigator.vibrate([300, 100, 300, 100, 500]);
-            }
-            
-            // Show notification
-            showToast(`⚠️ ${alert.deviceName}: ${alert.category}`, 'warning');
-            
-            // Add to transcript
-            addTeamAlertEntry(alert);
-        }
-        
-        // ================================================================
-        // LOCATION
-        // ================================================================
-        
-        function requestLocation() {
-            if ('geolocation' in navigator) {
-                navigator.geolocation.watchPosition(
-                    (pos) => {
-                        state.currentLocation = {
-                            lat: pos.coords.latitude,
-                            lng: pos.coords.longitude,
-                            accuracy: pos.coords.accuracy,
-                            timestamp: Date.now()
-                        };
-                    },
-                    (err) => console.log('Location error:', err),
-                    { enableHighAccuracy: true, maximumAge: 30000 }
-                );
-            }
-        }
-        
-        function getLocationString() {
-            if (!state.currentLocation) return 'Location unavailable';
-            const { lat, lng } = state.currentLocation;
-            return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-        }
-        
-        function getLocationLink() {
-            if (!state.currentLocation) return '';
-            const { lat, lng } = state.currentLocation;
-            return `https://www.google.com/maps?q=${lat},${lng}`;
-        }
-        
-        // ================================================================
-        // CORE ACTIVATION
-        // ================================================================
-        
-        async function activate() {
-            if (!state.settings.groqKey) {
-                showToast('Add Groq API key in Settings', 'error');
-                settingsModal.classList.add('active');
-                return;
-            }
-            
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    audio: {
-                        echoCancellation: true,
-                        noiseSuppression: true,
-                        sampleRate: 16000
-                    }
-                });
-                
-                // Wake lock
-                if (state.settings.wakeLock && 'wakeLock' in navigator) {
-                    try {
-                        state.wakeLock = await navigator.wakeLock.request('screen');
-                    } catch (e) {}
-                }
-                
-                // Setup recorder
-                state.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-                let chunks = [];
-                
-                state.mediaRecorder.ondataavailable = (e) => {
-                    if (e.data.size > 0) chunks.push(e.data);
-                };
-                
-                state.mediaRecorder.onstop = async () => {
-                    if (chunks.length > 0 && state.isListening) {
-                        const blob = new Blob(chunks, { type: 'audio/webm' });
-                        chunks = [];
-                        
-                        // Add to rolling buffer
-                        addToBuffer(blob);
-                        
-                        // Process
-                        await processAudio(blob);
-                    }
-                    
-                    if (state.isListening) {
-                        state.mediaRecorder.start();
-                        setTimeout(() => {
-                            if (state.isListening && state.mediaRecorder.state === 'recording') {
-                                state.mediaRecorder.stop();
-                            }
-                        }, CONFIG.CHUNK_DURATION);
-                    }
-                };
-                
-                state.mediaRecorder.start();
-                setTimeout(() => {
-                    if (state.isListening && state.mediaRecorder.state === 'recording') {
-                        state.mediaRecorder.stop();
-                    }
-                }, CONFIG.CHUNK_DURATION);
-                
-                state.isListening = true;
-                app.classList.add('listening');
-                statusText.textContent = 'ACTIVE';
-                emptyState.style.display = 'none';
-                
-                showToast('OGUN activated', 'success');
-                
-            } catch (err) {
-                showToast('Microphone access denied', 'error');
-            }
-        }
-        
-        function deactivate() {
-            state.isListening = false;
-            
-            if (state.mediaRecorder && state.mediaRecorder.state !== 'inactive') {
-                state.mediaRecorder.stop();
-            }
-            
-            if (state.wakeLock) {
-                state.wakeLock.release();
-                state.wakeLock = null;
-            }
-            
-            app.classList.remove('listening');
-            statusText.textContent = 'Standby';
-            
-            showToast('OGUN deactivated');
-        }
-        
-        // ================================================================
-        // AUDIO BUFFER MANAGEMENT
-        // ================================================================
-        
-        function addToBuffer(blob) {
-            state.audioBuffer.push({
-                blob: blob,
-                timestamp: Date.now()
-            });
-            
-            // Keep only last 30 chunks (~2 minutes)
-            if (state.audioBuffer.length > 30) {
-                state.audioBuffer.shift();
-            }
-        }
-        
-        function lockEvidence(threatData) {
-            if (!state.settings.autoEvidence) return;
-            
-            // Lock current buffer as evidence
-            const evidenceItem = {
-                id: Date.now(),
-                timestamp: new Date().toISOString(),
-                location: state.currentLocation,
-                threat: threatData,
-                audioChunks: [...state.audioBuffer],
-                deviceName: state.settings.deviceName
-            };
-            
-            state.evidence.push(evidenceItem);
-            saveEvidence();
-            
-            evidenceBanner.classList.add('active');
-            setTimeout(() => evidenceBanner.classList.remove('active'), 5000);
-        }
-        
-        function saveEvidence() {
-            // Store metadata (not actual audio due to size)
-            const metadata = state.evidence.map(e => ({
-                ...e,
-                audioChunks: e.audioChunks.length + ' chunks'
-            }));
-            localStorage.setItem('ogun_v5_evidence', JSON.stringify(metadata));
-        }
-        
-        // ================================================================
-        // DAILY SCRUB & BRIEFING
-        // ================================================================
-        
-        function checkDailyScrub() {
-            const lastScrub = localStorage.getItem('ogun_v5_last_scrub');
-            const now = Date.now();
-            
-            if (lastScrub) {
-                const elapsed = now - parseInt(lastScrub);
-                if (elapsed >= CONFIG.SCRUB_INTERVAL) {
-                    performDailyScrub();
-                }
-            }
-            
-            // Check every hour
-            setInterval(() => {
-                const last = localStorage.getItem('ogun_v5_last_scrub');
-                if (last && (Date.now() - parseInt(last)) >= CONFIG.SCRUB_INTERVAL) {
-                    performDailyScrub();
-                }
-            }, 60 * 60 * 1000);
-        }
-        
-        function performDailyScrub() {
-            // If no alerts, clear everything
-            if (state.dailyLogs.length === 0) {
-                state.audioBuffer = [];
-                showToast('Daily scrub complete - no threats', 'success');
-            } else {
-                // Generate briefing summary
-                generateBriefing();
-            }
-            
-            localStorage.setItem('ogun_v5_last_scrub', Date.now().toString());
-        }
-        
-        function generateBriefing() {
-            const summary = {
-                date: new Date().toISOString(),
-                totalAlerts: state.dailyLogs.length,
-                critical: state.dailyLogs.filter(l => l.urgency === 'CRITICAL').length,
-                high: state.dailyLogs.filter(l => l.urgency === 'HIGH').length,
-                medium: state.dailyLogs.filter(l => l.urgency === 'MEDIUM').length,
-                low: state.dailyLogs.filter(l => l.urgency === 'LOW').length,
-                logs: state.dailyLogs
-            };
-            
-            // Store for briefing display
-            localStorage.setItem('ogun_v5_briefing', JSON.stringify(summary));
-            updateBriefingBadge();
-        }
-        
-        function updateBriefingBadge() {
-            const count = state.dailyLogs.length;
-            if (count > 0) {
-                briefingBadge.classList.add('active');
-                document.getElementById('briefingCount').textContent = count;
-            } else {
-                briefingBadge.classList.remove('active');
-            }
-        }
-        
-        function showBriefing() {
-            const briefing = localStorage.getItem('ogun_v5_briefing');
-            if (!briefing) {
-                showToast('No briefing data available');
-                return;
-            }
-            
-            // For now, show summary toast
-            const data = JSON.parse(briefing);
-            showToast(`Briefing: ${data.totalAlerts} alerts (${data.critical} critical)`, 'warning');
-            
-            // TODO: Full briefing modal
-        }
-        
-        function addToDailyLog(threatData) {
-            state.dailyLogs.push({
-                ...threatData,
-                timestamp: new Date().toISOString(),
-                deviceName: state.settings.deviceName,
-                location: state.currentLocation
-            });
-            
-            localStorage.setItem('ogun_v5_daily_logs', JSON.stringify(state.dailyLogs));
-            updateBriefingBadge();
-        }
-        
-        function clearDailyLogs() {
-            state.dailyLogs = [];
-            localStorage.removeItem('ogun_v5_daily_logs');
-            localStorage.removeItem('ogun_v5_briefing');
-            updateBriefingBadge();
-            showToast('Daily logs cleared', 'success');
-        }
-        
-        // ================================================================
-        // AUDIO PROCESSING
-        // ================================================================
-        
-        async function processAudio(audioBlob) {
-            statusText.textContent = 'Processing...';
-            
-            try {
-                // Transcribe
-                const transcription = await transcribeAudio(audioBlob);
-                
-                if (!transcription || transcription.trim().length < 2) {
-                    statusText.textContent = 'ACTIVE';
-                    return;
-                }
-                
-                // Translate
-                const result = await translateText(transcription);
-                
-                // Analyze for threats
-                const threatAnalysis = analyzeThreat(result.translation, result.original);
-                
-                // Check for language switch
-                checkLanguageSwitch(result.language);
-                
-                // Display
-                addEntry(result, threatAnalysis);
-                
-                // Handle threat
-                if (threatAnalysis.detected) {
-                    handleThreat(result, threatAnalysis);
-                }
-                
-                // TTS readout
-                if (state.settings.tts && result.translation !== result.original) {
-                    speak(result.translation);
-                }
-                
-                statusText.textContent = 'ACTIVE';
-                
-            } catch (err) {
-                console.error('Processing error:', err);
-                statusText.textContent = 'ACTIVE';
-            }
-        }
-        
-        async function transcribeAudio(audioBlob) {
-            // Try GhanaNLP ASR first
-            if (state.settings.ghanaNlpAsrKey) {
-                try {
-                    const result = await transcribeWithGhanaNLP(audioBlob);
-                    if (result) return result;
-                } catch (e) {}
-            }
-            
-            // Fallback to Groq Whisper
-            const formData = new FormData();
-            formData.append('file', audioBlob, 'audio.webm');
-            formData.append('model', CONFIG.WHISPER_MODEL);
-            
-            const response = await fetch(CONFIG.GROQ_API, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${state.settings.groqKey}` },
-                body: formData
-            });
-            
-            if (!response.ok) throw new Error('Groq API error');
-            
-            const data = await response.json();
-            return data.text || '';
-        }
-        
-        async function transcribeWithGhanaNLP(audioBlob) {
-            const base64 = await blobToBase64(audioBlob);
-            const languages = ['tw', 'ee', 'gaa', 'dag', 'ha', 'yo'];
-            
-            for (const lang of languages) {
-                try {
-                    const response = await fetch(CONFIG.GHANA_NLP_ASR, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Ocp-Apim-Subscription-Key': state.settings.ghanaNlpAsrKey
-                        },
-                        body: JSON.stringify({ audio: base64, language: lang })
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data?.text?.trim()) {
-                            updateLanguage(lang);
-                            return data.text;
-                        }
-                    }
-                } catch (e) {}
-            }
-            return null;
-        }
-        
-        async function translateText(text) {
-            const result = {
-                original: text,
-                translation: text,
-                language: 'en',
-                languageName: 'English'
-            };
-            
-            // Check if English
-            if (/^[a-zA-Z0-9\s.,!?'"()\-:;]+$/.test(text.trim())) {
-                return result;
-            }
-            
-            // Try GhanaNLP translation
-            if (state.settings.ghanaNlpKey) {
-                const pairs = ['tw-en', 'ee-en', 'gaa-en', 'dag-en', 'ha-en', 'yo-en'];
-                
-                for (const pair of pairs) {
-                    try {
-                        const response = await fetch(CONFIG.GHANA_NLP_TRANSLATE, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Ocp-Apim-Subscription-Key': state.settings.ghanaNlpKey
-                            },
-                            body: JSON.stringify({ in: text, lang: pair })
-                        });
-                        
-                        if (response.ok) {
-                            const data = await response.json();
-                            if (data) {
-                                const lang = pair.split('-')[0];
-                                result.translation = data;
-                                result.language = lang;
-                                result.languageName = CONFIG.LANGUAGES[lang]?.name || lang;
-                                updateLanguage(lang);
-                                return result;
-                            }
-                        }
-                    } catch (e) {}
-                }
-            }
-            
-            // Fallback: return original
-            return result;
-        }
-        
-        // ================================================================
-        // THREAT ANALYSIS
-        // ================================================================
-        
-        function analyzeThreat(translation, original) {
-            const text = `${translation} ${original}`.toLowerCase();
-            let maxWeight = 0;
-            let detectedCategory = null;
-            let detectedUrgency = null;
-            let matchedPattern = null;
-            
-            for (const [level, data] of Object.entries(THREAT_PATTERNS)) {
-                for (const pattern of data.patterns) {
-                    if (pattern.test(text)) {
-                        if (data.weight > maxWeight) {
-                            maxWeight = data.weight;
-                            detectedCategory = data.category;
-                            detectedUrgency = data.urgency;
-                            matchedPattern = pattern.toString();
-                        }
-                    }
-                }
-            }
-            
-            return {
-                detected: maxWeight > 0,
-                weight: maxWeight,
-                confidence: Math.min(maxWeight, 100),
-                category: detectedCategory,
-                urgency: detectedUrgency,
-                pattern: matchedPattern
-            };
-        }
-        
-        function checkLanguageSwitch(newLang) {
-            if (state.previousLanguage && state.previousLanguage === 'en' && newLang !== 'en') {
-                state.languageSwitchCount++;
-                
-                if (state.languageSwitchCount >= 2) {
-                    // Language switch pattern detected
-                    showToast('⚠️ Language switch detected', 'warning');
-                }
-            }
-            state.previousLanguage = newLang;
-        }
-        
-        // ================================================================
-        // THREAT HANDLING
-        // ================================================================
-        
-        function handleThreat(result, threat) {
-            // Update stats
-            state.stats.alerts++;
-            document.getElementById('statAlerts').textContent = state.stats.alerts;
-            
-            // Update threat badge
-            updateThreatBadge(threat.urgency);
-            
-            // Log for briefing
-            addToDailyLog({
-                original: result.original,
-                translation: result.translation,
-                language: result.languageName,
-                ...threat
-            });
-            
-            // Lock evidence
-            lockEvidence(threat);
-            
-            // Broadcast to team (Medium and above)
-            if (threat.urgency !== 'LOW') {
-                broadcastAlert({
-                    original: result.original,
-                    translation: result.translation,
-                    language: result.languageName,
-                    ...threat
-                });
-            }
-            
-            // Send email for High/Critical
-            if (threat.urgency === 'HIGH' || threat.urgency === 'CRITICAL') {
-                sendAlertEmail(result, threat);
-            }
-            
-            // Show overlay for High/Critical
-            if (threat.urgency === 'HIGH' || threat.urgency === 'CRITICAL') {
-                showAlertOverlay(result, threat);
-            }
-            
-            // Audio alert
-            if (state.settings.audioAlert) {
-                playAlertSound(threat.urgency);
-                
-                // Speak alert
-                setTimeout(() => {
-                    speak(`Alert! ${threat.category}. ${result.translation}`);
-                }, 500);
-            }
-            
-            // Vibrate
-            if (state.settings.vibrate && 'vibrate' in navigator) {
-                const patterns = {
-                    'LOW': [100],
-                    'MEDIUM': [200, 100, 200],
-                    'HIGH': [300, 100, 300, 100, 300],
-                    'CRITICAL': [500, 100, 500, 100, 500, 100, 500]
-                };
-                navigator.vibrate(patterns[threat.urgency] || [200]);
-            }
-        }
-        
-        function updateThreatBadge(urgency) {
-            threatBadge.className = 'threat-badge ' + urgency.toLowerCase();
-            threatBadge.textContent = urgency;
-            
-            if (urgency === 'CRITICAL') {
-                app.classList.add('critical-alert');
-                setTimeout(() => app.classList.remove('critical-alert'), 5000);
-            }
-        }
-        
-        function showAlertOverlay(result, threat) {
-            document.getElementById('alertLevelText').textContent = `${threat.urgency} THREAT`;
-            document.getElementById('alertMessage').textContent = threat.category;
-            document.getElementById('alertCategory').textContent = `Confidence: ${threat.confidence}%`;
-            document.getElementById('alertTranscript').textContent = result.translation;
-            document.getElementById('alertLocation').textContent = `📍 ${getLocationString()}`;
-            
-            alertOverlay.classList.add('active');
-        }
-        
-        function dismissAlert() {
-            alertOverlay.classList.remove('active');
-        }
-        
-        function playAlertSound(urgency) {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = ctx.createOscillator();
-            const gain = ctx.createGain();
-            
-            oscillator.connect(gain);
-            gain.connect(ctx.destination);
-            
-            const freqs = {
-                'LOW': 440,
-                'MEDIUM': 660,
-                'HIGH': 880,
-                'CRITICAL': 1100
-            };
-            
-            oscillator.frequency.value = freqs[urgency] || 660;
-            oscillator.type = 'square';
-            gain.gain.value = 0.3;
-            
-            oscillator.start();
-            
-            // Beep pattern
-            setTimeout(() => gain.gain.value = 0, 150);
-            setTimeout(() => gain.gain.value = 0.3, 200);
-            setTimeout(() => gain.gain.value = 0, 350);
-            setTimeout(() => gain.gain.value = 0.3, 400);
-            setTimeout(() => { gain.gain.value = 0; oscillator.stop(); }, 550);
-        }
-        
-        // ================================================================
-        // EMAIL ALERTS
-        // ================================================================
-        
-        async function sendAlertEmail(result, threat) {
-            // Using EmailJS or similar service would go here
-            // For now, we'll use Firebase to store alerts that can trigger cloud functions
-            
-            const emailData = {
-                to: [state.settings.adminEmail, state.settings.securityEmail].filter(e => e),
-                subject: `🚨 OGUN ${threat.urgency} ALERT - ${state.settings.deviceName}`,
-                body: `
+<div class="app" id="app">
+<!-- Briefing Badge -->
+<div class="briefing-badge" id="briefingBadge">
+📋 <span id="briefingCount">0</span> items for review
+</div>
+<!-- Header -->
+<header class="header">
+<div class="brand">
+<div class="brand-icon"></div>
+<div class="brand-text">
+<span class="brand-name">OGUN</span>
+<span class="brand-mode">V5 GODMODE — <span id="roleDisplay">ADMIN</span></span>
+</div>
+</div>
+<div class="header-actions">
+<button class="icon-btn" id="btnBriefing" title="Daily Briefing">
+<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+</button>
+<button class="icon-btn" id="btnSettings" title="Settings">
+<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+</button>
+</div>
+</header>
+<!-- Status Bar -->
+<div class="status-bar">
+<div class="status-left">
+<div class="status-pill">
+<div class="status-dot"></div>
+<span id="statusText">Ready</span>
+</div>
+<div class="threat-badge clear" id="threatBadge">CLEAR</div>
+</div>
+<div class="status-right">
+<span><strong id="statPhrases">0</strong> phrases</span>
+<span><strong id="statAlerts">0</strong> alerts</span>
+</div>
+</div>
+<!-- Language Strip -->
+<div class="lang-strip">
+<div class="lang-chip" id="langChip">
+<span>🌍</span>
+<span id="langName">Detecting...</span>
+</div>
+<span style="color: var(--text-dim);">→</span>
+<div class="lang-chip">
+<span>🇬🇧</span>
+<span>English</span>
+</div>
+</div>
+<!-- Evidence Banner -->
+<div class="evidence-banner" id="evidenceBanner">
+<div class="evidence-dot"></div>
+EVIDENCE RECORDING LOCKED
+</div>
+<!-- Main Content -->
+<main class="main">
+<div class="transcript" id="transcript">
+<div class="empty-state" id="emptyState">
+<div class="empty-icon">⚔</div>
+<h3>OGUN Standing By</h3>
+<p>Activate to begin continuous translation and autonomous threat monitoring. All alerts will be escalated.</p>
+</div>
+</div>
+</main>
+<!-- Controls -->
+<div class="controls">
+<button class="main-btn btn-activate" id="btnActivate">
+⚔ ACTIVATE OGUN
+</button>
+<button class="main-btn btn-deactivate" id="btnDeactivate">
+■ DEACTIVATE
+</button>
+</div>
+<!-- Alert Overlay -->
+<div class="alert-overlay" id="alertOverlay">
+<div class="alert-icon">⚠️</div>
+<div class="alert-level" id="alertLevelText">CRITICAL THREAT</div>
+<div class="alert-message" id="alertMessage">Threat Detected</div>
+<div class="alert-category" id="alertCategory">Category: Unknown</div>
+<div class="alert-transcript-box">
+<div class="alert-transcript-label">Intercepted Speech</div>
+<div class="alert-transcript-text" id="alertTranscript">—</div>
+</div>
+<div class="alert-location" id="alertLocation">📍 Location: Acquiring...</div>
+<button class="alert-dismiss" id="alertDismiss">ACKNOWLEDGE</button>
+</div>
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<!-- Settings Modal -->
+<div class="modal" id="settingsModal">
+<div class="modal-content">
+<div class="modal-header">
+<span class="modal-title">OGUN Configuration</span>
+<button class="modal-close" id="closeSettings">✕</button>
+</div>
+<div class="modal-body">
+<!-- Role Selection -->
+<div class="setting-section">
+<div class="setting-section-title">User Role</div>
+<div class="role-btns">
+<div class="role-btn" data-role="operations">Operations</div>
+<div class="role-btn" data-role="security">Security</div>
+<div class="role-btn active" data-role="admin">Admin</div>
+</div>
+</div>
+<!-- Device Identity -->
+<div class="setting-section">
+<div class="setting-section-title">Device Identity</div>
+<div class="setting-group">
+<label class="setting-label">Device Name</label>
+<input type="text" class="setting-input" id="deviceName" placeholder="e.g., Alpha-1, Bravo-2">
+<p class="setting-hint">Identifies this device in team alerts</p>
+</div>
+</div>
+<!-- API Keys -->
+<div class="setting-section">
+<div class="setting-section-title">API Configuration</div>
+<div class="setting-group">
+<label class="setting-label">Groq API Key</label>
+<input type="password" class="setting-input" id="groqKey" placeholder="gsk_...">
+<p class="setting-hint">For Whisper speech recognition</p>
+</div>
+<div class="setting-group">
+<label class="setting-label">GhanaNLP Translation Key</label>
+<input type="password" class="setting-input" id="ghanaNlpKey" placeholder="Enter key">
+</div>
+<div class="setting-group">
+<label class="setting-label">GhanaNLP ASR Key</label>
+<input type="password" class="setting-input" id="ghanaNlpAsrKey" placeholder="Enter key">
+</div>
+</div>
+<!-- Alert Settings -->
+<div class="setting-section">
+<div class="setting-section-title">Alert Behavior</div>
+<div class="toggle-row">
+<span class="toggle-label">Loud Audio Alerts</span>
+<div class="toggle active" data-setting="audioAlert"></div>
+</div>
+<div class="toggle-row">
+<span class="toggle-label">Vibration</span>
+<div class="toggle active" data-setting="vibrate"></div>
+</div>
+<div class="toggle-row">
+<span class="toggle-label">TTS Translation Readout</span>
+<div class="toggle active" data-setting="tts"></div>
+</div>
+<div class="toggle-row">
+<span class="toggle-label">Auto-Lock Evidence on Threat</span>
+<div class="toggle active" data-setting="autoEvidence"></div>
+</div>
+<div class="toggle-row">
+<span class="toggle-label">Keep Screen Awake</span>
+<div class="toggle active" data-setting="wakeLock"></div>
+</div>
+</div>
+<!-- Email Configuration -->
+<div class="setting-section">
+<div class="setting-section-title">Email Alerts (Admin/Security)</div>
+<div class="setting-group">
+<label class="setting-label">Admin Email</label>
+<input type="email" class="setting-input" id="adminEmail" placeholder="admin@example.com">
+</div>
+<div class="setting-group">
+<label class="setting-label">Security Team Email</label>
+<input type="email" class="setting-input" id="securityEmail" placeholder="security@example.com">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
+<script>
+// ================================================================
+// OGUN V5 — GODMODE SECURITY INTELLIGENCE SYSTEM
+// ================================================================
+// Firebase Configuration (Your credentials)
+const firebaseConfig = {
+apiKey: "AIzaSyAiI07Y2Erzo7TIOoyOiXpiZIk7HoUyn8c",
+authDomain: "ogun-guardian-v1.firebaseapp.com",
+projectId: "ogun-guardian-v1",
+storageBucket: "ogun-guardian-v1.firebasestorage.app",
+messagingSenderId: "875607675728",
+appId: "1:875607675728:web:e52603a7ae927a58ead255",
+databaseURL: "https://ogun-guardian-v1-default-rtdb.europe-west1.firebasedatabase.app"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+// ================================================================
+// CONFIGURATION
+// ================================================================
+const CONFIG = {
+GROQ_API: 'https://api.groq.com/openai/v1/audio/transcriptions',
+GHANA_NLP_TRANSLATE: 'https://translation-api.ghananlp.org/v1/translate',
+GHANA_NLP_ASR: 'https://asr-api.ghananlp.org/v1/transcribe',
+WHISPER_MODEL: 'whisper-large-v3',
+CHUNK_DURATION: 4000,
+SCRUB_INTERVAL: 24 * 60 * 60 * 1000, // 24 hours
+EVIDENCE_RETENTION_DAYS: 3,
+LANGUAGES: {
+'tw': { name: 'Twi', flag: '🇬🇭' },
+'ak': { name: 'Akan', flag: '🇬🇭' },
+'ee': { name: 'Ewe', flag: '🇬🇭' },
+'gaa': { name: 'Ga', flag: '🇬🇭' },
+'dag': { name: 'Dagbani', flag: '🇬🇭' },
+'ha': { name: 'Hausa', flag: '🇳🇬' },
+'yo': { name: 'Yoruba', flag: '🇳🇬' },
+'nzi': { name: 'Nzema', flag: '🇬🇭' },
+'kas': { name: 'Kasem', flag: '🇬🇭' },
+'dga': { name: 'Dagaare', flag: '🇬🇭' },
+'pcm': { name: 'Pidgin', flag: '🇬🇭' },
+'en': { name: 'English', flag: '🇬🇧' }
+}
+};
+// ================================================================
+// GALAMSEY-AWARE THREAT ONTOLOGY
+// ================================================================
+const THREAT_PATTERNS = {
+critical: {
+patterns: [
+// Direct violence / immediate danger
+/\b(kill|attack|shoot|stab|hurt|beat|harm|finish)\s+(them|those|him|her|the\s+\w+)/i,
+/\b(gun|knife|cutlass|machete|weapon)\b.{0,20}\b(ready|get|bring|use|have)/i,
+/\bambush|intercept|block\s+them|trap\s+them/i,
+/\b(do\s+it|move|strike|attack)\s+(now|tonight|today)/i,
+/\blet'?s\s+(go|do\s+it|move|finish)/i,
+/\bno\s+witness/i,
+/\bkill\s+the\s+(light|generator)/i
+],
+category: 'DIRECT THREAT / VIOLENCE',
+urgency: 'CRITICAL',
+weight: 100
+},
+high: {
+patterns: [
+// Surveillance / following
+/\b(follow|watch|track|monitor)\s+(them|those|the\s+\w+|him|her)/i,
+/\bwhere\s+(do\s+)?(they|them|he|she)\s+(stay|sleep|live|go|keep)/i,
+/\bwhen\s+(do\s+)?(they|them|he|she)\s+(leave|go|come|arrive|move)/i,
+/\bwhat\s+time\b.{0,15}\b(leave|go|come|move)/i,
+// Theft planning
+/\b(take|steal|grab|collect|remove)\s+(the\s+)?(gold|equipment|bags|money|things|machine)/i,
+/\b(gold|equipment|bags|money)\b.{0,15}\b(take|steal|grab|easy|ours)/i,
+// Insider threat
+/\bthey\s+(don'?t|do\s+not)\s+know/i,
+/\bdon'?t\s+(tell|say|mention)\s+(them|to\s+them|anything)/i,
+/\bwait\s+(till|until)\b.{0,15}\b(later|gone|leave|night|dark)/i,
+/\bthey\s+trust\s+(us|me|him|her)/i,
+/\bhe\s+told\s+(them|us|me)/i,
+/\bshe\s+(doesn'?t|does\s+not)\s+know/i,
+// Coordination
+/\bcall\s+(the\s+)?(others|boys|men|people|them)/i,
+/\bget\s+(more|the\s+)?(others|boys|men|people)/i,
+/\bbring\s+(the\s+)?(boys|men|others)/i
+],
+category: 'TARGETING / COORDINATION / INSIDER',
+urgency: 'HIGH',
+weight: 75
+},
+medium: {
+patterns: [
+// Subject references (team identification)
+/\b(those|these)\s+(people|ones|men|women)/i,
+/\bthe\s+(team|cleanup|gold|outsiders?|foreigners?|strangers?|visitors?)/i,
+/\bthe\s+ones?\s+(from|with|working|doing)/i,
+/\b(they|them)\s+(came|arrived|are\s+here|just\s+came)/i,
+/\bpeople\s+with\s+(the\s+)?(machines?|equipment|trucks?|vehicles?|security)/i,
+/\bthe\s+people\s+(at|from|doing)\s+the/i,
+// Operational exposure
+/\b(saw|see|seen|noticed)\s+(the\s+)?(gold|equipment|bags|money|machine)/i,
+/\bhow\s+much\b.{0,15}\b(gold|money|pay|worth|value)/i,
+/\b(rich|money|wealthy|plenty)\b.{0,15}\b(them|those|they|people|foreigners)/i,
+// Deception
+/\bpretend|act\s+(like|friendly|nice)/i,
+/\b(fool|trick|deceive)\s+(them|those)/i,
+/\b(friendly|nice)\b.{0,10}\b(first|now|for\s+now)/i,
+// Information gathering
+/\bask\s+(them|him|her|about)/i,
+/\bfind\s+out\b.{0,15}\b(how|what|where|when|who)/i,
+/\bhow\s+many\b.{0,15}\b(security|guards?|people|police)/i,
+// Code switching indicator
+/\bspeak\s+(english|twi|local)\b/i,
+/\bthey\s+(understand|hear|know)\s+(twi|local|our\s+language)/i
+],
+category: 'RECONNAISSANCE / DECEPTION / EXPOSURE',
+urgency: 'MEDIUM',
+weight: 50
+},
+low: {
+patterns: [
+// General mentions
+/\b(strangers?|visitors?|new\s+people|new\s+faces)/i,
+/\b(from\s+)?(outside|abroad|overseas|foreign|different\s+place)/i,
+/\bnot\s+from\s+(here|this\s+place|around)/i,
+// Resource mentions
+/\bgold|tailings?|mining|galamsey|changfang?/i,
+/\bequipment|machines?|trucks?|vehicles?/i,
+// Movement mentions
+/\b(coming|going|leaving|arriving|moving)\s+(today|tomorrow|soon)/i,
+/\bwhen\s+(are|is)\s+(they|he|she|it)\s+(coming|going|leaving)/i,
+// Attention markers
+/\bcareful|quiet|watch\s+out|be\s+careful/i,
+/\blower\s+(your\s+)?voice/i,
+/\bsomeone\s+(is\s+)?(coming|here|watching)/i
+],
+category: 'AWARENESS / MENTIONS',
+urgency: 'LOW',
+weight: 25
+},
+coded: {
+patterns: [
+// Galamsey specific
+/\bchangfan|ghetto|the\s+site|the\s+pit/i,
+/\bboss\s*man|chairman|chief|sponsor|financier/i,
+/\bthe\s+thing|the\s+matter|the\s+issue|that\s+thing/i,
+/\byou\s+know\s+what|you\s+understand/i,
+/\bdo\s+(the\s+)?work|finish\s+(the\s+)?work/i,
+// Proverbs / indirect
+/\bthe\s+(snake|hawk|lion|eagle)\b/i,
+/\beyes?\s+(are|is)\s+(watching|open|everywhere)/i,
+/\bwalls\s+have\s+ears/i,
+/\bbig\s+(fish|man|people)/i,
+/\bsmall\s+fish/i
+],
+category: 'CODED SPEECH / GALAMSEY',
+urgency: 'MEDIUM',
+weight: 45
+}
+};
+// ================================================================
+// STATE
+// ================================================================
+const state = {
+isListening: false,
+mediaRecorder: null,
+audioContext: null,
+wakeLock: null,
+currentLocation: null,
+currentThreatLevel: 'clear',
+previousLanguage: null,
+languageSwitchCount: 0,
+stats: {
+phrases: 0,
+alerts: 0
+},
+// Rolling audio buffer (last 30 chunks)
+audioBuffer: [],
+// Locked evidence
+evidence: [],
+// Daily logs for briefing
+dailyLogs: [],
+// Last scrub time
+lastScrub: Date.now(),
+settings: {
+role: 'admin',
+deviceName: 'Device-1',
+groqKey: '',
+ghanaNlpKey: '',
+ghanaNlpAsrKey: '',
+audioAlert: true,
+vibrate: true,
+tts: true,
+autoEvidence: true,
+wakeLock: true,
+adminEmail: '',
+securityEmail: ''
+}
+};
+// ================================================================
+// DOM ELEMENTS
+// ================================================================
+const app = document.getElementById('app');
+const btnActivate = document.getElementById('btnActivate');
+const btnDeactivate = document.getElementById('btnDeactivate');
+const btnSettings = document.getElementById('btnSettings');
+const btnBriefing = document.getElementById('btnBriefing');
+const settingsModal = document.getElementById('settingsModal');
+const closeSettings = document.getElementById('closeSettings');
+const transcript = document.getElementById('transcript');
+const emptyState = document.getElementById('emptyState');
+const statusText = document.getElementById('statusText');
+const threatBadge = document.getElementById('threatBadge');
+const langChip = document.getElementById('langChip');
+const langName = document.getElementById('langName');
+const evidenceBanner = document.getElementById('evidenceBanner');
+const alertOverlay = document.getElementById('alertOverlay');
+const alertDismiss = document.getElementById('alertDismiss');
+const toast = document.getElementById('toast');
+const briefingBadge = document.getElementById('briefingBadge');
+const roleDisplay = document.getElementById('roleDisplay');
+// ================================================================
+// INITIALIZATION
+// ================================================================
+document.addEventListener('DOMContentLoaded', () => {
+loadSettings();
+setupEventListeners();
+setupToggles();
+setupRoles();
+setupFirebaseListeners();
+checkDailyScrub();
+requestLocation();
+});
+function loadSettings() {
+const saved = localStorage.getItem('ogun_v5_settings');
+if (saved) {
+Object.assign(state.settings, JSON.parse(saved));
+}
+// Load evidence
+const savedEvidence = localStorage.getItem('ogun_v5_evidence');
+if (savedEvidence) {
+state.evidence = JSON.parse(savedEvidence);
+}
+// Load daily logs
+const savedLogs = localStorage.getItem('ogun_v5_daily_logs');
+if (savedLogs) {
+state.dailyLogs = JSON.parse(savedLogs);
+updateBriefingBadge();
+}
+// Populate inputs
+document.getElementById('deviceName').value = state.settings.deviceName || '';
+document.getElementById('groqKey').value = state.settings.groqKey || '';
+document.getElementById('ghanaNlpKey').value = state.settings.ghanaNlpKey || '';
+document.getElementById('ghanaNlpAsrKey').value = state.settings.ghanaNlpAsrKey || '';
+document.getElementById('adminEmail').value = state.settings.adminEmail || '';
+document.getElementById('securityEmail').value = state.settings.securityEmail || '';
+// Set role display
+roleDisplay.textContent = state.settings.role.toUpperCase();
+// Set toggles
+document.querySelectorAll('.toggle[data-setting]').forEach(toggle => {
+const setting = toggle.dataset.setting;
+toggle.classList.toggle('active', state.settings[setting]);
+});
+// Set role buttons
+document.querySelectorAll('.role-btn').forEach(btn => {
+btn.classList.toggle('active', btn.dataset.role === state.settings.role);
+});
+}
+function saveSettings() {
+state.settings.deviceName = document.getElementById('deviceName').value.trim() || 'Device-1';
+state.settings.groqKey = document.getElementById('groqKey').value.trim();
+state.settings.ghanaNlpKey = document.getElementById('ghanaNlpKey').value.trim();
+state.settings.ghanaNlpAsrKey = document.getElementById('ghanaNlpAsrKey').value.trim();
+state.settings.adminEmail = document.getElementById('adminEmail').value.trim();
+state.settings.securityEmail = document.getElementById('securityEmail').value.trim();
+localStorage.setItem('ogun_v5_settings', JSON.stringify(state.settings));
+roleDisplay.textContent = state.settings.role.toUpperCase();
+showToast('Settings saved', 'success');
+}
+function setupEventListeners() {
+btnActivate.addEventListener('click', activate);
+btnDeactivate.addEventListener('click', deactivate);
+btnSettings.addEventListener('click', () => settingsModal.classList.add('active'));
+closeSettings.addEventListener('click', () => {
+saveSettings();
+settingsModal.classList.remove('active');
+});
+alertDismiss.addEventListener('click', dismissAlert);
+btnBriefing.addEventListener('click', showBriefing);
+briefingBadge.addEventListener('click', showBriefing);
+}
+function setupToggles() {
+document.querySelectorAll('.toggle[data-setting]').forEach(toggle => {
+toggle.addEventListener('click', () => {
+toggle.classList.toggle('active');
+state.settings[toggle.dataset.setting] = toggle.classList.contains('active');
+});
+});
+}
+function setupRoles() {
+document.querySelectorAll('.role-btn').forEach(btn => {
+btn.addEventListener('click', () => {
+document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+state.settings.role = btn.dataset.role;
+});
+});
+}
+// ================================================================
+// FIREBASE REAL-TIME SYNC
+// ================================================================
+function setupFirebaseListeners() {
+// Listen for alerts from other devices
+const alertsRef = database.ref('alerts');
+alertsRef.orderByChild('timestamp').startAt(Date.now()).on('child_added', (snapshot) => {
+const alert = snapshot.val();
+// Don't show own alerts
+if (alert.deviceName === state.settings.deviceName) return;
+// Only Admin and Security see all alerts
+if (state.settings.role === 'operations' && alert.urgency === 'LOW') return;
+// Show alert from team member
+showTeamAlert(alert);
+});
+}
+function broadcastAlert(alertData) {
+const alertRef = database.ref('alerts').push();
+alertRef.set({
+...alertData,
+deviceName: state.settings.deviceName,
+timestamp: Date.now(),
+location: state.currentLocation
+});
+}
+function showTeamAlert(alert) {
+// Play alert sound
+if (state.settings.audioAlert) {
+playAlertSound(alert.urgency);
+}
+// Vibrate
+if (state.settings.vibrate && 'vibrate' in navigator) {
+navigator.vibrate([300, 100, 300, 100, 500]);
+}
+// Show notification
+showToast(`⚠️ ${alert.deviceName}: ${alert.category}`, 'warning');
+// Add to transcript
+addTeamAlertEntry(alert);
+}
+// ================================================================
+// LOCATION
+// ================================================================
+function requestLocation() {
+if ('geolocation' in navigator) {
+navigator.geolocation.watchPosition(
+(pos) => {
+state.currentLocation = {
+lat: pos.coords.latitude,
+lng: pos.coords.longitude,
+accuracy: pos.coords.accuracy,
+timestamp: Date.now()
+};
+},
+(err) => console.log('Location error:', err),
+{ enableHighAccuracy: true, maximumAge: 30000 }
+);
+}
+}
+function getLocationString() {
+if (!state.currentLocation) return 'Location unavailable';
+const { lat, lng } = state.currentLocation;
+return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+}
+function getLocationLink() {
+if (!state.currentLocation) return '';
+const { lat, lng } = state.currentLocation;
+return `https://www.google.com/maps?q=${lat},${lng}`;
+}
+// ================================================================
+// CORE ACTIVATION
+// ================================================================
+async function activate() {
+if (!state.settings.groqKey) {
+showToast('Add Groq API key in Settings', 'error');
+settingsModal.classList.add('active');
+return;
+}
+try {
+const stream = await navigator.mediaDevices.getUserMedia({
+audio: {
+echoCancellation: true,
+noiseSuppression: true,
+sampleRate: 16000
+}
+});
+// Wake lock
+if (state.settings.wakeLock && 'wakeLock' in navigator) {
+try {
+state.wakeLock = await navigator.wakeLock.request('screen');
+} catch (e) {}
+}
+// Setup recorder
+state.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+let chunks = [];
+state.mediaRecorder.ondataavailable = (e) => {
+if (e.data.size > 0) chunks.push(e.data);
+};
+state.mediaRecorder.onstop = async () => {
+if (chunks.length > 0 && state.isListening) {
+const blob = new Blob(chunks, { type: 'audio/webm' });
+chunks = [];
+// Add to rolling buffer
+addToBuffer(blob);
+// Process
+await processAudio(blob);
+}
+if (state.isListening) {
+state.mediaRecorder.start();
+setTimeout(() => {
+if (state.isListening && state.mediaRecorder.state === 'recording') {
+state.mediaRecorder.stop();
+}
+}, CONFIG.CHUNK_DURATION);
+}
+};
+state.mediaRecorder.start();
+setTimeout(() => {
+if (state.isListening && state.mediaRecorder.state === 'recording') {
+state.mediaRecorder.stop();
+}
+}, CONFIG.CHUNK_DURATION);
+state.isListening = true;
+app.classList.add('listening');
+statusText.textContent = 'ACTIVE';
+emptyState.style.display = 'none';
+showToast('OGUN activated', 'success');
+} catch (err) {
+showToast('Microphone access denied', 'error');
+}
+}
+function deactivate() {
+state.isListening = false;
+if (state.mediaRecorder && state.mediaRecorder.state !== 'inactive') {
+state.mediaRecorder.stop();
+}
+if (state.wakeLock) {
+state.wakeLock.release();
+state.wakeLock = null;
+}
+app.classList.remove('listening');
+statusText.textContent = 'Standby';
+showToast('OGUN deactivated');
+}
+// ================================================================
+// AUDIO BUFFER MANAGEMENT
+// ================================================================
+function addToBuffer(blob) {
+state.audioBuffer.push({
+blob: blob,
+timestamp: Date.now()
+});
+// Keep only last 30 chunks (~2 minutes)
+if (state.audioBuffer.length > 30) {
+state.audioBuffer.shift();
+}
+}
+function lockEvidence(threatData) {
+if (!state.settings.autoEvidence) return;
+// Lock current buffer as evidence
+const evidenceItem = {
+id: Date.now(),
+timestamp: new Date().toISOString(),
+location: state.currentLocation,
+threat: threatData,
+audioChunks: [...state.audioBuffer],
+deviceName: state.settings.deviceName
+};
+state.evidence.push(evidenceItem);
+saveEvidence();
+evidenceBanner.classList.add('active');
+setTimeout(() => evidenceBanner.classList.remove('active'), 5000);
+}
+function saveEvidence() {
+// Store metadata (not actual audio due to size)
+const metadata = state.evidence.map(e => ({
+...e,
+audioChunks: e.audioChunks.length + ' chunks'
+}));
+localStorage.setItem('ogun_v5_evidence', JSON.stringify(metadata));
+}
+// ================================================================
+// DAILY SCRUB & BRIEFING
+// ================================================================
+function checkDailyScrub() {
+const lastScrub = localStorage.getItem('ogun_v5_last_scrub');
+const now = Date.now();
+if (lastScrub) {
+const elapsed = now - parseInt(lastScrub);
+if (elapsed >= CONFIG.SCRUB_INTERVAL) {
+performDailyScrub();
+}
+}
+// Check every hour
+setInterval(() => {
+const last = localStorage.getItem('ogun_v5_last_scrub');
+if (last && (Date.now() - parseInt(last)) >= CONFIG.SCRUB_INTERVAL) {
+performDailyScrub();
+}
+}, 60 * 60 * 1000);
+}
+function performDailyScrub() {
+// If no alerts, clear everything
+if (state.dailyLogs.length === 0) {
+state.audioBuffer = [];
+showToast('Daily scrub complete - no threats', 'success');
+} else {
+// Generate briefing summary
+generateBriefing();
+}
+localStorage.setItem('ogun_v5_last_scrub', Date.now().toString());
+}
+function generateBriefing() {
+const summary = {
+date: new Date().toISOString(),
+totalAlerts: state.dailyLogs.length,
+critical: state.dailyLogs.filter(l => l.urgency === 'CRITICAL').length,
+high: state.dailyLogs.filter(l => l.urgency === 'HIGH').length,
+medium: state.dailyLogs.filter(l => l.urgency === 'MEDIUM').length,
+low: state.dailyLogs.filter(l => l.urgency === 'LOW').length,
+logs: state.dailyLogs
+};
+// Store for briefing display
+localStorage.setItem('ogun_v5_briefing', JSON.stringify(summary));
+updateBriefingBadge();
+}
+function updateBriefingBadge() {
+const count = state.dailyLogs.length;
+if (count > 0) {
+briefingBadge.classList.add('active');
+document.getElementById('briefingCount').textContent = count;
+} else {
+briefingBadge.classList.remove('active');
+}
+}
+function showBriefing() {
+const briefing = localStorage.getItem('ogun_v5_briefing');
+if (!briefing) {
+showToast('No briefing data available');
+return;
+}
+// For now, show summary toast
+const data = JSON.parse(briefing);
+showToast(`Briefing: ${data.totalAlerts} alerts (${data.critical} critical)`, 'warning');
+// TODO: Full briefing modal
+}
+function addToDailyLog(threatData) {
+state.dailyLogs.push({
+...threatData,
+timestamp: new Date().toISOString(),
+deviceName: state.settings.deviceName,
+location: state.currentLocation
+});
+localStorage.setItem('ogun_v5_daily_logs', JSON.stringify(state.dailyLogs));
+updateBriefingBadge();
+}
+function clearDailyLogs() {
+state.dailyLogs = [];
+localStorage.removeItem('ogun_v5_daily_logs');
+localStorage.removeItem('ogun_v5_briefing');
+updateBriefingBadge();
+showToast('Daily logs cleared', 'success');
+}
+// ================================================================
+// AUDIO PROCESSING
+// ================================================================
+async function processAudio(audioBlob) {
+statusText.textContent = 'Processing...';
+try {
+// Transcribe
+const transcription = await transcribeAudio(audioBlob);
+if (!transcription || transcription.trim().length < 2) {
+statusText.textContent = 'ACTIVE';
+return;
+}
+// Translate
+const result = await translateText(transcription);
+// Analyze for threats
+const threatAnalysis = analyzeThreat(result.translation, result.original);
+// Check for language switch
+checkLanguageSwitch(result.language);
+// Display
+addEntry(result, threatAnalysis);
+// Handle threat
+if (threatAnalysis.detected) {
+handleThreat(result, threatAnalysis);
+}
+// TTS readout
+if (state.settings.tts && result.translation !== result.original) {
+speak(result.translation);
+}
+statusText.textContent = 'ACTIVE';
+} catch (err) {
+console.error('Processing error:', err);
+statusText.textContent = 'ACTIVE';
+}
+}
+async function transcribeAudio(audioBlob) {
+// Try GhanaNLP ASR first
+if (state.settings.ghanaNlpAsrKey) {
+try {
+const result = await transcribeWithGhanaNLP(audioBlob);
+if (result) return result;
+} catch (e) {}
+}
+// Fallback to Groq Whisper
+const formData = new FormData();
+formData.append('file', audioBlob, 'audio.webm');
+formData.append('model', CONFIG.WHISPER_MODEL);
+const response = await fetch(CONFIG.GROQ_API, {
+method: 'POST',
+headers: { 'Authorization': `Bearer ${state.settings.groqKey}` },
+body: formData
+});
+if (!response.ok) throw new Error('Groq API error');
+const data = await response.json();
+return data.text || '';
+}
+async function transcribeWithGhanaNLP(audioBlob) {
+const base64 = await blobToBase64(audioBlob);
+const languages = ['tw', 'ee', 'gaa', 'dag', 'ha', 'yo'];
+for (const lang of languages) {
+try {
+const response = await fetch(CONFIG.GHANA_NLP_ASR, {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'Ocp-Apim-Subscription-Key': state.settings.ghanaNlpAsrKey
+},
+body: JSON.stringify({ audio: base64, language: lang })
+});
+if (response.ok) {
+const data = await response.json();
+if (data?.text?.trim()) {
+updateLanguage(lang);
+return data.text;
+}
+}
+} catch (e) {}
+}
+return null;
+}
+async function translateText(text) {
+const result = {
+original: text,
+translation: text,
+language: 'en',
+languageName: 'English'
+};
+// Check if English
+if (/^[a-zA-Z0-9\s.,!?'"()\-:;]+$/.test(text.trim())) {
+return result;
+}
+// Try GhanaNLP translation
+if (state.settings.ghanaNlpKey) {
+const pairs = ['tw-en', 'ee-en', 'gaa-en', 'dag-en', 'ha-en', 'yo-en'];
+for (const pair of pairs) {
+try {
+const response = await fetch(CONFIG.GHANA_NLP_TRANSLATE, {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'Ocp-Apim-Subscription-Key': state.settings.ghanaNlpKey
+},
+body: JSON.stringify({ in: text, lang: pair })
+});
+if (response.ok) {
+const data = await response.json();
+if (data) {
+const lang = pair.split('-')[0];
+result.translation = data;
+result.language = lang;
+result.languageName = CONFIG.LANGUAGES[lang]?.name || lang;
+updateLanguage(lang);
+return result;
+}
+}
+} catch (e) {}
+}
+}
+// Fallback: return original
+return result;
+}
+// ================================================================
+// THREAT ANALYSIS
+// ================================================================
+function analyzeThreat(translation, original) {
+const text = `${translation} ${original}`.toLowerCase();
+let maxWeight = 0;
+let detectedCategory = null;
+let detectedUrgency = null;
+let matchedPattern = null;
+for (const [level, data] of Object.entries(THREAT_PATTERNS)) {
+for (const pattern of data.patterns) {
+if (pattern.test(text)) {
+if (data.weight > maxWeight) {
+maxWeight = data.weight;
+detectedCategory = data.category;
+detectedUrgency = data.urgency;
+matchedPattern = pattern.toString();
+}
+}
+}
+}
+return {
+detected: maxWeight > 0,
+weight: maxWeight,
+confidence: Math.min(maxWeight, 100),
+category: detectedCategory,
+urgency: detectedUrgency,
+pattern: matchedPattern
+};
+}
+function checkLanguageSwitch(newLang) {
+if (state.previousLanguage && state.previousLanguage === 'en' && newLang !== 'en') {
+state.languageSwitchCount++;
+if (state.languageSwitchCount >= 2) {
+// Language switch pattern detected
+showToast('⚠️ Language switch detected', 'warning');
+}
+}
+state.previousLanguage = newLang;
+}
+// ================================================================
+// THREAT HANDLING
+// ================================================================
+function handleThreat(result, threat) {
+// Update stats
+state.stats.alerts++;
+document.getElementById('statAlerts').textContent = state.stats.alerts;
+// Update threat badge
+updateThreatBadge(threat.urgency);
+// Log for briefing
+addToDailyLog({
+original: result.original,
+translation: result.translation,
+language: result.languageName,
+...threat
+});
+// Lock evidence
+lockEvidence(threat);
+// Broadcast to team (Medium and above)
+if (threat.urgency !== 'LOW') {
+broadcastAlert({
+original: result.original,
+translation: result.translation,
+language: result.languageName,
+...threat
+});
+}
+// Send email for High/Critical
+if (threat.urgency === 'HIGH' || threat.urgency === 'CRITICAL') {
+sendAlertEmail(result, threat);
+}
+// Show overlay for High/Critical
+if (threat.urgency === 'HIGH' || threat.urgency === 'CRITICAL') {
+showAlertOverlay(result, threat);
+}
+// Audio alert
+if (state.settings.audioAlert) {
+playAlertSound(threat.urgency);
+// Speak alert
+setTimeout(() => {
+speak(`Alert! ${threat.category}. ${result.translation}`);
+}, 500);
+}
+// Vibrate
+if (state.settings.vibrate && 'vibrate' in navigator) {
+const patterns = {
+'LOW': [100],
+'MEDIUM': [200, 100, 200],
+'HIGH': [300, 100, 300, 100, 300],
+'CRITICAL': [500, 100, 500, 100, 500, 100, 500]
+};
+navigator.vibrate(patterns[threat.urgency] || [200]);
+}
+}
+function updateThreatBadge(urgency) {
+threatBadge.className = 'threat-badge ' + urgency.toLowerCase();
+threatBadge.textContent = urgency;
+if (urgency === 'CRITICAL') {
+app.classList.add('critical-alert');
+setTimeout(() => app.classList.remove('critical-alert'), 5000);
+}
+}
+function showAlertOverlay(result, threat) {
+document.getElementById('alertLevelText').textContent = `${threat.urgency} THREAT`;
+document.getElementById('alertMessage').textContent = threat.category;
+document.getElementById('alertCategory').textContent = `Confidence: ${threat.confidence}%`;
+document.getElementById('alertTranscript').textContent = result.translation;
+document.getElementById('alertLocation').textContent = `📍 ${getLocationString()}`;
+alertOverlay.classList.add('active');
+}
+function dismissAlert() {
+alertOverlay.classList.remove('active');
+}
+function playAlertSound(urgency) {
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+const oscillator = ctx.createOscillator();
+const gain = ctx.createGain();
+oscillator.connect(gain);
+gain.connect(ctx.destination);
+const freqs = {
+'LOW': 440,
+'MEDIUM': 660,
+'HIGH': 880,
+'CRITICAL': 1100
+};
+oscillator.frequency.value = freqs[urgency] || 660;
+oscillator.type = 'square';
+gain.gain.value = 0.3;
+oscillator.start();
+// Beep pattern
+setTimeout(() => gain.gain.value = 0, 150);
+setTimeout(() => gain.gain.value = 0.3, 200);
+setTimeout(() => gain.gain.value = 0, 350);
+setTimeout(() => gain.gain.value = 0.3, 400);
+setTimeout(() => { gain.gain.value = 0; oscillator.stop(); }, 550);
+}
+// ================================================================
+// EMAIL ALERTS
+// ================================================================
+async function sendAlertEmail(result, threat) {
+// Using EmailJS or similar service would go here
+// For now, we'll use Firebase to store alerts that can trigger cloud functions
+const emailData = {
+to: [state.settings.adminEmail, state.settings.securityEmail].filter(e => e),
+subject: `🚨 OGUN ${threat.urgency} ALERT - ${state.settings.deviceName}`,
+body: `
 THREAT DETECTED
 ===============
 Device: ${state.settings.deviceName}
@@ -2077,129 +1788,110 @@ Time: ${new Date().toISOString()}
 Urgency: ${threat.urgency}
 Category: ${threat.category}
 Confidence: ${threat.confidence}%
-
 INTERCEPTED SPEECH
 ==================
 Original: ${result.original}
 Translation: ${result.translation}
 Language: ${result.languageName}
-
 LOCATION
 ========
 Coordinates: ${getLocationString()}
 Map: ${getLocationLink()}
-
 ---
 OGUN V5 Security System
-                `.trim(),
-                timestamp: Date.now()
-            };
-            
-            // Store in Firebase for email trigger
-            database.ref('email_queue').push(emailData);
-        }
-        
-        // ================================================================
-        // UI HELPERS
-        // ================================================================
-        
-        function addEntry(result, threat) {
-            emptyState.style.display = 'none';
-            state.stats.phrases++;
-            document.getElementById('statPhrases').textContent = state.stats.phrases;
-            
-            const entry = document.createElement('div');
-            entry.className = 'entry';
-            
-            if (threat.detected) {
-                entry.classList.add(`threat-${threat.urgency.toLowerCase()}`);
-            }
-            
-            const time = new Date().toLocaleTimeString();
-            
-            entry.innerHTML = `
-                <div class="entry-header">
-                    <span class="entry-lang">🇬🇭 ${result.languageName}</span>
-                    <span class="entry-time">${time}</span>
-                </div>
-                <div class="entry-original">${escapeHtml(result.original)}</div>
-                <div class="entry-translation">${escapeHtml(result.translation)}</div>
-                ${threat.detected ? `
-                    <div class="entry-threat">
-                        <div class="entry-threat-header">
-                            <span class="entry-threat-level ${threat.urgency.toLowerCase()}">${threat.urgency}</span>
-                            <span class="entry-threat-confidence">${threat.confidence}% confidence</span>
-                        </div>
-                        <div class="entry-threat-category">${threat.category}</div>
-                    </div>
-                ` : ''}
-            `;
-            
-            transcript.appendChild(entry);
-            entry.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }
-        
-        function addTeamAlertEntry(alert) {
-            const entry = document.createElement('div');
-            entry.className = `entry threat-${alert.urgency.toLowerCase()}`;
-            
-            entry.innerHTML = `
-                <div class="entry-header">
-                    <span class="entry-lang">📡 ${alert.deviceName}</span>
-                    <span class="entry-time">${new Date(alert.timestamp).toLocaleTimeString()}</span>
-                </div>
-                <div class="entry-original">${escapeHtml(alert.original || '')}</div>
-                <div class="entry-translation">${escapeHtml(alert.translation || '')}</div>
-                <div class="entry-threat">
-                    <div class="entry-threat-header">
-                        <span class="entry-threat-level ${alert.urgency.toLowerCase()}">${alert.urgency}</span>
-                        <span class="entry-threat-confidence">Team Alert</span>
-                    </div>
-                    <div class="entry-threat-category">${alert.category}</div>
-                </div>
-            `;
-            
-            transcript.appendChild(entry);
-            entry.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }
-        
-        function updateLanguage(lang) {
-            const info = CONFIG.LANGUAGES[lang] || { name: lang, flag: '🌍' };
-            langName.textContent = info.name;
-            langChip.classList.add('active');
-        }
-        
-        function speak(text) {
-            if ('speechSynthesis' in window) {
-                speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'en-US';
-                utterance.rate = 1.1;
-                utterance.volume = 1;
-                speechSynthesis.speak(utterance);
-            }
-        }
-        
-        function showToast(message, type = '') {
-            toast.textContent = message;
-            toast.className = 'toast show ' + type;
-            setTimeout(() => toast.classList.remove('show'), 4000);
-        }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        function blobToBase64(blob) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result.split(',')[1]);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            });
-        }
-    </script>
+`.trim(),
+timestamp: Date.now()
+};
+// Store in Firebase for email trigger
+database.ref('email_queue').push(emailData);
+}
+// ================================================================
+// UI HELPERS
+// ================================================================
+function addEntry(result, threat) {
+emptyState.style.display = 'none';
+state.stats.phrases++;
+document.getElementById('statPhrases').textContent = state.stats.phrases;
+const entry = document.createElement('div');
+entry.className = 'entry';
+if (threat.detected) {
+entry.classList.add(`threat-${threat.urgency.toLowerCase()}`);
+}
+const time = new Date().toLocaleTimeString();
+entry.innerHTML = `
+<div class="entry-header">
+<span class="entry-lang">🇬🇭 ${result.languageName}</span>
+<span class="entry-time">${time}</span>
+</div>
+<div class="entry-original">${escapeHtml(result.original)}</div>
+<div class="entry-translation">${escapeHtml(result.translation)}</div>
+${threat.detected ? `
+<div class="entry-threat">
+<div class="entry-threat-header">
+<span class="entry-threat-level ${threat.urgency.toLowerCase()}">${threat.urgency}</span>
+<span class="entry-threat-confidence">${threat.confidence}% confidence</span>
+</div>
+<div class="entry-threat-category">${threat.category}</div>
+</div>
+` : ''}
+`;
+transcript.appendChild(entry);
+entry.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+function addTeamAlertEntry(alert) {
+const entry = document.createElement('div');
+entry.className = `entry threat-${alert.urgency.toLowerCase()}`;
+entry.innerHTML = `
+<div class="entry-header">
+<span class="entry-lang">📡 ${alert.deviceName}</span>
+<span class="entry-time">${new Date(alert.timestamp).toLocaleTimeString()}</span>
+</div>
+<div class="entry-original">${escapeHtml(alert.original || '')}</div>
+<div class="entry-translation">${escapeHtml(alert.translation || '')}</div>
+<div class="entry-threat">
+<div class="entry-threat-header">
+<span class="entry-threat-level ${alert.urgency.toLowerCase()}">${alert.urgency}</span>
+<span class="entry-threat-confidence">Team Alert</span>
+</div>
+<div class="entry-threat-category">${alert.category}</div>
+</div>
+`;
+transcript.appendChild(entry);
+entry.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+function updateLanguage(lang) {
+const info = CONFIG.LANGUAGES[lang] || { name: lang, flag: '🌍' };
+langName.textContent = info.name;
+langChip.classList.add('active');
+}
+function speak(text) {
+if ('speechSynthesis' in window) {
+speechSynthesis.cancel();
+const utterance = new SpeechSynthesisUtterance(text);
+utterance.lang = 'en-US';
+utterance.rate = 1.1;
+utterance.volume = 1;
+speechSynthesis.speak(utterance);
+}
+}
+function showToast(message, type = '') {
+toast.textContent = message;
+toast.className = 'toast show ' + type;
+setTimeout(() => toast.classList.remove('show'), 4000);
+}
+function escapeHtml(text) {
+const div = document.createElement('div');
+div.textContent = text;
+return div.innerHTML;
+}
+function blobToBase64(blob) {
+return new Promise((resolve, reject) => {
+const reader = new FileReader();
+reader.onloadend = () => resolve(reader.result.split(',')[1]);
+reader.onerror = reject;
+reader.readAsDataURL(blob);
+});
+}
+</script>
 </body>
 </html>
