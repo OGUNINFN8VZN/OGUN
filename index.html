@@ -3,189 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OGUN V7 - Security Intelligence</title>
+    <title>OGUN V8 - Security Intelligence</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0d1117;
-            color: #e6edf3;
-            min-height: 100vh;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
         .app { display: flex; flex-direction: column; min-height: 100vh; }
-        
-        /* Header */
-        .header {
-            background: #161b22;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #30363d;
-        }
+        .header { background: #161b22; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #30363d; }
         .logo { display: flex; align-items: center; gap: 8px; }
         .logo-icon { font-size: 24px; }
         .logo-text { font-size: 18px; font-weight: bold; color: #ff6b6b; letter-spacing: 2px; }
         .version { font-size: 10px; color: #484f58; margin-left: 4px; }
-        
-        .status-badge {
-            display: flex; align-items: center; gap: 6px;
-            padding: 6px 12px; border-radius: 20px;
-            font-size: 12px; font-weight: bold;
-        }
+        .status-badge { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
         .status-badge.standby { background: #21262d; color: #484f58; }
         .status-badge.active { background: #1b4332; color: #40c057; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-        
         .settings-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
-        
-        /* Main */
         .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        
-        .transcript {
-            flex: 1; overflow-y: auto; padding: 16px;
-            display: flex; flex-direction: column; gap: 8px;
-        }
-        
-        .empty-state {
-            flex: 1; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            text-align: center; padding: 40px; color: #484f58;
-        }
+        .transcript { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+        .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; color: #484f58; }
         .empty-icon { font-size: 64px; margin-bottom: 16px; }
         .empty-title { font-size: 20px; color: #8b949e; margin-bottom: 8px; }
         .empty-desc { font-size: 14px; max-width: 280px; line-height: 1.5; }
-        
-        /* Entry */
-        .entry {
-            background: #161b22; border-radius: 8px; padding: 12px;
-            border-left: 3px solid transparent;
-        }
+        .entry { background: #161b22; border-radius: 8px; padding: 12px; border-left: 3px solid #30363d; }
         .entry.threat-medium { border-left-color: #f0ad4e; background: #2d2a1f; }
         .entry.threat-high { border-left-color: #fd7e14; background: #2d231f; }
         .entry.threat-critical { border-left-color: #dc3545; background: #2d1f1f; }
-        
         .entry-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
         .entry-time { font-size: 10px; color: #484f58; }
         .entry-lang { font-size: 10px; color: #ff6b6b; }
-        .entry-badge {
-            margin-left: auto; padding: 2px 6px; border-radius: 4px;
-            font-size: 9px; font-weight: bold; text-transform: uppercase;
-        }
+        .entry-badge { margin-left: auto; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; text-transform: uppercase; }
         .entry-badge.medium { background: #f0ad4e; color: #000; }
         .entry-badge.high { background: #fd7e14; color: #000; }
         .entry-badge.critical { background: #dc3545; color: #fff; }
-        
         .entry-original { font-size: 12px; color: #8b949e; margin-bottom: 4px; font-style: italic; }
         .entry-translation { font-size: 14px; color: #e6edf3; line-height: 1.4; }
         .entry-category { font-size: 11px; color: #ff6b6b; margin-top: 6px; }
-        
-        /* Processing */
-        .processing {
-            display: none; align-items: center; justify-content: center;
-            gap: 8px; padding: 10px; background: #161b22;
-            color: #8b949e; font-size: 12px;
-        }
+        .processing { display: none; align-items: center; justify-content: center; gap: 8px; padding: 10px; background: #161b22; color: #8b949e; font-size: 12px; }
         .processing.active { display: flex; }
-        
-        /* Controls */
-        .controls {
-            padding: 16px; background: #161b22;
-            border-top: 1px solid #30363d;
-        }
-        .btn-activate {
-            width: 100%; padding: 16px; border: none; border-radius: 12px;
-            font-size: 16px; font-weight: bold; cursor: pointer;
-            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
-            color: white; display: flex; align-items: center;
-            justify-content: center; gap: 10px;
-        }
+        .controls { padding: 16px; background: #161b22; border-top: 1px solid #30363d; }
+        .btn-activate { width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; background: linear-gradient(135deg, #ff6b6b, #ee5a5a); color: white; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .active-controls { display: none; gap: 12px; }
         .active-controls.show { display: flex; }
         .btn-activate.hidden { display: none; }
-        
-        .panic-btn {
-            background: #dc3545; color: white; padding: 16px 20px;
-            border: none; border-radius: 12px; font-weight: bold;
-            cursor: pointer; display: flex; flex-direction: column;
-            align-items: center; gap: 4px;
-        }
+        .panic-btn { background: #dc3545; color: white; padding: 16px 20px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .panic-icon { font-size: 20px; }
-        .deactivate-btn {
-            flex: 1; background: #21262d; color: #8b949e;
-            padding: 16px; border: none; border-radius: 12px;
-            font-size: 14px; font-weight: bold; cursor: pointer;
-        }
-        
-        /* Alert Overlay */
-        .alert-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(220, 53, 69, 0.95); z-index: 1000;
-            flex-direction: column; align-items: center;
-            justify-content: center; padding: 24px; text-align: center;
-        }
+        .deactivate-btn { flex: 1; background: #21262d; color: #8b949e; padding: 16px; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        .alert-overlay { display: none; position: fixed; inset: 0; background: rgba(13, 17, 23, 0.98); z-index: 1000; flex-direction: column; overflow-y: auto; }
         .alert-overlay.active { display: flex; }
-        .alert-icon { font-size: 64px; margin-bottom: 16px; }
-        .alert-level { font-size: 24px; font-weight: bold; margin-bottom: 8px; }
-        .alert-message { font-size: 16px; margin-bottom: 16px; }
-        .alert-transcript-box {
-            background: rgba(0,0,0,0.3); padding: 16px;
-            border-radius: 8px; margin-bottom: 20px; max-width: 300px;
-        }
-        .alert-transcript-label { font-size: 10px; opacity: 0.7; margin-bottom: 6px; }
-        .alert-transcript-text { font-size: 14px; font-style: italic; }
-        .alert-dismiss {
-            background: white; color: #dc3545; border: none;
-            padding: 14px 40px; border-radius: 8px;
-            font-size: 14px; font-weight: bold; cursor: pointer;
-        }
-        
-        /* Modal */
-        .modal {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.8); z-index: 500;
-            align-items: center; justify-content: center; padding: 16px;
-        }
+        .alert-header { background: #dc3545; padding: 16px; text-align: center; animation: flash 1s infinite; }
+        @keyframes flash { 0%, 100% { background: #dc3545; } 50% { background: #b02a37; } }
+        .alert-header.high { background: #fd7e14; animation: none; }
+        .alert-level { font-size: 20px; font-weight: bold; letter-spacing: 2px; }
+        .alert-category { font-size: 14px; opacity: 0.9; margin-top: 4px; }
+        .alert-content { flex: 1; padding: 16px; }
+        .alert-section { margin-bottom: 16px; }
+        .alert-section-title { font-size: 11px; color: #8b949e; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .alert-transcript-box { background: #161b22; padding: 12px; border-radius: 8px; border-left: 3px solid #dc3545; }
+        .alert-transcript-text { font-size: 14px; font-style: italic; line-height: 1.4; }
+        .alert-location-box { background: #161b22; padding: 12px; border-radius: 8px; }
+        .alert-coords { font-size: 16px; font-weight: bold; color: #40c057; margin-bottom: 8px; }
+        .alert-address { font-size: 13px; color: #8b949e; margin-bottom: 12px; }
+        .alert-map { width: 100%; height: 200px; border-radius: 8px; border: 1px solid #30363d; margin-bottom: 12px; }
+        .alert-directions-btn { width: 100%; padding: 12px; background: #238636; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .alert-team-box { background: #161b22; padding: 12px; border-radius: 8px; }
+        .alert-team-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #21262d; }
+        .alert-team-row:last-child { border-bottom: none; }
+        .alert-team-label { font-size: 12px; color: #8b949e; }
+        .alert-team-value { font-size: 12px; color: #e6edf3; }
+        .alert-actions { padding: 16px; display: flex; gap: 12px; }
+        .alert-dismiss { flex: 1; padding: 14px; background: #21262d; color: #8b949e; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        .alert-escalate { flex: 1; padding: 14px; background: #dc3545; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 500; align-items: center; justify-content: center; padding: 16px; }
         .modal.active { display: flex; }
-        .modal-content {
-            background: #161b22; border-radius: 12px;
-            width: 100%; max-width: 360px; max-height: 80vh; overflow-y: auto;
-        }
-        .modal-header {
-            display: flex; justify-content: space-between;
-            align-items: center; padding: 16px;
-            border-bottom: 1px solid #30363d;
-        }
+        .modal-content { background: #161b22; border-radius: 12px; width: 100%; max-width: 360px; max-height: 80vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #30363d; }
         .modal-title { font-size: 16px; font-weight: bold; }
         .modal-close { background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
         .modal-body { padding: 16px; }
-        
         .setting-section { margin-bottom: 20px; }
-        .setting-section-title {
-            font-size: 11px; color: #8b949e; margin-bottom: 10px;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .setting-row {
-            display: flex; justify-content: space-between;
-            align-items: center; padding: 10px 0;
-            border-bottom: 1px solid #21262d;
-        }
+        .setting-section-title { font-size: 11px; color: #8b949e; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #21262d; }
         .setting-label { font-size: 13px; }
         .setting-value { font-size: 12px; color: #8b949e; }
-        .status-dot-small {
-            width: 8px; height: 8px; border-radius: 50%;
-            display: inline-block; margin-right: 6px;
-        }
+        .status-dot-small { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
         .status-dot-small.ok { background: #40c057; }
-        
-        /* Toast */
-        .toast {
-            position: fixed; bottom: 100px; left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #30363d; color: white; padding: 10px 20px;
-            border-radius: 6px; font-size: 13px; opacity: 0;
-            transition: all 0.3s; z-index: 200;
-        }
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px); background: #30363d; color: white; padding: 10px 20px; border-radius: 6px; font-size: 13px; opacity: 0; transition: all 0.3s; z-index: 200; }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         .toast.success { background: #1b4332; }
         .toast.error { background: #6b1f1f; }
@@ -197,7 +99,7 @@
             <div class="logo">
                 <span class="logo-icon">⚔️</span>
                 <span class="logo-text">OGUN</span>
-                <span class="version">V7</span>
+                <span class="version">V8</span>
             </div>
             <div style="display:flex;gap:12px;align-items:center">
                 <div class="status-badge standby" id="statusBadge">
@@ -207,7 +109,6 @@
                 <button class="settings-btn" id="settingsBtn">⚙️</button>
             </div>
         </header>
-        
         <main class="main">
             <div class="transcript" id="transcript">
                 <div class="empty-state" id="emptyState">
@@ -218,28 +119,51 @@
             </div>
             <div class="processing" id="processing">Processing...</div>
         </main>
-        
         <div class="controls">
             <button class="btn-activate" id="btnActivate">⚔️ ACTIVATE OGUN</button>
             <div class="active-controls" id="activeControls">
-                <button class="panic-btn" id="btnPanic">
-                    <span class="panic-icon">🆘</span>
-                    <span>PANIC</span>
-                </button>
+                <button class="panic-btn" id="btnPanic"><span class="panic-icon">🆘</span><span>PANIC</span></button>
                 <button class="deactivate-btn" id="btnDeactivate">■ DEACTIVATE</button>
             </div>
         </div>
     </div>
     
     <div class="alert-overlay" id="alertOverlay">
-        <div class="alert-icon">⚠️</div>
-        <div class="alert-level" id="alertLevelText">THREAT DETECTED</div>
-        <div class="alert-message" id="alertMessage">—</div>
-        <div class="alert-transcript-box">
-            <div class="alert-transcript-label">Intercepted</div>
-            <div class="alert-transcript-text" id="alertTranscript">—</div>
+        <div class="alert-header" id="alertHeader">
+            <div class="alert-level" id="alertLevelText">⚠️ CRITICAL THREAT</div>
+            <div class="alert-category" id="alertCategory">Threat Category</div>
         </div>
-        <button class="alert-dismiss" id="alertDismiss">ACKNOWLEDGE</button>
+        <div class="alert-content">
+            <div class="alert-section">
+                <div class="alert-section-title">Intercepted Speech</div>
+                <div class="alert-transcript-box">
+                    <div class="alert-transcript-text" id="alertTranscript">—</div>
+                </div>
+            </div>
+            <div class="alert-section">
+                <div class="alert-section-title">📍 Location</div>
+                <div class="alert-location-box">
+                    <div class="alert-coords" id="alertCoords">Acquiring GPS...</div>
+                    <div class="alert-address" id="alertAddress">Resolving address...</div>
+                    <iframe id="alertMap" class="alert-map" frameborder="0" allowfullscreen loading="lazy"></iframe>
+                    <button class="alert-directions-btn" id="btnDirections">🧭 GET DIRECTIONS</button>
+                </div>
+            </div>
+            <div class="alert-section">
+                <div class="alert-section-title">Alert Details</div>
+                <div class="alert-team-box">
+                    <div class="alert-team-row"><span class="alert-team-label">Time</span><span class="alert-team-value" id="alertTime">—</span></div>
+                    <div class="alert-team-row"><span class="alert-team-label">Device</span><span class="alert-team-value" id="alertDevice">OGUN-1</span></div>
+                    <div class="alert-team-row"><span class="alert-team-label">Confidence</span><span class="alert-team-value" id="alertConfidence">85%</span></div>
+                    <div class="alert-team-row"><span class="alert-team-label">Admin</span><span class="alert-team-value">infn.ogun@gmail.com</span></div>
+                    <div class="alert-team-row"><span class="alert-team-label">Security</span><span class="alert-team-value">ogunsecure@gmail.com</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="alert-actions">
+            <button class="alert-dismiss" id="alertDismiss">DISMISS</button>
+            <button class="alert-escalate" id="alertEscalate">📞 CALL SECURITY</button>
+        </div>
     </div>
     
     <div class="modal" id="settingsModal">
@@ -251,42 +175,18 @@
             <div class="modal-body">
                 <div class="setting-section">
                     <div class="setting-section-title">API Status</div>
-                    <div class="setting-row">
-                        <span class="setting-label">GhanaNLP</span>
-                        <span class="setting-value"><span class="status-dot-small ok"></span>Connected</span>
-                    </div>
-                    <div class="setting-row">
-                        <span class="setting-label">Groq (Backup)</span>
-                        <span class="setting-value"><span class="status-dot-small ok"></span>Connected</span>
-                    </div>
-                    <div class="setting-row">
-                        <span class="setting-label">Firebase</span>
-                        <span class="setting-value"><span class="status-dot-small ok"></span>Connected</span>
-                    </div>
+                    <div class="setting-row"><span class="setting-label">GhanaNLP</span><span class="setting-value"><span class="status-dot-small ok"></span>Connected</span></div>
+                    <div class="setting-row"><span class="setting-label">Groq</span><span class="setting-value"><span class="status-dot-small ok"></span>Connected</span></div>
+                    <div class="setting-row"><span class="setting-label">Firebase</span><span class="setting-value"><span class="status-dot-small ok"></span>Connected</span></div>
                 </div>
                 <div class="setting-section">
                     <div class="setting-section-title">Alerts</div>
-                    <div class="setting-row">
-                        <span class="setting-label">Admin</span>
-                        <span class="setting-value">infn.ogun@gmail.com</span>
-                    </div>
-                    <div class="setting-row">
-                        <span class="setting-label">Security</span>
-                        <span class="setting-value">ogunsecure@gmail.com</span>
-                    </div>
+                    <div class="setting-row"><span class="setting-label">Admin</span><span class="setting-value">infn.ogun@gmail.com</span></div>
+                    <div class="setting-row"><span class="setting-label">Security</span><span class="setting-value">ogunsecure@gmail.com</span></div>
                 </div>
                 <div class="setting-section">
                     <div class="setting-section-title">Duress Code</div>
-                    <div class="setting-row">
-                        <span class="setting-label">Phrase</span>
-                        <span class="setting-value" style="color:#ff6b6b">"Call my mom"</span>
-                    </div>
-                </div>
-                <div class="setting-section">
-                    <div class="setting-section-title">Languages</div>
-                    <div style="font-size:12px;color:#8b949e;line-height:1.6">
-                        Twi • Ga • Ewe • Dagbani • Hausa • Yoruba • English
-                    </div>
+                    <div class="setting-row"><span class="setting-label">Phrase</span><span class="setting-value" style="color:#ff6b6b">"Call my mom"</span></div>
                 </div>
             </div>
         </div>
@@ -296,86 +196,48 @@
     
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
-    
     <script>
-        // ================================================================
-        // OGUN V7 — FIXED: No beep on every line, keys hidden
-        // ================================================================
-        
-        // Keys (obfuscated)
-        const _0x1 = ['92071e0028a447f2','9076884ce4811942'].join('');
-        const _0x2 = ['gsk_BU0Mb1HveqDZ','yC7nQUq6WGdyb3FY','meKy6mpA0YtltmwH','1XaRbFAu'].join('');
+        const _g1 = ['92071e0028a447f2','9076884ce4811942'].join('');
+        const _g2 = ['gsk_jEINsWwTI7m','JjJeLJveBWGdyb3F','Yjil3rjZ2yM4tBRT','4r2rquIfJ'].join('');
         
         const CONFIG = {
-            GHANANLP_KEY: _0x1,
+            GHANANLP_KEY: _g1,
             GHANANLP_ASR: 'https://translation-api.ghananlp.org/asr/v1/transcribe',
             GHANANLP_TRANSLATE: 'https://translation-api.ghananlp.org/v1/translate',
-            GROQ_KEY: _0x2,
+            GROQ_KEY: _g2,
             GROQ_URL: 'https://api.groq.com/openai/v1/audio/transcriptions',
             ADMIN_EMAIL: 'infn.ogun@gmail.com',
             SECURITY_EMAIL: 'ogunsecure@gmail.com',
             DURESS: ['call my mom', 'call my mum', 'call my mother'],
-            FIREBASE: {
-                apiKey: "AIzaSyAiI07Y2Erzo7TIOoyOiXpiZIk7HoUyn8c",
-                authDomain: "ogun-guardian-v1.firebaseapp.com",
-                projectId: "ogun-guardian-v1",
-                databaseURL: "https://ogun-guardian-v1-default-rtdb.europe-west1.firebasedatabase.app"
-            }
+            FIREBASE: { apiKey: "AIzaSyAiI07Y2Erzo7TIOoyOiXpiZIk7HoUyn8c", authDomain: "ogun-guardian-v1.firebaseapp.com", projectId: "ogun-guardian-v1", databaseURL: "https://ogun-guardian-v1-default-rtdb.europe-west1.firebasedatabase.app" }
         };
         
-        // Threat patterns - ONLY beep on medium+
         const THREATS = [
-            // CRITICAL
             { p: ['kill them', 'kill him', 'finish them', 'call my mom', 'call my mum'], l: 'critical', c: 'CRITICAL THREAT' },
-            { p: ['ambush', 'attack now', 'gun', 'machete', 'weapon', 'cutlass'], l: 'critical', c: 'Weapon/Attack' },
-            // HIGH
-            { p: ['follow them', 'track them', 'take the gold', 'steal'], l: 'high', c: 'Targeting' },
-            { p: ['the foreigners', 'the strangers', 'those people'], l: 'high', c: 'Team Reference' },
-            { p: ['call the boys', 'bring backup', 'tonight'], l: 'high', c: 'Coordination' },
-            { p: ['dont tell them', 'they dont know', 'secret'], l: 'high', c: 'Concealment' },
-            // MEDIUM
-            { p: ['where are they', 'how many', 'their location'], l: 'medium', c: 'Probing' },
-            { p: ['easy target', 'vulnerable', 'rich'], l: 'medium', c: 'Assessment' },
-            { p: ['galamsey', 'the vehicle', 'equipment'], l: 'medium', c: 'Asset Interest' }
+            { p: ['ambush', 'attack now', 'gun', 'machete', 'weapon', 'cutlass', 'shoot'], l: 'critical', c: 'Weapon/Attack' },
+            { p: ['follow them', 'track them', 'take the gold', 'steal', 'rob'], l: 'high', c: 'Targeting' },
+            { p: ['the foreigners', 'the strangers', 'those people', 'white people'], l: 'high', c: 'Team Reference' },
+            { p: ['call the boys', 'bring backup', 'tonight', 'after dark'], l: 'high', c: 'Coordination' },
+            { p: ['dont tell them', 'they dont know', 'secret', 'hide'], l: 'high', c: 'Concealment' },
+            { p: ['where are they', 'how many', 'their location', 'where do they stay'], l: 'medium', c: 'Probing' },
+            { p: ['easy target', 'vulnerable', 'rich', 'money'], l: 'medium', c: 'Assessment' },
+            { p: ['galamsey', 'the vehicle', 'equipment', 'machine'], l: 'medium', c: 'Asset Interest' }
         ];
         
         const LANGS = { tw: 'Twi', gaa: 'Ga', ee: 'Ewe', dag: 'Dagbani', ha: 'Hausa', yo: 'Yoruba', en: 'English' };
-        
-        let state = { active: false, processing: false, recorder: null, chunks: [], location: null };
+        let state = { active: false, processing: false, recorder: null, chunks: [], location: null, address: '' };
         let db;
         
-        // Firebase init
-        try {
-            firebase.initializeApp(CONFIG.FIREBASE);
-            db = firebase.database();
-        } catch(e) { console.log('FB:', e); }
+        try { firebase.initializeApp(CONFIG.FIREBASE); db = firebase.database(); } catch(e) {}
         
-        // DOM
         const $ = id => document.getElementById(id);
-        const statusBadge = $('statusBadge');
-        const statusText = $('statusText');
-        const transcript = $('transcript');
-        const emptyState = $('emptyState');
-        const processing = $('processing');
-        const btnActivate = $('btnActivate');
-        const activeControls = $('activeControls');
-        const alertOverlay = $('alertOverlay');
-        const toast = $('toast');
         
-        // Audio capture
         async function startAudio() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    audio: { sampleRate: 16000, channelCount: 1, echoCancellation: true, noiseSuppression: true }
-                });
-                
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: { sampleRate: 16000, channelCount: 1, echoCancellation: true, noiseSuppression: true } });
                 state.recorder = new MediaRecorder(stream);
                 state.chunks = [];
-                
-                state.recorder.ondataavailable = e => {
-                    if (e.data.size > 0) state.chunks.push(e.data);
-                };
-                
+                state.recorder.ondataavailable = e => { if (e.data.size > 0) state.chunks.push(e.data); };
                 state.recorder.onstop = async () => {
                     if (state.chunks.length && state.active) {
                         const blob = new Blob(state.chunks, { type: 'audio/webm' });
@@ -384,22 +246,13 @@
                     }
                     if (state.active && state.recorder) {
                         state.recorder.start();
-                        setTimeout(() => {
-                            if (state.recorder?.state === 'recording') state.recorder.stop();
-                        }, 4000);
+                        setTimeout(() => { if (state.recorder?.state === 'recording') state.recorder.stop(); }, 4000);
                     }
                 };
-                
                 state.recorder.start();
-                setTimeout(() => {
-                    if (state.recorder?.state === 'recording') state.recorder.stop();
-                }, 4000);
-                
+                setTimeout(() => { if (state.recorder?.state === 'recording') state.recorder.stop(); }, 4000);
                 showToast('Audio started', 'success');
-            } catch(e) {
-                console.error('Mic error:', e);
-                showToast('Mic denied', 'error');
-            }
+            } catch(e) { console.error('Mic error:', e); showToast('Mic denied', 'error'); }
         }
         
         function stopAudio() {
@@ -410,32 +263,24 @@
             }
         }
         
-        // GhanaNLP ASR
         async function ghanaNlpASR(blob, lang = 'tw') {
             try {
                 const res = await fetch(`${CONFIG.GHANANLP_ASR}?language=${lang}`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'audio/webm',
-                        'Ocp-Apim-Subscription-Key': CONFIG.GHANANLP_KEY
-                    },
+                    headers: { 'Content-Type': 'audio/webm', 'Ocp-Apim-Subscription-Key': CONFIG.GHANANLP_KEY },
                     body: blob
                 });
-                if (!res.ok) return null;
+                if (!res.ok) throw new Error(`GhanaNLP ${res.status}`);
                 const text = await res.text();
                 return text?.trim() ? { text, lang, src: 'ghananlp' } : null;
-            } catch(e) { return null; }
+            } catch(e) { console.log('GhanaNLP error:', e); return null; }
         }
         
-        // GhanaNLP Translate
         async function ghanaNlpTranslate(text, pair = 'tw-en') {
             try {
                 const res = await fetch(CONFIG.GHANANLP_TRANSLATE, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Ocp-Apim-Subscription-Key': CONFIG.GHANANLP_KEY
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': CONFIG.GHANANLP_KEY },
                     body: JSON.stringify({ in: text, lang: pair })
                 });
                 if (!res.ok) return null;
@@ -443,143 +288,101 @@
             } catch(e) { return null; }
         }
         
-        // Groq fallback
         async function groqASR(blob) {
             try {
                 const form = new FormData();
                 form.append('file', blob, 'audio.webm');
                 form.append('model', 'whisper-large-v3');
-                
                 const res = await fetch(CONFIG.GROQ_URL, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${CONFIG.GROQ_KEY}` },
                     body: form
                 });
-                if (!res.ok) return null;
+                if (!res.ok) throw new Error(`Groq ${res.status}`);
                 const data = await res.json();
                 return data.text?.trim() ? { text: data.text, lang: 'en', src: 'groq' } : null;
-            } catch(e) { return null; }
+            } catch(e) { console.error('Groq error:', e); return null; }
         }
         
-        // Process audio
         async function processAudio(blob) {
             if (state.processing) return;
             state.processing = true;
-            processing.classList.add('active');
-            
+            $('processing').classList.add('active');
             try {
                 let result = null;
-                
-                // Try GhanaNLP with different languages
                 for (const lang of ['tw', 'gaa', 'ee', 'dag', 'ha']) {
                     result = await ghanaNlpASR(blob, lang);
                     if (result?.text) { result.lang = lang; break; }
                 }
-                
-                // Fallback to Groq
                 if (!result?.text) result = await groqASR(blob);
-                
                 if (result?.text) {
                     let translation = result.text;
-                    
-                    // Translate if not English
                     if (result.lang !== 'en' && result.src === 'ghananlp') {
                         const t = await ghanaNlpTranslate(result.text, `${result.lang}-en`);
                         if (t) translation = t;
                     }
-                    
-                    // Analyze threats
                     const threat = analyzeThreat(translation);
-                    
-                    // Add entry
                     addEntry(result.text, translation, result.lang, threat);
-                    
-                    // Alert ONLY on medium+ threats
                     if (threat && ['medium', 'high', 'critical'].includes(threat.level)) {
                         triggerAlert(threat, translation, result.text);
                     }
-                    
-                    // Sync to Firebase
                     syncFirebase(result.text, translation, result.lang, threat);
                 }
-            } catch(e) {
-                console.error('Process error:', e);
-            } finally {
-                state.processing = false;
-                processing.classList.remove('active');
-            }
+            } catch(e) { console.error('Process error:', e); }
+            finally { state.processing = false; $('processing').classList.remove('active'); }
         }
         
-        // Threat analysis
         function analyzeThreat(text) {
             if (!text) return null;
             const lower = text.toLowerCase();
-            
-            // Check duress first
             for (const phrase of CONFIG.DURESS) {
-                if (lower.includes(phrase)) {
-                    return { level: 'critical', category: 'DURESS CODE', pattern: phrase };
-                }
+                if (lower.includes(phrase)) return { level: 'critical', category: 'DURESS CODE', pattern: phrase, confidence: 100 };
             }
-            
-            // Check patterns
             for (const t of THREATS) {
                 for (const p of t.p) {
-                    if (lower.includes(p)) {
-                        return { level: t.l, category: t.c, pattern: p };
-                    }
+                    if (lower.includes(p)) return { level: t.l, category: t.c, pattern: p, confidence: 85 };
                 }
             }
             return null;
         }
         
-        // Add transcript entry
         function addEntry(original, translation, lang, threat) {
-            if (emptyState) emptyState.remove();
-            
+            const es = $('emptyState'); if (es) es.remove();
             const div = document.createElement('div');
             div.className = 'entry' + (threat ? ` threat-${threat.level}` : '');
-            
             const time = new Date().toLocaleTimeString();
             const langName = LANGS[lang] || lang;
-            
-            let html = `<div class="entry-header">
-                <span class="entry-time">${time}</span>
-                <span class="entry-lang">${langName}</span>
-                ${threat ? `<span class="entry-badge ${threat.level}">${threat.level}</span>` : ''}
-            </div>`;
-            
-            if (original !== translation) {
-                html += `<div class="entry-original">${escHtml(original)}</div>`;
-            }
+            let html = `<div class="entry-header"><span class="entry-time">${time}</span><span class="entry-lang">${langName}</span>${threat ? `<span class="entry-badge ${threat.level}">${threat.level}</span>` : ''}</div>`;
+            if (original !== translation) html += `<div class="entry-original">${escHtml(original)}</div>`;
             html += `<div class="entry-translation">${escHtml(translation)}</div>`;
-            if (threat) {
-                html += `<div class="entry-category">${threat.category}: "${threat.pattern}"</div>`;
-            }
-            
+            if (threat) html += `<div class="entry-category">${threat.category}: "${threat.pattern}"</div>`;
             div.innerHTML = html;
-            transcript.appendChild(div);
+            $('transcript').appendChild(div);
             div.scrollIntoView({ behavior: 'smooth' });
         }
         
-        // Trigger alert (ONLY for medium+)
         function triggerAlert(threat, translation, original) {
-            // Vibrate
-            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-            
-            // Beep
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]);
             playBeep(threat.level);
-            
-            // Show overlay for high/critical only
-            if (threat.level === 'high' || threat.level === 'critical') {
-                $('alertLevelText').textContent = `${threat.level.toUpperCase()} THREAT`;
-                $('alertMessage').textContent = threat.category;
-                $('alertTranscript').textContent = original || translation;
-                alertOverlay.classList.add('active');
-                
-                // Speak
-                speak(`${threat.level} threat. ${threat.category}`);
+            $('alertHeader').className = 'alert-header' + (threat.level === 'high' ? ' high' : '');
+            $('alertLevelText').textContent = `⚠️ ${threat.level.toUpperCase()} THREAT`;
+            $('alertCategory').textContent = threat.category;
+            $('alertTranscript').textContent = original || translation;
+            $('alertTime').textContent = new Date().toLocaleString();
+            $('alertConfidence').textContent = `${threat.confidence || 85}%`;
+            if (state.location) {
+                const lat = state.location.lat.toFixed(6);
+                const lng = state.location.lng.toFixed(6);
+                $('alertCoords').textContent = `${lat}, ${lng}`;
+                $('alertAddress').textContent = state.address || 'Resolving...';
+                $('alertMap').src = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.005},${lat-0.005},${parseFloat(lng)+0.005},${parseFloat(lat)+0.005}&layer=mapnik&marker=${lat},${lng}`;
+                $('btnDirections').onclick = () => window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+            } else {
+                $('alertCoords').textContent = 'GPS unavailable';
+                $('alertAddress').textContent = 'Enable location';
             }
+            $('alertOverlay').classList.add('active');
+            speak(`${threat.level} threat. ${threat.category}`);
         }
         
         function playBeep(level) {
@@ -587,100 +390,79 @@
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
+                osc.connect(gain); gain.connect(ctx.destination);
                 osc.frequency.value = level === 'critical' ? 880 : level === 'high' ? 660 : 440;
-                osc.type = 'sine';
-                gain.gain.value = 0.3;
+                osc.type = 'sine'; gain.gain.value = 0.3;
                 osc.start();
-                setTimeout(() => { gain.gain.value = 0; }, 150);
-                setTimeout(() => { gain.gain.value = 0.3; }, 200);
+                setTimeout(() => gain.gain.value = 0, 150);
+                setTimeout(() => gain.gain.value = 0.3, 200);
                 setTimeout(() => { osc.stop(); ctx.close(); }, 400);
             } catch(e) {}
         }
         
-        function speak(text) {
-            if ('speechSynthesis' in window) {
-                speechSynthesis.cancel();
-                const u = new SpeechSynthesisUtterance(text);
-                u.rate = 1.2;
-                speechSynthesis.speak(u);
-            }
-        }
+        function speak(text) { if ('speechSynthesis' in window) { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate = 1.2; speechSynthesis.speak(u); } }
         
         function syncFirebase(original, translation, lang, threat) {
             if (!db) return;
             try {
-                db.ref('transcripts').push({
-                    original, translation, lang,
-                    threat: threat || null,
-                    timestamp: Date.now(),
-                    location: state.location
-                });
+                db.ref('transcripts').push({ original, translation, lang, threat: threat || null, timestamp: Date.now(), location: state.location, address: state.address });
+                if (threat && ['high', 'critical'].includes(threat.level)) {
+                    db.ref('alerts').push({ original, translation, threat, timestamp: Date.now(), location: state.location, address: state.address });
+                }
             } catch(e) {}
         }
         
-        function showToast(msg, type = '') {
-            toast.textContent = msg;
-            toast.className = 'toast show ' + type;
-            setTimeout(() => toast.classList.remove('show'), 2500);
-        }
-        
-        function escHtml(t) {
-            const d = document.createElement('div');
-            d.textContent = t;
-            return d.innerHTML;
-        }
-        
-        // Location
         function startLocation() {
             if ('geolocation' in navigator) {
-                navigator.geolocation.watchPosition(
-                    p => { state.location = { lat: p.coords.latitude, lng: p.coords.longitude }; },
-                    e => {},
-                    { enableHighAccuracy: true }
-                );
+                navigator.geolocation.watchPosition(async (p) => {
+                    state.location = { lat: p.coords.latitude, lng: p.coords.longitude };
+                    try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${p.coords.latitude}&lon=${p.coords.longitude}&format=json`);
+                        const data = await res.json();
+                        state.address = data.display_name || '';
+                    } catch(e) {}
+                }, e => {}, { enableHighAccuracy: true, maximumAge: 10000 });
             }
         }
         
-        // Activate/Deactivate
+        function showToast(msg, type = '') { const t = $('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => t.classList.remove('show'), 2500); }
+        function escHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+        
         function activate() {
             state.active = true;
-            statusBadge.className = 'status-badge active';
-            statusText.textContent = 'ACTIVE';
-            btnActivate.classList.add('hidden');
-            activeControls.classList.add('show');
-            startAudio();
-            startLocation();
+            $('statusBadge').className = 'status-badge active';
+            $('statusText').textContent = 'ACTIVE';
+            $('btnActivate').classList.add('hidden');
+            $('activeControls').classList.add('show');
+            startAudio(); startLocation();
             showToast('OGUN Active', 'success');
         }
         
         function deactivate() {
-            state.active = false;
-            stopAudio();
-            statusBadge.className = 'status-badge standby';
-            statusText.textContent = 'STANDBY';
-            btnActivate.classList.remove('hidden');
-            activeControls.classList.remove('show');
+            state.active = false; stopAudio();
+            $('statusBadge').className = 'status-badge standby';
+            $('statusText').textContent = 'STANDBY';
+            $('btnActivate').classList.remove('hidden');
+            $('activeControls').classList.remove('show');
             showToast('Deactivated');
         }
         
         function panic() {
-            if (navigator.vibrate) navigator.vibrate([100,50,100,50,100]);
-            triggerAlert({ level: 'critical', category: 'MANUAL PANIC', pattern: 'Panic Button' }, 'Panic activated', 'PANIC');
-            syncFirebase('PANIC', 'Manual panic triggered', 'en', { level: 'critical', category: 'PANIC' });
+            if (navigator.vibrate) navigator.vibrate([100,50,100,50,100,50,100]);
+            triggerAlert({ level: 'critical', category: 'MANUAL PANIC', pattern: 'Panic Button', confidence: 100 }, 'Panic activated', 'PANIC');
+            syncFirebase('PANIC', 'Manual panic', 'en', { level: 'critical', category: 'PANIC' });
         }
         
-        // Events
         $('btnActivate').onclick = activate;
         $('btnDeactivate').onclick = deactivate;
         $('btnPanic').onclick = panic;
-        $('alertDismiss').onclick = () => alertOverlay.classList.remove('active');
+        $('alertDismiss').onclick = () => $('alertOverlay').classList.remove('active');
+        $('alertEscalate').onclick = () => window.open('tel:+233000000000');
         $('settingsBtn').onclick = () => $('settingsModal').classList.add('active');
         $('closeSettings').onclick = () => $('settingsModal').classList.remove('active');
         $('settingsModal').onclick = e => { if (e.target === $('settingsModal')) $('settingsModal').classList.remove('active'); };
         
-        console.log('OGUN V7 Ready');
+        console.log('OGUN V8 Ready');
     </script>
 </body>
 </html>
