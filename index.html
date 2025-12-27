@@ -74,7 +74,7 @@
         .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 20px; }
         .empty-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.5; }
         .empty-title { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--text2); margin-bottom: 10px; letter-spacing: 2px; }
-        .empty-desc { font-size: 14px; color: var(--text3); max-width: 280px; margin-bottom: 16px; }
+        .empty-desc { font-size: 14px; color: var(--text3); max-width: 300px; margin-bottom: 16px; line-height: 1.5; }
         .empty-hint { padding: 12px 16px; background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; font-size: 12px; color: var(--text3); }
         .empty-hint strong { color: var(--accent); }
 
@@ -96,10 +96,10 @@
         .entry-badge.high { background: var(--danger); color: #fff; }
         .entry-badge.critical { background: var(--critical); color: #fff; animation: badgePulse 0.5s infinite; }
         @keyframes badgePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
-        .entry-original { font-size: 14px; color: var(--warning); margin-bottom: 8px; padding: 10px 12px; background: var(--bg3); border-radius: 6px; border-left: 3px solid var(--warning); }
-        .entry-original-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .entry-original { font-size: 15px; color: var(--warning); margin-bottom: 10px; padding: 12px 14px; background: rgba(245,158,11,0.1); border-radius: 8px; border-left: 3px solid var(--warning); line-height: 1.5; }
+        .entry-original-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }
         .entry-translation { font-size: 15px; color: var(--text); line-height: 1.5; }
-        .entry-translation-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; margin-top: 8px; }
+        .entry-translation-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }
         .entry-threat { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
         .entry-threat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
         .entry-threat-cat { font-size: 12px; font-weight: 600; color: var(--accent); }
@@ -140,7 +140,9 @@
         .alert-section { margin-bottom: 20px; }
         .alert-section-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
         .alert-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
-        .alert-transcript { font-size: 15px; line-height: 1.6; color: var(--text); border-left: 3px solid var(--danger); padding-left: 14px; }
+        .alert-transcript { font-size: 15px; line-height: 1.6; color: var(--text); }
+        .alert-transcript-original { color: var(--warning); border-left: 3px solid var(--warning); padding-left: 12px; margin-bottom: 12px; }
+        .alert-transcript-translation { border-left: 3px solid var(--success); padding-left: 12px; }
         .alert-coords { font-family: var(--mono); font-size: 16px; font-weight: 600; color: var(--success); margin-bottom: 6px; }
         .alert-address { font-size: 13px; color: var(--text2); margin-bottom: 12px; line-height: 1.4; }
         .alert-map { width: 100%; height: 180px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 12px; background: var(--bg3); }
@@ -179,13 +181,12 @@
         .settings-input-label { font-size: 12px; color: var(--text3); margin-bottom: 8px; display: block; }
         .settings-input { width: 100%; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 12px; color: var(--text); }
         .settings-input:focus { border-color: var(--accent); }
-        .settings-select { width: 100%; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--text); }
         .settings-btn { width: 100%; padding: 12px; margin-top: 12px; background: var(--accent); color: #fff; border-radius: 10px; font-size: 13px; font-weight: 600; }
         .settings-info { font-size: 12px; color: var(--text2); padding: 14px 16px; line-height: 1.6; }
         .settings-duress { font-family: var(--mono); font-size: 14px; color: var(--accent); padding: 14px 16px; }
 
         /* Toast */
-        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--bg3); color: var(--text); padding: 14px 24px; border-radius: 12px; font-size: 13px; font-weight: 500; opacity: 0; transition: all 0.3s ease; z-index: 1100; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); }
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--bg3); color: var(--text); padding: 14px 24px; border-radius: 12px; font-size: 13px; font-weight: 500; opacity: 0; transition: all 0.3s ease; z-index: 1100; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); max-width: 90%; text-align: center; }
         .toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
         .toast.success { background: #14532d; border-color: var(--success); }
         .toast.error { background: #7f1d1d; border-color: var(--danger); }
@@ -224,8 +225,8 @@
                 <div class="empty-state" id="emptyState">
                     <div class="empty-icon">⚔️</div>
                     <div class="empty-title">OGUN READY</div>
-                    <div class="empty-desc">Real-time Ghanaian language transcription + translation + threat detection</div>
-                    <div class="empty-hint"><strong>First time?</strong> Tap ⚙️ to configure</div>
+                    <div class="empty-desc">Auto-detects Twi, Ewe, Ga, Dagbani, Hausa, Yoruba, English and more. Translates to English automatically.</div>
+                    <div class="empty-hint"><strong>First time?</strong> Tap ⚙️ to enter API keys</div>
                 </div>
             </div>
 
@@ -310,26 +311,6 @@
             </div>
             <div class="modal-body">
                 <div class="settings-section">
-                    <div class="settings-title">Language Mode</div>
-                    <div class="settings-group">
-                        <div class="settings-input-row">
-                            <label class="settings-input-label">Source Language</label>
-                            <select class="settings-select" id="selectLanguage">
-                                <option value="tw">🇬🇭 Twi</option>
-                                <option value="ee">🇬🇭 Ewe</option>
-                                <option value="gaa">🇬🇭 Ga</option>
-                                <option value="dag">🇬🇭 Dagbani</option>
-                                <option value="fat">🇬🇭 Fante</option>
-                                <option value="ak">🇬🇭 Akan</option>
-                                <option value="yo">🇳🇬 Yoruba</option>
-                                <option value="ha">🇳🇬 Hausa</option>
-                                <option value="en" selected>🌍 English (Groq)</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="settings-section">
                     <div class="settings-title">API Keys</div>
                     <div class="settings-group">
                         <div class="settings-input-row">
@@ -337,7 +318,7 @@
                             <input type="password" class="settings-input" id="inputGhanaNlpKey" placeholder="Enter GhanaNLP key...">
                         </div>
                         <div class="settings-input-row">
-                            <label class="settings-input-label">Groq Key (English fallback)</label>
+                            <label class="settings-input-label">Groq Key (Backup for English)</label>
                             <input type="password" class="settings-input" id="inputGroqKey" placeholder="gsk_...">
                         </div>
                         <div class="settings-input-row">
@@ -350,11 +331,11 @@
                     <div class="settings-title">Status</div>
                     <div class="settings-group">
                         <div class="settings-row">
-                            <span class="settings-label">GhanaNLP (ASR + Translate)</span>
+                            <span class="settings-label">GhanaNLP (Primary)</span>
                             <span class="settings-value"><span class="settings-dot pending" id="dotGhanaNlp"></span><span id="txtGhanaNlp">Not set</span></span>
                         </div>
                         <div class="settings-row">
-                            <span class="settings-label">Groq (English)</span>
+                            <span class="settings-label">Groq (Backup)</span>
                             <span class="settings-value"><span class="settings-dot pending" id="dotGroq"></span><span id="txtGroq">Not set</span></span>
                         </div>
                         <div class="settings-row">
@@ -382,9 +363,20 @@
                 </div>
 
                 <div class="settings-section">
+                    <div class="settings-title">Auto-Detected Languages</div>
+                    <div class="settings-group">
+                        <div class="settings-info">
+                            🇬🇭 Twi • Ewe • Ga • Dagbani • Fante • Akan<br>
+                            🇳🇬 Hausa • Yoruba • Pidgin<br>
+                            🌍 English + 50 more via Groq
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
                     <div class="settings-title">Duress Code</div>
                     <div class="settings-group">
-                        <div class="settings-duress">"Call my mom" — triggers silent CRITICAL alert</div>
+                        <div class="settings-duress">"Call my mom" / "Frɛ me maame"<br>Triggers silent CRITICAL alert</div>
                     </div>
                 </div>
             </div>
@@ -416,20 +408,21 @@
             GHANANLP: "ogun_ghananlp_key",
             GROQ: "ogun_groq_key",
             PHONE: "ogun_security_phone",
-            DEVICE: "ogun_device_name",
-            LANGUAGE: "ogun_language"
+            DEVICE: "ogun_device_name"
         },
-        DURESS_CODES: ["call my mom", "call my mum", "call my mother", "phone my mom", "i need to call home", "frɛ me maame", "frɛ maame"],
+        DURESS_CODES: ["call my mom", "call my mum", "call my mother", "phone my mom", "i need to call home", "frɛ me maame", "fre me maame", "call maame"],
+        GHANANLP_LANGS: ["tw", "ak", "ee", "gaa", "dag", "fat", "yo", "ha", "ki", "luo", "lug", "kam"],
         LANGUAGES: {
-            "tw": { name: "Twi", flag: "🇬🇭", asr: true },
-            "ak": { name: "Akan", flag: "🇬🇭", asr: true },
-            "ee": { name: "Ewe", flag: "🇬🇭", asr: true },
-            "gaa": { name: "Ga", flag: "🇬🇭", asr: true },
-            "dag": { name: "Dagbani", flag: "🇬🇭", asr: true },
-            "fat": { name: "Fante", flag: "🇬🇭", asr: true },
-            "yo": { name: "Yoruba", flag: "🇳🇬", asr: true },
-            "ha": { name: "Hausa", flag: "🇳🇬", asr: true },
-            "en": { name: "English", flag: "🌍", asr: false }
+            "tw": { name: "Twi", flag: "🇬🇭" },
+            "ak": { name: "Akan", flag: "🇬🇭" },
+            "ee": { name: "Ewe", flag: "🇬🇭" },
+            "gaa": { name: "Ga", flag: "🇬🇭" },
+            "dag": { name: "Dagbani", flag: "🇬🇭" },
+            "fat": { name: "Fante", flag: "🇬🇭" },
+            "yo": { name: "Yoruba", flag: "🇳🇬" },
+            "ha": { name: "Hausa", flag: "🇳🇬" },
+            "pcm": { name: "Pidgin", flag: "🇳🇬" },
+            "en": { name: "English", flag: "🌍" }
         }
     };
 
@@ -437,6 +430,7 @@
         critical: [
             { p: /\b(kill|murder|shoot|execute)\s*(them|him|her|the|those)/i, c: "VIOLENCE - LETHAL INTENT", w: 95 },
             { p: /\bkum\s*(won|no|wɔn)/i, c: "TWI - KILL THEM", w: 96 },
+            { p: /\bwu\s*(won|wɔn)/i, c: "TWI - DEATH", w: 94 },
             { p: /\b(stab|slash|cut)\s*(them|him|her|his|throat)/i, c: "VIOLENCE - BLADE ATTACK", w: 95 },
             { p: /\battack\s*(them|him|her|the|now)/i, c: "VIOLENCE - ATTACK ORDER", w: 92 },
             { p: /\bto\s*(won|wɔn)/i, c: "TWI - ATTACK THEM", w: 93 },
@@ -444,20 +438,25 @@
             { p: /\btuo\b/i, c: "TWI - GUN", w: 94 },
             { p: /\b(knife|cutlass|machete|blade|axe)\b/i, c: "WEAPON - BLADE", w: 90 },
             { p: /\bsekan\b/i, c: "TWI - KNIFE", w: 91 },
+            { p: /\b(afoa|afowa)\b/i, c: "TWI - CUTLASS", w: 91 },
             { p: /\bambush\b/i, c: "TACTICAL - AMBUSH", w: 93 },
             { p: /\btrap\s*(them|him|her)/i, c: "TACTICAL - TRAP", w: 91 },
             { p: /\bsurround\s*(them|the)/i, c: "TACTICAL - SURROUND", w: 90 },
             { p: /\bblock\s*(the\s*)?(road|path|exit)/i, c: "TACTICAL - BLOCK ESCAPE", w: 92 },
+            { p: /\bsi\s*(kwan|kwanso)/i, c: "TWI - BLOCK THE ROAD", w: 92 },
             { p: /\bno\s*witness/i, c: "ELIMINATION - NO WITNESS", w: 96 },
             { p: /\bleave\s*no\s*trace/i, c: "ELIMINATION - COVER UP", w: 94 },
             { p: /\b(bury|dump)\s*(the\s*)?(body|bodies|them)/i, c: "ELIMINATION - BODY DISPOSAL", w: 97 },
             { p: /\b(grab|snatch|kidnap|abduct)\s*(them|him|her)/i, c: "KIDNAPPING", w: 95 },
             { p: /\bkyere\s*(won|no|wɔn)/i, c: "TWI - CAPTURE THEM", w: 94 },
+            { p: /\bso\s*(no|won)\s*mu/i, c: "TWI - HOLD THEM", w: 93 },
             { p: /\btie\s*(them|him|her)\s*up/i, c: "KIDNAPPING - RESTRAINT", w: 93 },
             { p: /\bfinish\s*(them|him|her|it)\s*(off)?/i, c: "VIOLENCE - FINISH OFF", w: 94 },
+            { p: /\bwie\s*(won|no|wɔn)/i, c: "TWI - FINISH THEM", w: 94 },
             { p: /\bhurt\s*(them|him|her)\s*(bad|badly)?/i, c: "VIOLENCE - HARM", w: 88 },
             { p: /\bbeat\s*(them|him|her)\b/i, c: "VIOLENCE - ASSAULT", w: 87 },
-            { p: /\bboro\s*(won|no|wɔn)/i, c: "TWI - BEAT THEM", w: 88 }
+            { p: /\bboro\s*(won|no|wɔn)/i, c: "TWI - BEAT THEM", w: 88 },
+            { p: /\bpira\s*(won|no|wɔn)/i, c: "TWI - HARM THEM", w: 89 }
         ],
         high: [
             { p: /\bfollow\s*(them|him|her|the)/i, c: "SURVEILLANCE - FOLLOWING", w: 82 },
@@ -472,6 +471,7 @@
             { p: /\bwhere\s*(is\s*)?(their|the)\s*(camp|base|house)/i, c: "INTEL - BASE LOCATION", w: 84 },
             { p: /\bsteal\s*(the\s*)?(gold|equipment|money|vehicle)/i, c: "THEFT - PLANNING", w: 85 },
             { p: /\bwia\b/i, c: "TWI - STEAL", w: 86 },
+            { p: /\bbɔ\s*(won|wɔn)\s*korɔno/i, c: "TWI - ROB THEM", w: 87 },
             { p: /\brob\s*(them|the)/i, c: "THEFT - ROBBERY", w: 86 },
             { p: /\btake\s*(their|the)\s*(gold|equipment|stuff|things)/i, c: "THEFT - ASSET SEIZURE", w: 83 },
             { p: /\bfa\s*(won|wɔn)\s*(sika|ade)/i, c: "TWI - TAKE THEIR THINGS", w: 84 },
@@ -482,9 +482,11 @@
             { p: /\bbring\s*(more\s*)?(men|boys|people)/i, c: "REINFORCEMENT - BRINGING MORE", w: 83 },
             { p: /\btonight\b/i, c: "TIMING - NIGHT OP", w: 75 },
             { p: /\bnnɛ\s*anadwo/i, c: "TWI - TONIGHT", w: 77 },
+            { p: /\banadwo\s*yi/i, c: "TWI - THIS NIGHT", w: 78 },
             { p: /\bafter\s*dark/i, c: "TIMING - AFTER DARK", w: 77 },
             { p: /\bwhen\s*(they\s*)?(sleep|sleeping)/i, c: "TIMING - SLEEP ATTACK", w: 80 },
             { p: /\bearly\s*morning/i, c: "TIMING - DAWN RAID", w: 74 },
+            { p: /\banɔpa\s*tutuutu/i, c: "TWI - EARLY MORNING", w: 76 },
             { p: /\b(foreigners?|strangers?|outsiders?)\b/i, c: "TARGETING - OUTSIDERS", w: 72 },
             { p: /\bahɔho/i, c: "TWI - STRANGERS", w: 74 },
             { p: /\bwhite\s*(man|men|people|woman)/i, c: "TARGETING - RACIAL", w: 78 },
@@ -492,10 +494,12 @@
             { p: /\bthe\s*ngo\s*(people|guys|team)/i, c: "TARGETING - NGO TEAM", w: 85 },
             { p: /\bbribe\s*(the\s*)?(police|chief|officer)/i, c: "CORRUPTION - BRIBERY", w: 80 },
             { p: /\bpay\s*(off|them)\s*(the\s*)?(police|chief)?/i, c: "CORRUPTION - PAYOFF", w: 78 },
+            { p: /\bdan\s*(polisi|ɔhene)/i, c: "TWI - BRIBE POLICE/CHIEF", w: 81 },
             { p: /\bi\s*know\s*(someone|people|a\s*guy)/i, c: "CORRUPTION - CONNECTIONS", w: 70 }
         ],
         medium: [
             { p: /\bhow\s*many\s*(of\s*)?(them|guards|people|are)/i, c: "INTEL - NUMBER PROBE", w: 68 },
+            { p: /\bsɛn\s*(ara|dodo)/i, c: "TWI - HOW MANY", w: 66 },
             { p: /\bwho\s*(is\s*)?(guarding|watching|protecting)/i, c: "INTEL - SECURITY PROBE", w: 70 },
             { p: /\bwhen\s*(do\s*)?(they|he|she)\s*(leave|go|come)/i, c: "INTEL - SCHEDULE PROBE", w: 67 },
             { p: /\bwhat\s*time\b/i, c: "INTEL - TIMING PROBE", w: 60 },
@@ -506,10 +510,12 @@
             { p: /\bgalamsey\b/i, c: "CONTEXT - GALAMSEY", w: 55 },
             { p: /\billegal\s*mining/i, c: "CONTEXT - ILLEGAL MINING", w: 58 },
             { p: /\bour\s*(pit|site|land|area)/i, c: "TERRITORY - CLAIM", w: 60 },
+            { p: /\byɛn\s*(asaase|baabi)/i, c: "TWI - OUR LAND", w: 62 },
             { p: /\bchanfan\b/i, c: "CONTEXT - CHANFAN", w: 65 },
             { p: /\bdon'?t\s*tell\s*(anyone|anybody|them)/i, c: "SECRECY - CONCEALMENT", w: 66 },
             { p: /\bnka\s*obiara/i, c: "TWI - DON'T TELL ANYONE", w: 68 },
             { p: /\bkeep\s*(it\s*)?(quiet|secret)/i, c: "SECRECY - QUIET", w: 64 },
+            { p: /\bkokoam/i, c: "TWI - SECRET", w: 63 },
             { p: /\bsecret(ly)?\b/i, c: "SECRECY - SECRET", w: 58 },
             { p: /\bhidden\b/i, c: "SECRECY - HIDDEN", w: 55 },
             { p: /\bquietly\b/i, c: "SECRECY - QUIETLY", w: 52 },
@@ -521,22 +527,27 @@
             { p: /\bthis\s*is\s*our\s*(land|territory|area)/i, c: "TERRITORY - CLAIM", w: 65 },
             { p: /\bwe\s*(were|was)\s*here\s*first/i, c: "TERRITORY - PRECEDENCE", w: 62 },
             { p: /\bthey\s*don'?t\s*belong/i, c: "TERRITORY - REJECTION", w: 66 },
-            { p: /\bgo\s*back\s*(where|to)/i, c: "TERRITORY - EXPULSION", w: 64 }
+            { p: /\bgo\s*back\s*(where|to)/i, c: "TERRITORY - EXPULSION", w: 64 },
+            { p: /\bkɔ\s*(fie|wo\s*kurom)/i, c: "TWI - GO BACK HOME", w: 65 }
         ],
         low: [
             { p: /\bstranger\b/i, c: "SUSPICION - STRANGER", w: 40 },
+            { p: /\bɔhɔho\b/i, c: "TWI - STRANGER", w: 42 },
             { p: /\bsuspicious\b/i, c: "SUSPICION - SUSPICIOUS", w: 45 },
             { p: /\bunusual\b/i, c: "SUSPICION - UNUSUAL", w: 38 },
             { p: /\bwatching\s*us/i, c: "SUSPICION - BEING WATCHED", w: 50 },
             { p: /\bbe\s*careful/i, c: "CAUTION - BE CAREFUL", w: 42 },
+            { p: /\bhwɛ\s*yie/i, c: "TWI - BE CAREFUL", w: 44 },
             { p: /\bwatch\s*out/i, c: "CAUTION - WATCH OUT", w: 44 },
             { p: /\bsomething\s*(is\s*)?(wrong|off)/i, c: "CAUTION - SOMETHING WRONG", w: 48 },
             { p: /\bbad\s*feeling/i, c: "CAUTION - BAD FEELING", w: 46 },
             { p: /\bthey'?re\s*coming/i, c: "MOVEMENT - APPROACHING", w: 52 },
+            { p: /\bwɔreba/i, c: "TWI - THEY ARE COMING", w: 54 },
             { p: /\bapproaching\b/i, c: "MOVEMENT - APPROACHING", w: 50 },
             { p: /\bgetting\s*closer/i, c: "MOVEMENT - GETTING CLOSER", w: 54 },
             { p: /\bheading\s*(this\s*way|here|towards)/i, c: "MOVEMENT - HEADING HERE", w: 52 },
             { p: /\bwho\s*(are|is)\s*(they|he|she|that)/i, c: "IDENTIFICATION - WHO ARE THEY", w: 35 },
+            { p: /\bhwan\s*ni/i, c: "TWI - WHO IS THAT", w: 36 },
             { p: /\bwhat\s*(do\s*)?(they|he|she)\s*want/i, c: "IDENTIFICATION - WHAT DO THEY WANT", w: 38 },
             { p: /\bwhy\s*(are|is)\s*(they|he|she)\s*here/i, c: "IDENTIFICATION - WHY HERE", w: 40 }
         ]
@@ -553,8 +564,7 @@
             ghanaNlpKey: "",
             groqKey: "",
             securityPhone: "",
-            deviceName: "OGUN-1",
-            language: "en"
+            deviceName: "OGUN-1"
         }
     };
 
@@ -569,7 +579,7 @@
             "alertOverlay", "alertHeader", "alertLevel", "alertCategory", "alertTime",
             "alertTranscript", "alertCoords", "alertAddress", "alertMap", "btnDirections",
             "alertConfidence", "alertPattern", "alertDevice", "btnDismiss", "btnEscalate",
-            "settingsModal", "btnCloseSettings", "selectLanguage", "inputGhanaNlpKey", "inputGroqKey",
+            "settingsModal", "btnCloseSettings", "inputGhanaNlpKey", "inputGroqKey",
             "btnSaveKeys", "dotGhanaNlp", "txtGhanaNlp", "dotGroq", "txtGroq",
             "dotFirebase", "txtFirebase", "inputSecurityPhone", "inputDeviceName", "btnSaveTeam",
             "toast", "toastMsg"
@@ -617,13 +627,11 @@
         state.settings.groqKey = load(CONFIG.STORAGE.GROQ, "");
         state.settings.securityPhone = load(CONFIG.STORAGE.PHONE, "");
         state.settings.deviceName = load(CONFIG.STORAGE.DEVICE, "OGUN-1");
-        state.settings.language = load(CONFIG.STORAGE.LANGUAGE, "en");
 
         DOM.inputGhanaNlpKey.value = state.settings.ghanaNlpKey;
         DOM.inputGroqKey.value = state.settings.groqKey;
         DOM.inputSecurityPhone.value = state.settings.securityPhone;
         DOM.inputDeviceName.value = state.settings.deviceName;
-        DOM.selectLanguage.value = state.settings.language;
 
         updateStatusIndicators();
         log("Settings loaded", "success");
@@ -647,14 +655,8 @@
         var ghananlp = DOM.inputGhanaNlpKey.value.trim();
         var groq = DOM.inputGroqKey.value.trim();
 
-        if (ghananlp) {
-            save(CONFIG.STORAGE.GHANANLP, ghananlp);
-            state.settings.ghanaNlpKey = ghananlp;
-        }
-        if (groq) {
-            save(CONFIG.STORAGE.GROQ, groq);
-            state.settings.groqKey = groq;
-        }
+        if (ghananlp) { save(CONFIG.STORAGE.GHANANLP, ghananlp); state.settings.ghanaNlpKey = ghananlp; }
+        if (groq) { save(CONFIG.STORAGE.GROQ, groq); state.settings.groqKey = groq; }
 
         updateStatusIndicators();
         toast("API keys saved", "success");
@@ -664,15 +666,11 @@
     function saveTeamSettings() {
         var phone = DOM.inputSecurityPhone.value.trim();
         var device = DOM.inputDeviceName.value.trim();
-        var lang = DOM.selectLanguage.value;
 
         if (phone) { save(CONFIG.STORAGE.PHONE, phone); state.settings.securityPhone = phone; }
         if (device) { save(CONFIG.STORAGE.DEVICE, device); state.settings.deviceName = device; }
-        save(CONFIG.STORAGE.LANGUAGE, lang);
-        state.settings.language = lang;
 
         toast("Settings saved", "success");
-        log("Language set to: " + CONFIG.LANGUAGES[lang].name, "success");
     }
 
     function initFirebase() {
@@ -718,17 +716,8 @@
     }
 
     function startAudioCapture() {
-        var lang = state.settings.language;
-        var useGhanaNLP = CONFIG.LANGUAGES[lang] && CONFIG.LANGUAGES[lang].asr;
-
-        if (useGhanaNLP && !state.settings.ghanaNlpKey) {
-            toast("Set GhanaNLP API key first", "error");
-            DOM.settingsModal.classList.add("visible");
-            return;
-        }
-
-        if (!useGhanaNLP && !state.settings.groqKey) {
-            toast("Set Groq API key first", "error");
+        if (!state.settings.ghanaNlpKey && !state.settings.groqKey) {
+            toast("Set at least one API key", "error");
             DOM.settingsModal.classList.add("visible");
             return;
         }
@@ -793,7 +782,7 @@
             };
 
             state.mediaRecorder.start();
-            log("Audio capture started (5s cycles) - Mode: " + CONFIG.LANGUAGES[lang].name, "success");
+            log("Audio capture started (5s cycles) - AUTO-DETECT mode", "success");
 
             setTimeout(function() {
                 if (state.mediaRecorder && state.mediaRecorder.state === "recording") {
@@ -833,22 +822,11 @@
 
         state.processing = true;
         DOM.processing.classList.add("active");
+        DOM.processingText.textContent = "Auto-detecting language...";
+        log("Processing " + (blob.size / 1024).toFixed(1) + "KB audio...");
 
-        var lang = state.settings.language;
-        var useGhanaNLP = CONFIG.LANGUAGES[lang] && CONFIG.LANGUAGES[lang].asr;
-
-        log("Processing " + (blob.size / 1024).toFixed(1) + "KB - Mode: " + (useGhanaNLP ? "GhanaNLP ASR" : "Groq"));
-        DOM.processingText.textContent = useGhanaNLP ? "Transcribing " + CONFIG.LANGUAGES[lang].name + "..." : "Processing English...";
-
-        var transcribePromise;
-
-        if (useGhanaNLP) {
-            transcribePromise = transcribeWithGhanaNLP(blob, lang);
-        } else {
-            transcribePromise = transcribeWithGroq(blob);
-        }
-
-        transcribePromise
+        // Try GhanaNLP ASR first (for Ghanaian languages), then Groq as fallback
+        tryGhanaNLPThenGroq(blob)
         .then(function(result) {
             if (!result || !result.text || result.text.trim().length < 2) {
                 log("No speech detected");
@@ -856,19 +834,24 @@
             }
 
             var original = result.text.trim();
-            log("Transcribed (" + lang + "): " + original.substring(0, 80), "success");
+            var lang = result.language || "en";
+            var source = result.source || "GROQ";
 
-            if (useGhanaNLP && lang !== "en") {
+            log("Transcribed via " + source + " (" + lang + "): " + original.substring(0, 80), "success");
+
+            // Translate if not English
+            if (lang !== "en" && state.settings.ghanaNlpKey) {
                 DOM.processingText.textContent = "Translating to English...";
                 return translateWithGhanaNLP(original, lang).then(function(translated) {
                     return {
                         original: original,
                         translated: translated || original,
-                        lang: lang
+                        lang: lang,
+                        source: source
                     };
                 });
             }
-            return { original: original, translated: original, lang: lang };
+            return { original: original, translated: original, lang: lang, source: source };
         })
         .then(function(data) {
             if (!data) return;
@@ -878,11 +861,11 @@
             }
 
             var threat = analyzeThreat(data.translated, data.original);
-            addTranscriptEntry(data.original, data.translated, data.lang, threat);
+            addTranscriptEntry(data.original, data.translated, data.lang, data.source, threat);
 
             if (threat) {
                 if (threat.level === "critical" || threat.level === "high") {
-                    triggerAlert(threat, data.translated, data.original);
+                    triggerAlert(threat, data.translated, data.original, data.lang);
                 } else if (threat.level === "medium") {
                     playAlertSound("medium");
                 }
@@ -900,8 +883,36 @@
         });
     }
 
-    function transcribeWithGhanaNLP(blob, lang) {
-        log("Sending to GhanaNLP ASR (" + lang + ")...");
+    function tryGhanaNLPThenGroq(blob) {
+        // If we have GhanaNLP key, try it first
+        if (state.settings.ghanaNlpKey) {
+            return transcribeWithGhanaNLP(blob).then(function(result) {
+                if (result && result.text && result.text.trim().length > 2) {
+                    return result;
+                }
+                // GhanaNLP failed or empty, try Groq
+                log("GhanaNLP returned empty, trying Groq...", "warning");
+                if (state.settings.groqKey) {
+                    return transcribeWithGroq(blob);
+                }
+                return null;
+            }).catch(function(e) {
+                log("GhanaNLP failed: " + e.message + ", trying Groq...", "warning");
+                if (state.settings.groqKey) {
+                    return transcribeWithGroq(blob);
+                }
+                return null;
+            });
+        }
+        // No GhanaNLP key, use Groq only
+        if (state.settings.groqKey) {
+            return transcribeWithGroq(blob);
+        }
+        return Promise.resolve(null);
+    }
+
+    function transcribeWithGhanaNLP(blob) {
+        log("Trying GhanaNLP ASR (auto-detect)...");
 
         return new Promise(function(resolve, reject) {
             var reader = new FileReader();
@@ -916,7 +927,7 @@
                     },
                     body: JSON.stringify({
                         audio: base64,
-                        language: lang
+                        language: "tw"  // Default to Twi, ASR may auto-detect
                     })
                 })
                 .then(function(response) {
@@ -928,12 +939,17 @@
                     return response.json();
                 })
                 .then(function(data) {
-                    log("GhanaNLP ASR response received", "success");
-                    resolve({ text: data.transcript || data.text || "", language: lang });
+                    log("GhanaNLP ASR success", "success");
+                    var lang = data.language || data.detected_language || "tw";
+                    resolve({ 
+                        text: data.transcript || data.text || data.transcription || "", 
+                        language: lang,
+                        source: "GhanaNLP"
+                    });
                 })
                 .catch(function(e) {
                     log("GhanaNLP ASR error: " + e.message, "error");
-                    resolve(null);
+                    reject(e);
                 });
             };
             reader.onerror = function() {
@@ -944,6 +960,7 @@
     }
 
     function transcribeWithGroq(blob) {
+        log("Using Groq Whisper...");
         var formData = new FormData();
         formData.append("file", blob, "audio.webm");
         formData.append("model", CONFIG.GROQ_MODEL);
@@ -961,7 +978,11 @@
             return response.json();
         })
         .then(function(data) {
-            return { text: data.text || "", language: "en" };
+            return { 
+                text: data.text || "", 
+                language: data.language || "en",
+                source: "GROQ"
+            };
         })
         .catch(function(e) {
             log("Groq error: " + e.message, "error");
@@ -975,7 +996,7 @@
         }
 
         var langPair = fromLang + "-en";
-        log("Translating " + fromLang + " to English...");
+        log("Translating " + fromLang + " → English...");
 
         return fetch(CONFIG.GHANANLP_TRANSLATE_URL, {
             method: "POST",
@@ -1026,7 +1047,7 @@
         return null;
     }
 
-    function addTranscriptEntry(original, translated, lang, threat) {
+    function addTranscriptEntry(original, translated, lang, source, threat) {
         if (DOM.emptyState && DOM.emptyState.parentNode) {
             DOM.emptyState.parentNode.removeChild(DOM.emptyState);
         }
@@ -1036,21 +1057,21 @@
 
         var time = new Date().toLocaleTimeString();
         var langInfo = CONFIG.LANGUAGES[lang] || { name: lang, flag: "🌍" };
-        var showBoth = original !== translated && lang !== "en";
+        var showBoth = original !== translated;
 
         var html = '<div class="entry-header">' +
             '<span class="entry-time">' + time + '</span>' +
             '<span class="entry-lang">' + langInfo.flag + ' ' + langInfo.name + '</span>' +
-            '<span class="entry-source">' + (lang === "en" ? "GROQ" : "GhanaNLP") + '</span>' +
+            '<span class="entry-source">' + source + '</span>' +
             (threat ? '<span class="entry-badge ' + threat.level + '">' + threat.level + '</span>' : '') +
             '</div>';
 
         if (showBoth) {
             html += '<div class="entry-original">' +
-                '<div class="entry-original-label">Original (' + langInfo.name + ')</div>' +
+                '<span class="entry-original-label">Original (' + langInfo.name + ')</span>' +
                 escapeHtml(original) +
                 '</div>' +
-                '<div class="entry-translation-label">English Translation</div>';
+                '<div class="entry-translation-label">🇬🇧 English Translation</div>';
         }
 
         html += '<div class="entry-translation">' + escapeHtml(translated) + '</div>';
@@ -1070,7 +1091,7 @@
         entry.scrollIntoView({ behavior: "smooth", block: "end" });
     }
 
-    function triggerAlert(threat, translated, original) {
+    function triggerAlert(threat, translated, original, lang) {
         log("🚨 ALERT: " + threat.level.toUpperCase() + " - " + threat.category, "error");
 
         if (navigator.vibrate) {
@@ -1084,7 +1105,17 @@
         DOM.alertLevel.textContent = threat.level.toUpperCase() + " THREAT";
         DOM.alertCategory.textContent = threat.category;
         DOM.alertTime.textContent = new Date().toLocaleString();
-        DOM.alertTranscript.textContent = original + (translated !== original ? "\n\n→ " + translated : "");
+
+        var langInfo = CONFIG.LANGUAGES[lang] || { name: lang, flag: "🌍" };
+        var transcriptHtml = "";
+        if (original !== translated) {
+            transcriptHtml = '<div class="alert-transcript-original"><strong>' + langInfo.flag + ' ' + langInfo.name + ':</strong><br>' + escapeHtml(original) + '</div>';
+            transcriptHtml += '<div class="alert-transcript-translation"><strong>🇬🇧 English:</strong><br>' + escapeHtml(translated) + '</div>';
+        } else {
+            transcriptHtml = '<div class="alert-transcript-translation">' + escapeHtml(translated) + '</div>';
+        }
+        DOM.alertTranscript.innerHTML = transcriptHtml;
+
         DOM.alertConfidence.textContent = threat.confidence + "%";
         DOM.alertPattern.textContent = threat.pattern;
         DOM.alertDevice.textContent = state.settings.deviceName;
@@ -1173,8 +1204,8 @@
         log("🆘 PANIC BUTTON", "error");
         if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100, 50, 100]);
         var threat = { level: "critical", category: "MANUAL PANIC ACTIVATION", pattern: "Panic Button", confidence: 100 };
-        addTranscriptEntry("PANIC BUTTON", "Manual emergency alert", "en", threat);
-        triggerAlert(threat, "Manual emergency alert", "PANIC BUTTON PRESSED");
+        addTranscriptEntry("PANIC BUTTON", "Manual emergency alert", "en", "MANUAL", threat);
+        triggerAlert(threat, "Manual emergency alert", "PANIC BUTTON PRESSED", "en");
         syncToFirebase("PANIC BUTTON", "Manual emergency alert", "en", threat);
     }
 
@@ -1188,10 +1219,9 @@
         startAudioCapture();
         startLocationTracking();
 
-        var lang = state.settings.language;
-        toast("OGUN Active - " + CONFIG.LANGUAGES[lang].name, "success");
+        toast("OGUN Active - Auto-detecting languages", "success");
         log("═══════════════════════════════════════", "success");
-        log("    OGUN V9 ACTIVATED - " + CONFIG.LANGUAGES[lang].name.toUpperCase(), "success");
+        log("    OGUN V9 ACTIVATED - AUTO-DETECT", "success");
         log("═══════════════════════════════════════", "success");
     }
 
@@ -1222,22 +1252,18 @@
         });
         DOM.debugToggle.addEventListener("click", function() { DOM.debugPanel.classList.toggle("visible"); });
         DOM.debugClear.addEventListener("click", function() { DOM.debugContent.innerHTML = ""; });
-        DOM.selectLanguage.addEventListener("change", function() {
-            state.settings.language = DOM.selectLanguage.value;
-            save(CONFIG.STORAGE.LANGUAGE, state.settings.language);
-            log("Language changed to: " + CONFIG.LANGUAGES[state.settings.language].name, "success");
-        });
     }
 
     function init() {
         initDOM();
         log("═══════════════════════════════════════", "success");
-        log("       OGUN V9 GODMODE + GhanaNLP ASR", "success");
+        log("   OGUN V9 GODMODE - AUTO LANGUAGE", "success");
         log("═══════════════════════════════════════", "success");
         loadSettings();
         initFirebase();
         initEventListeners();
-        log("Ready - Select language and activate", "success");
+        log("Auto-detects: Twi, Ewe, Ga, Dagbani, Hausa, Yoruba, English + more", "info");
+        log("Ready", "success");
     }
 
     if (document.readyState === "loading") {
