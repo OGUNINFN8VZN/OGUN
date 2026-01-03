@@ -1081,7 +1081,7 @@
                 fd.append('file', blob, 'audio.webm');
                 fd.append('model', S.settings.model);
                 fd.append('response_format', 'json');
-                fd.append('prompt', 'Twi, Akan, Ewe, Ga, Hausa, Yoruba, Ghana, African language');
+                fd.append('language', 'en'); // Force English output - captures phonetic sounds
 
                 const r = await fetch(CFG.GROQ_URL, {
                     method: 'POST',
@@ -1177,6 +1177,33 @@
         }
 
         // ============================================================
+        // LIBRETRANSLATE (Free, no CORS issues)
+        // ============================================================
+        async function translateLibre(text) {
+            try {
+                const r = await fetch('https://libretranslate.com/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        q: text,
+                        source: 'auto',
+                        target: 'en'
+                    })
+                });
+                
+                if (!r.ok) throw new Error('Libre ' + r.status);
+                
+                const data = await r.json();
+                dbg('LibreTranslate: ' + (data.translatedText || '').substring(0, 50), 'ok');
+                return data.translatedText || null;
+                
+            } catch (e) {
+                dbg('LibreTranslate error: ' + e.message, 'warn');
+                return null;
+            }
+        }
+
+        // ============================================================
         // GOOGLE TRANSLATE FALLBACK
         // ============================================================
         async function translateGoogle(text, lang) {
@@ -1194,12 +1221,16 @@
         }
 
         // ============================================================
-        // TRANSLATE (with fallback)
+        // TRANSLATE (with multiple fallbacks)
         // ============================================================
         async function translate(text, lang) {
             // Try GhanaNLP first
-            const gnlp = await translateGNLP(text, lang);
-            if (gnlp) return gnlp;
+            let result = await translateGNLP(text, lang);
+            if (result && result !== text) return result;
+
+            // Try LibreTranslate
+            result = await translateLibre(text);
+            if (result && result !== text) return result;
 
             // Fallback to Google
             dbg('Falling back to Google Translate', 'warn');
@@ -1254,42 +1285,73 @@
         }
 
         // ============================================================
+        // DETECT TWI WORDS IN PHONETIC OUTPUT
+        // ============================================================
+        function containsTwiWords(text) {
+            const lower = text.toLowerCase();
+            // Common Twi words that Whisper might phonetically capture
+            const twiPatterns = [
+                /\b(kum|koom|coom)\b/i,           // kill
+                /\b(wia|wea)\b/i,                  // steal
+                /\b(obroni|obron|brony)\b/i,       // foreigner
+                /\b(sika|seeka)\b/i,               // money/gold
+                /\b(maame|mami)\b/i,               // mother
+                /\b(medaase|medasi)\b/i,           // thank you
+                /\b(yebe|yebey)\b/i,               // we will
+                /\b(kofi|kwame|kwesi|akua|ama)\b/i, // Akan names
+                /\b(asem|assem)\b/i,               // matter/issue
+                /\b(enti|entsi)\b/i,               // so/therefore
+                /\b(wei|way)\b/i,                  // this
+                /\b(no|noo)\s+(yi|yee)/i,          // this one
+                /\b(ebi|ebei)\b/i,                 // some
+                /\b(papa|paapa)\b/i,               // father/good
+                /\b(kra|krah)\b/i,                 // soul
+                /\b(dabi|daabi)\b/i,               // no
+                /\b(aane|ahne)\b/i,                // yes
+            ];
+            
+            for (const p of twiPatterns) {
+                if (p.test(lower)) return true;
+            }
+            return false;
+        }
+
+        // ============================================================
         // PROCESS AUDIO CHUNK
         // ============================================================
         async function processAudio(blob) {
             S.processed++;
             DOM.statProcessed.textContent = S.processed;
 
-            // Transcribe with Groq
+            // Transcribe with Groq (forced English phonetic)
             const text = await transcribeGroq(blob);
             if (!text || text.trim().length < 2) {
                 dbg('Empty/short transcription', 'warn');
                 return;
             }
 
-            // Detect language
-            const lang = detectLanguage(text);
+            // Check if it contains Twi words phonetically
+            const hasTwi = containsTwiWords(text);
+            const lang = hasTwi ? 'tw' : 'en';
             DOM.statLang.textContent = CFG.LANGS[lang]?.f + ' ' + CFG.LANGS[lang]?.n || lang;
-            dbg('Detected language: ' + lang, 'info');
+            dbg('Detected: ' + lang + (hasTwi ? ' (Twi words found)' : ''), 'info');
 
-            // Translate if not English
+            // Translate if Twi detected
             let translation = '';
             
-            if (lang !== 'en') {
-                dbg('Attempting translation from ' + lang, 'info');
+            if (hasTwi) {
+                dbg('Twi detected, translating...', 'info');
                 translation = await translate(text, lang) || '';
                 
                 if (translation && translation.trim() !== text.trim()) {
-                    // SPEAK TRANSLATION OUT LOUD (non-English only)
+                    // SPEAK TRANSLATION OUT LOUD
                     speak(translation);
-                    dbg('Speaking translation: ' + translation.substring(0, 50), 'ok');
-                } else {
-                    dbg('Translation same as original or failed', 'warn');
+                    dbg('Speaking: ' + translation.substring(0, 50), 'ok');
                 }
             }
-            // English: NO speech - just display
+            // English: display only, no speech
 
-            // Analyze threat
+            // Analyze threat on BOTH original and translation
             const threat = analyzeThreat(text, translation);
 
             // Create entry
