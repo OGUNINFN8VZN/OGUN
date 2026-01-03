@@ -617,6 +617,14 @@
                     </select>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label">Speak Translations Aloud</label>
+                    <select class="form-input" id="inputTTS">
+                        <option value="true" selected>ON - Speak all text</option>
+                        <option value="false">OFF - Silent mode</option>
+                    </select>
+                </div>
+
                 <button class="btn-save" id="btnSaveSettings">Save Settings</button>
 
                 <div class="divider"></div>
@@ -861,7 +869,8 @@
                 deviceName: localStorage.getItem('ogun_device_name') || 'Device-' + Math.random().toString(36).substr(2, 4),
                 securityPhone: localStorage.getItem('ogun_security_phone') || '+233000000000',
                 model: localStorage.getItem('ogun_model') || 'whisper-large-v3-turbo',
-                chunkDuration: parseInt(localStorage.getItem('ogun_chunk_duration')) || 5000
+                chunkDuration: parseInt(localStorage.getItem('ogun_chunk_duration')) || 5000,
+                ttsEnabled: localStorage.getItem('ogun_tts') !== 'false' // Default ON
             },
             currentAlert: null
         };
@@ -895,6 +904,7 @@
             inputSecurityPhone: $('inputSecurityPhone'),
             inputModel: $('inputModel'),
             inputChunkDuration: $('inputChunkDuration'),
+            inputTTS: $('inputTTS'),
             btnSaveSettings: $('btnSaveSettings'),
             groqStatus: $('groqStatus'),
             alertOverlay: $('alertOverlay'),
@@ -961,6 +971,7 @@
             DOM.inputSecurityPhone.value = S.settings.securityPhone;
             DOM.inputModel.value = S.settings.model;
             DOM.inputChunkDuration.value = S.settings.chunkDuration;
+            DOM.inputTTS.value = S.settings.ttsEnabled ? 'true' : 'false';
             updateGroqStatus();
         }
 
@@ -971,6 +982,7 @@
             S.settings.securityPhone = DOM.inputSecurityPhone.value.trim() || S.settings.securityPhone;
             S.settings.model = DOM.inputModel.value;
             S.settings.chunkDuration = parseInt(DOM.inputChunkDuration.value);
+            S.settings.ttsEnabled = DOM.inputTTS.value === 'true';
 
             localStorage.setItem('ogun_device_name', S.settings.deviceName);
             localStorage.setItem('ogun_groq_key', S.keys.groq);
@@ -978,6 +990,7 @@
             localStorage.setItem('ogun_security_phone', S.settings.securityPhone);
             localStorage.setItem('ogun_model', S.settings.model);
             localStorage.setItem('ogun_chunk_duration', S.settings.chunkDuration);
+            localStorage.setItem('ogun_tts', S.settings.ttsEnabled);
 
             updateGroqStatus();
             DOM.settingsModal.classList.remove('show');
@@ -1097,28 +1110,36 @@
         function detectLanguage(text) {
             const lower = text.toLowerCase();
             
-            // Twi indicators
-            if (/[ɛɔŋ]/.test(text) || 
-                /\b(me|wo|ɛn|yɛ|no|na|ne|de|kɔ|ba|bɛ|nya|hunu|nimde|sɛ|wɔ|ɛyɛ)\b/i.test(lower) ||
-                /\b(kum|wia|obroni|sika|maame|papa|agya)\b/i.test(lower)) {
+            // Special Twi characters - definitive
+            if (/[ɛɔŋƐƆŊ]/.test(text)) {
                 return 'tw';
             }
             
-            // Hausa indicators
-            if (/\b(dan|na|ta|ya|za|shi|su|mu|ku|ba|ko|ga|da|ma|ni|ki)\b/i.test(lower)) {
+            // Strong Twi-only words (not common in English)
+            const strongTwi = /\b(yɛ|kɔ|bɛ|wɔ|ɛyɛ|sɛ|nso|anaa|daabi|aane|medaase|mepa|kyerɛ|hwɛ|fa|kum|wia|obroni|sika|maame|agya|ɔhene|asem|adwuma|efie|ɔmo|koraa)\b/i;
+            if (strongTwi.test(lower)) {
+                return 'tw';
+            }
+            
+            // Strong Hausa-only words
+            const strongHausa = /\b(zan|zai|zasu|kana|tana|yana|muna|suna|cikin|akan|daga|zuwa|kuma|amma|saboda|domin|wannan|wancan|ina|yaya|mene)\b/i;
+            if (strongHausa.test(lower)) {
                 return 'ha';
             }
             
-            // Ewe indicators
-            if (/\b(nye|wo|mia|mi|va|yi|le|ɖe|fia|aƒe)\b/i.test(lower)) {
+            // Strong Ewe-only words
+            const strongEwe = /\b(ɖe|ƒe|aƒe|miɖo|wòle|èle|míele|woawɔ|agbe|xɔ|ɖeka)\b/i;
+            if (strongEwe.test(lower)) {
                 return 'ee';
             }
             
-            // Ga indicators
-            if (/\b(mi|bo|shi|ni|ko|he|je|nɔ|yɛ|lɛ)\b/i.test(lower)) {
+            // Strong Ga-only words
+            const strongGa = /\b(nɔ|yɛ|lɛ|kɛ|shwɛ|miishɛ|oshwɛ|akɛ|yoo|wala|amɛne)\b/i;
+            if (strongGa.test(lower)) {
                 return 'gaa';
             }
             
+            // Default to English
             return 'en';
         }
 
@@ -1249,12 +1270,24 @@
             // Detect language
             const lang = detectLanguage(text);
             DOM.statLang.textContent = CFG.LANGS[lang]?.f + ' ' + CFG.LANGS[lang]?.n || lang;
+            dbg('Detected language: ' + lang, 'info');
 
             // Translate if not English
             let translation = '';
+            
             if (lang !== 'en') {
+                dbg('Attempting translation from ' + lang, 'info');
                 translation = await translate(text, lang) || '';
+                
+                if (translation && translation.trim() !== text.trim()) {
+                    // SPEAK TRANSLATION OUT LOUD (non-English only)
+                    speak(translation);
+                    dbg('Speaking translation: ' + translation.substring(0, 50), 'ok');
+                } else {
+                    dbg('Translation same as original or failed', 'warn');
+                }
             }
+            // English: NO speech - just display
 
             // Analyze threat
             const threat = analyzeThreat(text, translation);
@@ -1434,6 +1467,54 @@
                 medium: [200, 100, 200]
             };
             navigator.vibrate(patterns[level] || [200]);
+        }
+
+        // ============================================================
+        // TEXT-TO-SPEECH
+        // ============================================================
+        function speak(text) {
+            if (!S.settings.ttsEnabled) {
+                dbg('TTS disabled in settings', 'info');
+                return;
+            }
+            
+            if (!text || !window.speechSynthesis) {
+                dbg('TTS unavailable or no text', 'warn');
+                return;
+            }
+            
+            try {
+                // Cancel any ongoing speech
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                
+                // Try to get a good English voice
+                const voices = window.speechSynthesis.getVoices();
+                const englishVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) 
+                    || voices.find(v => v.lang.startsWith('en'));
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                }
+                
+                window.speechSynthesis.speak(utterance);
+                dbg('TTS: ' + text.substring(0, 40) + '...', 'ok');
+                
+            } catch (e) {
+                dbg('TTS error: ' + e.message, 'error');
+            }
+        }
+        
+        // Preload voices
+        if (window.speechSynthesis) {
+            window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
         }
 
         // ============================================================
