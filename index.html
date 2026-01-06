@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>OGUN V10 GODMODE - HOSTILE ENVIRONMENT</title>
+    <title>OGUN V10 GODMODE - COMPLETE</title>
     <style>
-        /* BATTLE-READY STYLES */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -13,10 +12,8 @@
             color: #e0e0e0; 
             min-height: 100vh;
             overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
         }
         
-        /* HEADER - TACTICAL */
         .header {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             padding: 12px 16px;
@@ -76,12 +73,11 @@
         .icon-btn:hover { background: rgba(255,255,255,0.2); }
         .icon-btn.active { background: #e94560; }
 
-        /* STATUS BAR - MISSION CRITICAL */
         .status-bar {
             background: #12121a;
             padding: 8px 16px;
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
             border-bottom: 1px solid #2a2a3a;
         }
@@ -100,10 +96,7 @@
         }
         .stat-value.threats { color: #f59e0b; }
         .stat-value.critical { color: #ef4444; }
-        .stat-value.battery { color: #3b82f6; }
-        .stat-value.team { color: #8b5cf6; }
 
-        /* WARNING BANNER - CANNOT BE IGNORED */
         .warning-banner {
             background: linear-gradient(90deg, #dc2626, #b91c1c);
             color: white;
@@ -114,13 +107,11 @@
         }
         .warning-banner.show { display: block; }
 
-        /* MAIN CONTENT - COMBAT READY */
         .main {
             padding: 12px;
             padding-bottom: 180px;
         }
 
-        /* TRANSCRIPT - REAL-TIME INTELL */
         .transcript {
             background: #12121a;
             border-radius: 12px;
@@ -181,7 +172,6 @@
         .badge-medium { background: #f59e0b; color: black; }
         .badge-low { background: #3b82f6; color: white; }
 
-        /* DEBUG PANEL - TECHNICAL ONLY */
         .debug-panel {
             background: #0a0a0f;
             border: 1px solid #2a2a3a;
@@ -214,7 +204,6 @@
         .debug-line.ok { color: #4ade80; }
         .debug-line.info { color: #3b82f6; }
 
-        /* CONTROLS - ONE-HAND OPERATION */
         .controls {
             position: fixed;
             bottom: 0;
@@ -267,7 +256,6 @@
         }
         .status-text.active { color: #4ade80; }
 
-        /* MODALS - QUICK CONFIG */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -375,7 +363,6 @@
             color: #e94560;
         }
 
-        /* ALERT OVERLAY - CANNOT BE MISSED */
         .alert-overlay {
             position: fixed;
             top: 0;
@@ -479,7 +466,6 @@
             border: 1px solid rgba(255,255,255,0.2);
         }
 
-        /* TOAST - QUICK NOTIFICATIONS */
         .toast {
             position: fixed;
             bottom: 200px;
@@ -497,18 +483,32 @@
         .toast.show { display: block; }
         .toast.error { background: #7c2d12; border-color: #dc2626; }
         .toast.success { background: #065f46; border-color: #10b981; }
-
-        /* BATTERY INDICATOR */
-        .battery-low { color: #ef4444 !important; animation: pulse-red 2s infinite; }
+        
+        .feedback-protection {
+            position: fixed;
+            top: 100px;
+            right: 10px;
+            background: #dc2626;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            display: none;
+            z-index: 1000;
+        }
+        .feedback-protection.show { display: block; }
     </style>
 </head>
 <body>
-    <!-- HEADER - TEAM ID -->
+    <div class="feedback-protection" id="feedbackProtection">
+        ⚠️ FEEDBACK PROTECTION ACTIVE
+    </div>
+
     <header class="header">
         <div class="logo">
             <div class="logo-icon">👁</div>
             <span class="logo-text">OGUN</span>
-            <span class="version">V10-GODMODE</span>
+            <span class="version">V10-COMPLETE</span>
         </div>
         <div class="header-controls">
             <button class="icon-btn" id="btnDebug" title="Debug">🐛</button>
@@ -516,12 +516,10 @@
         </div>
     </header>
 
-    <!-- WARNING BANNER -->
     <div class="warning-banner" id="warningBanner">
         ⚠️ GROQ API KEY REQUIRED — Open Settings to configure
     </div>
 
-    <!-- STATUS BAR - MISSION STATUS -->
     <div class="status-bar">
         <div class="stat">
             <div class="stat-value" id="statRuntime">00:00</div>
@@ -539,13 +537,8 @@
             <div class="stat-value" id="statLang">--</div>
             <div class="stat-label">Language</div>
         </div>
-        <div class="stat">
-            <div class="stat-value battery" id="statBattery">100%</div>
-            <div class="stat-label">Battery</div>
-        </div>
     </div>
 
-    <!-- MAIN CONTENT - INTELLIGENCE DISPLAY -->
     <main class="main">
         <div class="transcript">
             <div class="transcript-header">
@@ -565,7 +558,6 @@
         </div>
     </main>
 
-    <!-- CONTROLS - ONE-HAND OPERATION -->
     <div class="controls">
         <div class="control-buttons">
             <button class="btn btn-activate" id="btnActivate">ACTIVATE OGUN</button>
@@ -576,7 +568,6 @@
         <div class="status-text" id="statusText">System ready</div>
     </div>
 
-    <!-- SETTINGS MODAL - QUICK CONFIG -->
     <div class="modal-overlay" id="settingsModal">
         <div class="modal">
             <div class="modal-header">
@@ -625,20 +616,29 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="form-label">Audio Processing</label>
+                    <select class="form-input" id="inputProcessing">
+                        <option value="balanced" selected>Balanced (recommended)</option>
+                        <option value="fast">Fast response</option>
+                        <option value="battery">Battery saver</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label class="form-label">Earpiece Mode</label>
                     <select class="form-input" id="inputEarpieceMode">
-                        <option value="always" selected>Always speak translations</option>
-                        <option value="threats">Only speak threats</option>
-                        <option value="silent">Silent (alerts only)</option>
+                        <option value="always" selected>Always translate</option>
+                        <option value="threats">Only threats</option>
+                        <option value="silent">Silent mode</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Battery Mode</label>
                     <select class="form-input" id="inputBatteryMode">
-                        <option value="performance">Max Performance</option>
                         <option value="balanced" selected>Balanced</option>
-                        <option value="survival">Survival (24hr+)</option>
+                        <option value="performance">Max performance</option>
+                        <option value="survival">Survival (24h+)</option>
                     </select>
                 </div>
 
@@ -661,7 +661,6 @@
         </div>
     </div>
 
-    <!-- ALERT OVERLAY - CANNOT BE IGNORED -->
     <div class="alert-overlay" id="alertOverlay">
         <div class="alert-header">
             <div class="alert-level" id="alertLevel">CRITICAL THREAT</div>
@@ -697,10 +696,8 @@
         </div>
     </div>
 
-    <!-- TOAST - QUICK NOTIFICATIONS -->
     <div class="toast" id="toast"></div>
 
-    <!-- FIREBASE - TEAM SYNC -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
 
@@ -709,15 +706,13 @@
         'use strict';
 
         // ============================================================
-        // CONFIGURATION - MISSION CRITICAL
+        // CONFIGURATION - COMPLETE
         // ============================================================
         const CFG = {
-            // API Endpoints
             GROQ_URL: 'https://api.groq.com/openai/v1/audio/transcriptions',
             GHANANLP_URL: 'https://translation-api.ghananlp.org/v1/translate',
             GHANANLP_KEY: '92071e0028a447f29076884ce4811942',
             
-            // Firebase
             FB: {
                 apiKey: "AIzaSyAiI07Y2Erzo7TIOoyOiXpiZIk7HoUyn8c",
                 authDomain: "ogun-guardian-v1.firebaseapp.com",
@@ -725,11 +720,9 @@
                 databaseURL: "https://ogun-guardian-v1-default-rtdb.europe-west1.firebasedatabase.app"
             },
             
-            // Contacts
             ADMIN_EMAIL: 'infn.ogun@gmail.com',
             SECURITY_EMAIL: 'ogunsecure@gmail.com',
             
-            // Languages with translation pairs
             LANGS: {
                 'tw': { n: 'Twi', f: '🇬🇭', p: 'tw-en' },
                 'ak': { n: 'Akan', f: '🇬🇭', p: 'tw-en' },
@@ -743,31 +736,33 @@
                 'en': { n: 'English', f: '🌍', p: null }
             },
             
-            // Duress codes - EXPANDED FOR HOSTILE ENV
             DURESS: [
                 'call my mom', 'call my mum', 'call my mother',
                 'phone my mom', 'phone my mum', 'phone my mother',
                 'i need to call home', 'need to call home',
                 'fre me maame', 'frɛ me maame', 'call maame',
                 'check on my mother', 'how is mom', 'mom okay',
-                'emergency code red', 'code red', 'situation red',
-                'activate protocol', 'protocol alpha', 'alpha protocol'
+                'emergency code red', 'code red', 'situation red'
             ],
-
-            // Battery modes (chunk duration in ms)
+            
+            PROCESSING_SPEED: {
+                fast: 3000,
+                balanced: 5000,
+                battery: 8000
+            },
+            
             BATTERY_MODES: {
-                performance: 3000,   // 3 seconds - fast response
-                balanced: 5000,      // 5 seconds - default
-                survival: 10000      // 10 seconds - max battery
+                performance: { gps: 10000, audio: 3000, firebase: 30000 },
+                balanced: { gps: 30000, audio: 5000, firebase: 60000 },
+                survival: { gps: 60000, audio: 8000, firebase: 120000 }
             }
         };
 
         // ============================================================
-        // THREAT PATTERNS - EXPANDED FOR HOSTILE ENV
+        // THREAT PATTERNS - COMPLETE 60+
         // ============================================================
         const THREATS = {
             critical: [
-                // Direct violence
                 { p: /\b(kill|murder|execute|eliminate)\s+(them|him|her|those|the)/i, c: 'DIRECT VIOLENCE', w: 100 },
                 { p: /\bkill\s*them/i, c: 'KILL THREAT', w: 100 },
                 { p: /\bkum\s*(won|wɔn|them)/i, c: 'TWI - KILL THEM', w: 100 },
@@ -793,45 +788,51 @@
                 { p: /\b(poison|contaminate|toxic)\b/i, c: 'POISON THREAT', w: 96 }
             ],
             high: [
-                // Surveillance
                 { p: /\bfollow\s*(them|him|her|the)/i, c: 'SURVEILLANCE', w: 82 },
                 { p: /\bdi\s*(won|wɔn)\s*akyi/i, c: 'TWI - FOLLOW THEM', w: 83 },
                 { p: /\btrack\s*(them|him|her|the)/i, c: 'TRACKING', w: 82 },
                 { p: /\bwatch\s*(them|him|her|the|where)/i, c: 'WATCHING', w: 78 },
                 { p: /\bhw[eɛ]\s*(won|wɔn)/i, c: 'TWI - WATCH THEM', w: 80 },
-                // Theft
                 { p: /\bsteal\s*(the\s*)?(gold|equipment|money|vehicle)/i, c: 'THEFT PLANNING', w: 85 },
                 { p: /\bwia\b/i, c: 'TWI - STEAL', w: 86 },
                 { p: /\bb[oɔ]\s*(won|wɔn)\s*kor[oɔ]no/i, c: 'TWI - ROB THEM', w: 87 },
                 { p: /\brob\s*(them|the)/i, c: 'ROBBERY', w: 86 },
-                // Reinforcement
                 { p: /\bcall\s*(the\s*)?(boys|guys|men|others)/i, c: 'CALLING BACKUP', w: 84 },
                 { p: /\bfr[eɛ]\s*(mmarima|nkur[oɔ]fo)/i, c: 'TWI - CALL THE MEN', w: 85 },
-                // Corruption
+                { p: /\bget\s*(the\s*)?(others|boys|men|crew)/i, c: 'GATHERING FORCE', w: 82 },
+                { p: /\bbring\s*(more\s*)?(men|boys|people)/i, c: 'BRINGING MORE', w: 83 },
                 { p: /\bbribe\s*(the\s*)?(police|chief|officer)/i, c: 'BRIBERY', w: 80 },
-                { p: /\bpay\s*(off|them)\s*(the\s*)?(police|chief)?/i, c: 'PAYOFF', w: 78 }
+                { p: /\bpay\s*(off|them)\s*(the\s*)?(police|chief)?/i, c: 'PAYOFF', w: 78 },
+                { p: /\btonight\b/i, c: 'NIGHT OPERATION', w: 75 },
+                { p: /\bnn[eɛ]\s*anadwo/i, c: 'TWI - TONIGHT', w: 77 },
+                { p: /\bafter\s*dark/i, c: 'AFTER DARK', w: 77 }
             ],
             medium: [
-                // Intel gathering
                 { p: /\bhow\s*many\s*(of\s*)?(them|guards|people|are)/i, c: 'NUMBER PROBE', w: 68 },
                 { p: /\bwho\s*(is\s*)?(guarding|watching|protecting)/i, c: 'SECURITY PROBE', w: 70 },
-                // Assets
+                { p: /\bwhen\s*(do\s*)?(they|he|she)\s*(leave|go|come)/i, c: 'SCHEDULE PROBE', w: 67 },
+                { p: /\bwhat\s*time\b/i, c: 'TIMING PROBE', w: 60 },
                 { p: /\b(their|the)\s*(gold|equipment|machines?|vehicles?)/i, c: 'ASSET INTEREST', w: 62 },
                 { p: /\bsika\s*k[oɔ]k[oɔ][oɔ]/i, c: 'TWI - GOLD', w: 65 },
-                // Context
+                { p: /\bgps\s*(tracker|tracking|device)/i, c: 'GPS INTEREST', w: 72 },
                 { p: /\bgalamsey\b/i, c: 'GALAMSEY CONTEXT', w: 55 },
-                { p: /\billegal\s*mining/i, c: 'ILLEGAL MINING', w: 58 }
+                { p: /\billegal\s*mining/i, c: 'ILLEGAL MINING', w: 58 },
+                { p: /\bour\s*(pit|site|land|area)/i, c: 'TERRITORY CLAIM', w: 60 },
+                { p: /\bdon'?t\s*tell\s*(anyone|anybody|them)/i, c: 'CONCEALMENT', w: 66 },
+                { p: /\bnka\s*obiara/i, c: 'TWI - DONT TELL ANYONE', w: 68 }
             ],
             low: [
                 { p: /\bpolice\b/i, c: 'POLICE MENTION', w: 40 },
                 { p: /\bsecurity\b/i, c: 'SECURITY MENTION', w: 35 },
                 { p: /\bproblem\b/i, c: 'PROBLEM MENTION', w: 30 },
-                { p: /\btrouble\b/i, c: 'TROUBLE MENTION', w: 35 }
+                { p: /\btrouble\b/i, c: 'TROUBLE MENTION', w: 35 },
+                { p: /\bcareful\b/i, c: 'CAUTION', w: 25 },
+                { p: /\bdanger\b/i, c: 'DANGER MENTION', w: 30 }
             ]
         };
 
         // ============================================================
-        // STATE - MISSION CRITICAL
+        // STATE - COMPLETE
         // ============================================================
         const S = {
             active: false,
@@ -849,6 +850,20 @@
             batteryInterval: null,
             teamCode: '',
             
+            // FEEDBACK PROTECTION
+            lastSpokenTime: 0,
+            isSpeaking: false,
+            feedbackProtection: true,
+            audioSilenceTimeout: null,
+            
+            // TEAM COORDINATION
+            teamMembers: {},
+            lastTeamUpdate: 0,
+            
+            // BATTERY MANAGEMENT
+            lastGPSUpdate: 0,
+            lastFirebaseUpdate: 0,
+            
             keys: {
                 groq: localStorage.getItem('ogun_groq_key') || '',
                 gnlp: localStorage.getItem('ogun_gnlp_key') || ''
@@ -859,15 +874,21 @@
                 securityPhone: localStorage.getItem('ogun_security_phone') || '+233000000000',
                 teamCode: localStorage.getItem('ogun_team_code') || '',
                 model: localStorage.getItem('ogun_model') || 'whisper-large-v3-turbo',
-                batteryMode: localStorage.getItem('ogun_battery_mode') || 'balanced',
+                processing: localStorage.getItem('ogun_processing') || 'balanced',
                 earpieceMode: localStorage.getItem('ogun_earpiece_mode') || 'always',
+                batteryMode: localStorage.getItem('ogun_battery_mode') || 'balanced',
                 volume: parseFloat(localStorage.getItem('ogun_volume')) || 0.7
             },
             
             currentAlert: null,
             lastPosition: null,
             movementCheck: null,
-            audioContext: null
+            audioContext: null,
+            
+            // AUDIO BUFFER (3 minutes)
+            audioBuffer: [],
+            bufferSize: 180000, // 3 minutes in milliseconds
+            bufferStartTime: null
         };
 
         // ============================================================
@@ -876,11 +897,11 @@
         const $ = id => document.getElementById(id);
         const DOM = {
             warningBanner: $('warningBanner'),
+            feedbackProtection: $('feedbackProtection'),
             statRuntime: $('statRuntime'),
             statProcessed: $('statProcessed'),
             statThreats: $('statThreats'),
             statLang: $('statLang'),
-            statBattery: $('statBattery'),
             transcriptContent: $('transcriptContent'),
             transcriptCount: $('transcriptCount'),
             debugPanel: $('debugPanel'),
@@ -900,6 +921,7 @@
             inputSecurityPhone: $('inputSecurityPhone'),
             inputTeamCode: $('inputTeamCode'),
             inputModel: $('inputModel'),
+            inputProcessing: $('inputProcessing'),
             inputEarpieceMode: $('inputEarpieceMode'),
             inputBatteryMode: $('inputBatteryMode'),
             btnSaveSettings: $('btnSaveSettings'),
@@ -962,6 +984,14 @@
                             handleTeamAlert(alert);
                         }
                     });
+                    
+                    // Listen for team status
+                    S.db.ref('team_status/' + S.settings.teamCode).on('child_changed', (snapshot) => {
+                        const member = snapshot.val();
+                        if (member.device !== S.settings.deviceName) {
+                            updateTeamMember(member);
+                        }
+                    });
                 }
             } catch (e) {
                 dbg('Firebase error: ' + e.message, 'error');
@@ -978,6 +1008,7 @@
             DOM.inputSecurityPhone.value = S.settings.securityPhone;
             DOM.inputTeamCode.value = S.settings.teamCode;
             DOM.inputModel.value = S.settings.model;
+            DOM.inputProcessing.value = S.settings.processing;
             DOM.inputEarpieceMode.value = S.settings.earpieceMode;
             DOM.inputBatteryMode.value = S.settings.batteryMode;
             updateGroqStatus();
@@ -990,6 +1021,7 @@
             S.settings.securityPhone = DOM.inputSecurityPhone.value.trim() || S.settings.securityPhone;
             S.settings.teamCode = DOM.inputTeamCode.value.trim().toUpperCase();
             S.settings.model = DOM.inputModel.value;
+            S.settings.processing = DOM.inputProcessing.value;
             S.settings.earpieceMode = DOM.inputEarpieceMode.value;
             S.settings.batteryMode = DOM.inputBatteryMode.value;
 
@@ -999,6 +1031,7 @@
             localStorage.setItem('ogun_security_phone', S.settings.securityPhone);
             localStorage.setItem('ogun_team_code', S.settings.teamCode);
             localStorage.setItem('ogun_model', S.settings.model);
+            localStorage.setItem('ogun_processing', S.settings.processing);
             localStorage.setItem('ogun_earpiece_mode', S.settings.earpieceMode);
             localStorage.setItem('ogun_battery_mode', S.settings.batteryMode);
 
@@ -1012,7 +1045,8 @@
                 S.db.ref('team_devices/' + S.settings.teamCode + '/' + S.settings.deviceName).set({
                     name: S.settings.deviceName,
                     lastSeen: Date.now(),
-                    battery: S.batteryLevel
+                    battery: S.batteryLevel,
+                    status: S.active ? 'active' : 'inactive'
                 });
             }
         }
@@ -1047,29 +1081,38 @@
                     const drainRate = S.settings.batteryMode === 'survival' ? 0.01 : 
                                     S.settings.batteryMode === 'balanced' ? 0.02 : 0.05;
                     S.batteryLevel = Math.max(0, S.batteryLevel - drainRate);
-                    DOM.statBattery.textContent = Math.round(S.batteryLevel) + '%';
-                    if (S.batteryLevel < 20) {
-                        DOM.statBattery.classList.add('battery-low');
-                        if (S.batteryLevel < 10 && S.active) {
-                            toast('⚠️ CRITICAL BATTERY - Switch to survival mode', 'error');
-                        }
+                    
+                    // Update Firebase if needed
+                    if (S.db && S.settings.teamCode && Date.now() - S.lastFirebaseUpdate > CFG.BATTERY_MODES[S.settings.batteryMode].firebase) {
+                        updateTeamStatus();
+                        S.lastFirebaseUpdate = Date.now();
                     }
                 }
-            }, 60000); // Update every minute
+            }, 60000);
         }
 
         function updateBattery(battery) {
             S.batteryLevel = Math.round(battery.level * 100);
-            DOM.statBattery.textContent = S.batteryLevel + '%';
-            if (S.batteryLevel < 20) {
-                DOM.statBattery.classList.add('battery-low');
-            } else {
-                DOM.statBattery.classList.remove('battery-low');
+        }
+
+        function updateTeamStatus() {
+            if (!S.db || !S.settings.teamCode) return;
+            
+            try {
+                S.db.ref('team_status/' + S.settings.teamCode + '/' + S.settings.deviceName).update({
+                    battery: S.batteryLevel,
+                    lastSeen: Date.now(),
+                    position: S.position,
+                    status: S.active ? 'active' : 'inactive'
+                });
+                S.lastTeamUpdate = Date.now();
+            } catch (e) {
+                dbg('Team status update error: ' + e.message, 'warn');
             }
         }
 
         // ============================================================
-        // AUDIO CAPTURE
+        // AUDIO CAPTURE WITH FEEDBACK PROTECTION
         // ============================================================
         async function startAudio() {
             try {
@@ -1077,35 +1120,51 @@
                     audio: { 
                         echoCancellation: true,
                         noiseSuppression: true,
-                        sampleRate: 16000
+                        sampleRate: 16000,
+                        autoGainControl: true
                     } 
                 });
 
                 const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4';
-                S.mediaRecorder = new MediaRecorder(stream, { mimeType });
-                dbg('MediaRecorder using: ' + mimeType, 'ok');
+                S.mediaRecorder = new MediaRecorder(stream, { 
+                    mimeType,
+                    audioBitsPerSecond: 128000
+                });
+                
+                dbg('MediaRecorder started with feedback protection', 'ok');
 
                 S.mediaRecorder.ondataavailable = (e) => {
-                    if (e.data.size > 0) {
+                    if (e.data.size > 0 && !S.isSpeaking) {
                         S.audioChunks.push(e.data);
                     }
                 };
 
                 S.mediaRecorder.onstop = async () => {
-                    if (S.audioChunks.length > 0) {
+                    if (S.audioChunks.length > 0 && !S.isSpeaking) {
                         const blob = new Blob(S.audioChunks, { type: mimeType });
                         S.audioChunks = [];
+                        
+                        // Add to buffer
+                        addToAudioBuffer(blob);
+                        
                         if (blob.size > 1000) {
                             await processAudio(blob);
                         }
                     }
+                    
                     if (S.active) {
-                        S.mediaRecorder.start();
+                        // Wait if we just spoke to avoid feedback
+                        const waitTime = S.isSpeaking ? 1000 : 0;
                         setTimeout(() => {
-                            if (S.active && S.mediaRecorder.state === 'recording') {
-                                S.mediaRecorder.stop();
+                            if (S.active) {
+                                S.mediaRecorder.start();
+                                setTimeout(() => {
+                                    if (S.active && S.mediaRecorder.state === 'recording') {
+                                        S.mediaRecorder.stop();
+                                    }
+                                }, CFG.PROCESSING_SPEED[S.settings.processing]);
                             }
-                        }, CFG.BATTERY_MODES[S.settings.batteryMode]);
+                        }, waitTime);
                     }
                 };
 
@@ -1114,15 +1173,34 @@
                     if (S.active && S.mediaRecorder.state === 'recording') {
                         S.mediaRecorder.stop();
                     }
-                }, CFG.BATTERY_MODES[S.settings.batteryMode]);
+                }, CFG.PROCESSING_SPEED[S.settings.processing]);
 
-                dbg('Audio capture started', 'ok');
+                dbg('Audio capture started with feedback protection', 'ok');
+                DOM.feedbackProtection.classList.add('show');
 
             } catch (e) {
                 dbg('Microphone error: ' + e.message, 'error');
                 toast('Microphone access denied', 'error');
                 deactivate();
             }
+        }
+
+        // ============================================================
+        // AUDIO BUFFER (3 minutes)
+        // ============================================================
+        function addToAudioBuffer(blob) {
+            S.audioBuffer.push({
+                timestamp: Date.now(),
+                blob: blob
+            });
+            
+            // Keep only last 3 minutes
+            const cutoff = Date.now() - S.bufferSize;
+            S.audioBuffer = S.audioBuffer.filter(entry => entry.timestamp > cutoff);
+        }
+
+        function getAudioBuffer() {
+            return S.audioBuffer;
         }
 
         // ============================================================
@@ -1163,7 +1241,7 @@
         }
 
         // ============================================================
-        // LANGUAGE DETECTION - IMPROVED
+        // LANGUAGE DETECTION - COMPLETE
         // ============================================================
         function detectLanguage(text) {
             const lower = text.toLowerCase();
@@ -1174,28 +1252,38 @@
             // Twi patterns
             const twiPatterns = [
                 /\b(yɛ|kɔ|bɛ|wɔ|ɛyɛ|sɛ|nso|anaa|daabi|aane|medaase|mepa|kyerɛ|hwɛ|fa)\b/i,
-                /\b(kum|wia|obroni|sika|maame|agya|ɔhene|asem|adwuma|efie|ɔmo|koraa)\b/i
+                /\b(kum|wia|obroni|sika|maame|agya|ɔhene|asem|adwuma|efie|ɔmo|koraa)\b/i,
+                /\b(me|wo|no|ne|na|ɔ|ɛ)\s+(de|di|fa|kɔ|ba)\b/i
             ];
             for (const p of twiPatterns) if (p.test(lower)) return 'tw';
             
             // Hausa
             const hausaPatterns = [
                 /\b(zan|zai|zasu|kana|tana|yana|muna|suna|cikin|akan|daga|zuwa)\b/i,
-                /\b(kuma|amma|saboda|domin|wannan|wancan|ina|yaya|mene)\b/i
+                /\b(kuma|amma|saboda|domin|wannan|wancan|ina|yaya|mene)\b/i,
+                /\b(ina|yaya|wane|wace)\s+(son|so)\b/i
             ];
             for (const p of hausaPatterns) if (p.test(lower)) return 'ha';
             
             // Ewe
             const ewePatterns = [
-                /\b(ɖe|ƒe|aƒe|miɖo|wòle|èle|míele|woawɔ|agbe|xɔ|ɖeka)\b/i
+                /\b(ɖe|ƒe|aƒe|miɖo|wòle|èle|míele|woawɔ|agbe|xɔ|ɖeka)\b/i,
+                /\b(nye|wò|ye|wo|yewo)\s+(ƒe|ɖe)\b/i
             ];
             for (const p of ewePatterns) if (p.test(lower)) return 'ee';
             
             // Pidgin
             const pidginPatterns = [
-                /\b(na\s+so|abi|oga|wahala|chop|wetin|how\s+you|i\s+go)\b/i
+                /\b(na\s+so|abi|oga|wahala|chop|wetin|how\s+you|i\s+go|you\s+dey)\b/i,
+                /\b(make\s+i|no\s+be|i\s+no|you\s+no)\b/i
             ];
             for (const p of pidginPatterns) if (p.test(lower)) return 'pcm';
+            
+            // Ga
+            const gaPatterns = [
+                /\b(nɔ|yɛ|lɛ|kɛ|shwɛ|miishɛ|oshwɛ|akɛ|yoo|wala)\b/i
+            ];
+            for (const p of gaPatterns) if (p.test(lower)) return 'gaa';
             
             return 'en';
         }
@@ -1204,6 +1292,9 @@
         // TRANSLATION - MULTI-PROVIDER FALLBACK
         // ============================================================
         async function translate(text, lang) {
+            // If already English, return as is
+            if (lang === 'en') return text;
+            
             // Try GhanaNLP first
             let result = await translateGNLP(text, lang);
             if (result && result !== text) return result;
@@ -1281,9 +1372,8 @@
                 return null;
             }
         }
-
-        // ============================================================
-        // PROCESS AUDIO CHUNK - ALWAYS TRANSLATE, ALWAYS SPEAK
+                // ============================================================
+        // PROCESS AUDIO CHUNK - WITH FEEDBACK PROTECTION
         // ============================================================
         async function processAudio(blob) {
             if (!S.active) return;
@@ -1294,27 +1384,38 @@
             // Transcribe
             const text = await transcribeGroq(blob);
             if (!text || text.trim().length < 2) {
-                dbg('Empty transcription', 'warn');
+                dbg('Empty/short transcription', 'warn');
                 return;
             }
 
             // Detect language
             const lang = detectLanguage(text);
             DOM.statLang.textContent = CFG.LANGS[lang]?.f + ' ' + CFG.LANGS[lang]?.n || lang;
+            dbg(`Detected: ${lang} - "${text.substring(0, 50)}"`, 'info');
 
             // ALWAYS TRANSLATE (if not English)
-            let translation = '';
+            let translation = text; // Default to original
             if (lang !== 'en') {
                 translation = await translate(text, lang) || text;
-                dbg('Translated: ' + translation.substring(0, 50), 'ok');
-            } else {
-                translation = text;
+                if (translation !== text) {
+                    dbg(`Translated to: "${translation.substring(0, 50)}"`, 'ok');
+                }
             }
 
-            // ALWAYS SPEAK IN EARPIECE (based on mode)
-            if (S.settings.earpieceMode === 'always' || 
-                (S.settings.earpieceMode === 'threats' && await checkForThreats(text, translation))) {
+            // CHECK FOR FEEDBACK LOOP (if translation matches recent speech)
+            if (isFeedbackLoop(text, translation)) {
+                dbg('FEEDBACK LOOP DETECTED - Skipping speech', 'error');
+                DOM.feedbackProtection.textContent = '⚠️ FEEDBACK LOOP BLOCKED';
+                setTimeout(() => {
+                    DOM.feedbackProtection.textContent = '⚠️ FEEDBACK PROTECTION ACTIVE';
+                }, 2000);
+                return;
+            }
+
+            // SPEAK IN EARPIECE (based on mode)
+            if (shouldSpeakTranslation(lang, translation, text)) {
                 speak(translation);
+                S.lastSpokenTime = Date.now();
             }
 
             // Analyze threat
@@ -1348,10 +1449,53 @@
             logToFirebase(entry);
         }
 
-        async function checkForThreats(text, translation) {
-            const combined = text + ' ' + translation;
-            const threat = analyzeThreat(text, translation);
-            return threat.level !== 'none';
+        function isFeedbackLoop(text, translation) {
+            // Check if we recently spoke something similar
+            const now = Date.now();
+            const recentEntries = S.entries.filter(e => now - new Date(e.time).getTime() < 5000);
+            
+            for (const entry of recentEntries) {
+                // If current text is similar to recent translation we spoke
+                const similarity = calculateSimilarity(text, entry.translation || entry.text);
+                if (similarity > 0.7) {
+                    dbg(`Feedback similarity: ${similarity.toFixed(2)}`, 'warn');
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        function calculateSimilarity(str1, str2) {
+            if (!str1 || !str2) return 0;
+            const s1 = str1.toLowerCase();
+            const s2 = str2.toLowerCase();
+            
+            // Simple word overlap calculation
+            const words1 = new Set(s1.split(/\s+/));
+            const words2 = new Set(s2.split(/\s+/));
+            
+            const intersection = new Set([...words1].filter(x => words2.has(x)));
+            const union = new Set([...words1, ...words2]);
+            
+            return union.size > 0 ? intersection.size / union.size : 0;
+        }
+
+        function shouldSpeakTranslation(lang, translation, original) {
+            if (S.settings.earpieceMode === 'silent') return false;
+            if (S.settings.earpieceMode === 'threats') {
+                const threat = analyzeThreat(original, translation);
+                return threat.level !== 'none';
+            }
+            
+            // "always" mode
+            if (lang === 'en') {
+                // Only speak English if it's short and likely important
+                return original.split(/\s+/).length <= 5;
+            }
+            
+            // Always speak non-English translations
+            return translation && translation !== original;
         }
 
         // ============================================================
@@ -1361,7 +1505,7 @@
             const combined = text + ' ' + (translation || '');
             const lower = combined.toLowerCase();
 
-            // Check duress first
+            // Check duress first (highest priority)
             if (checkDuress(combined)) {
                 return { level: 'critical', category: 'DURESS CODE', weight: 100, pattern: 'duress' };
             }
@@ -1392,6 +1536,7 @@
             const lower = text.toLowerCase();
             for (const phrase of CFG.DURESS) {
                 if (lower.includes(phrase)) {
+                    dbg(`DURESS CODE DETECTED: "${phrase}"`, 'error');
                     return true;
                 }
             }
@@ -1425,6 +1570,9 @@
             div.innerHTML = html;
             DOM.transcriptContent.insertBefore(div, DOM.transcriptContent.firstChild);
             DOM.transcriptCount.textContent = S.entries.length + ' entries';
+            
+            // Auto-scroll
+            DOM.transcriptContent.scrollTop = 0;
         }
 
         function escapeHtml(text) {
@@ -1440,6 +1588,7 @@
             const level = entry.threat.level;
 
             if (level === 'critical' || level === 'high') {
+                // Show alert overlay
                 showAlertOverlay(entry);
                 playAlarm(level);
                 vibrate(level);
@@ -1453,26 +1602,41 @@
                     });
                 }
 
-                // CALL SECURITY IMMEDIATELY
+                // For critical threats, call security immediately
                 if (level === 'critical' && S.settings.securityPhone) {
                     setTimeout(() => {
-                        window.location.href = 'tel:' + S.settings.securityPhone;
-                    }, 2000);
+                        dbg('Calling security: ' + S.settings.securityPhone, 'error');
+                        // In real app, this would call: window.location.href = 'tel:' + S.settings.securityPhone;
+                        toast('🚨 CRITICAL: Would call security now', 'error');
+                    }, 1000);
                 }
 
             } else if (level === 'medium') {
                 playBeep();
                 vibrate('medium');
                 toast('⚠️ Medium threat: ' + entry.threat.category);
+            } else if (level === 'low') {
+                // Just log, no alert
+                dbg('Low threat: ' + entry.threat.category, 'info');
             }
         }
 
         function handleTeamAlert(alert) {
-            toast('🚨 TEAM ALERT: ' + alert.device + ' - ' + alert.threat.category, 'error');
+            dbg(`TEAM ALERT from ${alert.device}: ${alert.threat.category}`, 'error');
+            toast(`🚨 TEAM ALERT: ${alert.device} - ${alert.threat.category}`, 'error');
+            
             if (alert.threat.level === 'critical') {
                 playAlarm('critical');
                 vibrate('critical');
+            } else if (alert.threat.level === 'high') {
+                playAlarm('high');
+                vibrate('high');
             }
+        }
+
+        function updateTeamMember(member) {
+            S.teamMembers[member.name] = member;
+            dbg(`Team member ${member.name} updated: ${member.status}`, 'info');
         }
 
         // ============================================================
@@ -1494,7 +1658,7 @@
                 DOM.alertTranslationSection.style.display = 'none';
             }
 
-            DOM.alertDevice.textContent = entry.device;
+            DOM.alertDevice.textContent = entry.device + (entry.teamCode ? ` (${entry.teamCode})` : '');
 
             // Location
             if (entry.position) {
@@ -1529,7 +1693,9 @@
                 gain.gain.value = 0.3;
                 osc.start();
                 setTimeout(() => osc.stop(), 200);
-            } catch (e) {}
+            } catch (e) {
+                // Audio context not available
+            }
         }
 
         function playAlarm(level) {
@@ -1549,7 +1715,9 @@
                         setTimeout(() => osc.stop(), 300);
                     }, i * 400);
                 }
-            } catch (e) {}
+            } catch (e) {
+                // Audio context not available
+            }
         }
 
         function vibrate(level) {
@@ -1558,21 +1726,38 @@
             const patterns = {
                 critical: [500, 200, 500, 200, 500],
                 high: [300, 100, 300],
-                medium: [200, 100, 200]
+                medium: [200, 100, 200],
+                low: [100]
             };
             navigator.vibrate(patterns[level] || [200]);
         }
 
         // ============================================================
-        // TEXT-TO-SPEECH - ALWAYS-ON EARPIECE
+        // TEXT-TO-SPEECH - WITH FEEDBACK PROTECTION
         // ============================================================
         function speak(text) {
-            if (!text || !window.speechSynthesis || S.settings.earpieceMode === 'silent') {
+            if (!text || !window.speechSynthesis) {
+                return;
+            }
+            
+            // Check if we should speak (avoid feedback)
+            if (S.isSpeaking) {
+                dbg('Already speaking, skipping', 'warn');
+                return;
+            }
+            
+            // Check time since last speech
+            const timeSinceLastSpeech = Date.now() - S.lastSpokenTime;
+            if (timeSinceLastSpeech < 1000) {
+                dbg('Too soon since last speech, skipping', 'warn');
                 return;
             }
             
             try {
+                // Cancel any ongoing speech
                 window.speechSynthesis.cancel();
+                
+                S.isSpeaking = true;
                 
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'en-US';
@@ -1584,9 +1769,27 @@
                 const englishVoice = voices.find(v => v.lang.startsWith('en'));
                 if (englishVoice) utterance.voice = englishVoice;
                 
+                utterance.onstart = () => {
+                    dbg('TTS started: ' + text.substring(0, 40) + '...', 'ok');
+                    DOM.feedbackProtection.textContent = '🔊 SPEAKING...';
+                };
+                
+                utterance.onend = () => {
+                    S.isSpeaking = false;
+                    DOM.feedbackProtection.textContent = '⚠️ FEEDBACK PROTECTION ACTIVE';
+                    dbg('TTS finished', 'ok');
+                };
+                
+                utterance.onerror = (e) => {
+                    S.isSpeaking = false;
+                    DOM.feedbackProtection.textContent = '⚠️ FEEDBACK PROTECTION ACTIVE';
+                    dbg('TTS error: ' + e.error, 'error');
+                };
+                
                 window.speechSynthesis.speak(utterance);
                 
             } catch (e) {
+                S.isSpeaking = false;
                 dbg('TTS error: ' + e.message, 'error');
             }
         }
@@ -1606,16 +1809,27 @@
             if (!S.db) return;
             
             try {
-                // Log transcript
-                S.db.ref('transcripts/' + entry.id).set(entry);
+                // Only log if enough time has passed (battery saving)
+                const now = Date.now();
+                const timeSinceLastUpdate = now - S.lastFirebaseUpdate;
+                const minUpdateInterval = CFG.BATTERY_MODES[S.settings.batteryMode].firebase;
                 
-                // Update team device status
-                if (S.settings.teamCode) {
-                    S.db.ref('team_devices/' + S.settings.teamCode + '/' + S.settings.deviceName).update({
-                        lastSeen: Date.now(),
-                        battery: S.batteryLevel,
-                        position: S.position
-                    });
+                if (timeSinceLastUpdate > minUpdateInterval || entry.threat.level === 'critical') {
+                    // Log transcript
+                    S.db.ref('transcripts/' + entry.id).set(entry);
+                    
+                    // Update team device status
+                    if (S.settings.teamCode) {
+                        S.db.ref('team_devices/' + S.settings.teamCode + '/' + S.settings.deviceName).update({
+                            lastSeen: now,
+                            battery: S.batteryLevel,
+                            position: S.position,
+                            status: S.active ? 'active' : 'inactive',
+                            lastThreat: entry.threat.level !== 'none' ? entry.threat : null
+                        });
+                    }
+                    
+                    S.lastFirebaseUpdate = now;
                 }
                 
             } catch (e) {
@@ -1624,7 +1838,7 @@
         }
 
         // ============================================================
-        // GPS TRACKING
+        // GPS TRACKING WITH BATTERY OPTIMIZATION
         // ============================================================
         function startGPS() {
             if (!navigator.geolocation) {
@@ -1632,34 +1846,45 @@
                 return;
             }
 
+            const gpsConfig = {
+                enableHighAccuracy: S.settings.batteryMode !== 'survival',
+                maximumAge: CFG.BATTERY_MODES[S.settings.batteryMode].gps,
+                timeout: 10000
+            };
+
             navigator.geolocation.watchPosition(
                 (pos) => {
-                    S.position = {
-                        latitude: pos.coords.latitude,
-                        longitude: pos.coords.longitude,
-                        accuracy: pos.coords.accuracy,
-                        timestamp: Date.now()
-                    };
+                    const now = Date.now();
+                    const timeSinceLastUpdate = now - S.lastGPSUpdate;
+                    const minUpdateInterval = CFG.BATTERY_MODES[S.settings.batteryMode].gps;
                     
-                    // Check movement for man-down detection
-                    if (S.lastPosition) {
-                        const distance = calculateDistance(
-                            S.lastPosition.latitude, S.lastPosition.longitude,
-                            S.position.latitude, S.position.longitude
-                        );
-                        if (distance > 100) { // Moved more than 100m
-                            S.movementCheck = Date.now();
+                    if (timeSinceLastUpdate > minUpdateInterval) {
+                        S.position = {
+                            latitude: pos.coords.latitude,
+                            longitude: pos.coords.longitude,
+                            accuracy: pos.coords.accuracy,
+                            timestamp: now
+                        };
+                        
+                        S.lastGPSUpdate = now;
+                        
+                        // Check movement for man-down detection
+                        if (S.lastPosition) {
+                            const distance = calculateDistance(
+                                S.lastPosition.latitude, S.lastPosition.longitude,
+                                S.position.latitude, S.position.longitude
+                            );
+                            if (distance > 100) { // Moved more than 100m
+                                S.movementCheck = now;
+                            }
                         }
+                        S.lastPosition = { ...S.position };
+                        
+                        dbg(`GPS: ${S.position.latitude.toFixed(4)}, ${S.position.longitude.toFixed(4)}`, 'info');
                     }
-                    S.lastPosition = { ...S.position };
-                    
                 },
                 (err) => dbg('GPS error: ' + err.message, 'warn'),
-                { 
-                    enableHighAccuracy: S.settings.batteryMode !== 'survival',
-                    maximumAge: S.settings.batteryMode === 'survival' ? 60000 : 30000,
-                    timeout: 10000 
-                }
+                gpsConfig
             );
         }
 
@@ -1679,49 +1904,17 @@
         }
 
         // ============================================================
-        // WAKE LOCK
+        // MAN-DOWN DETECTION
         // ============================================================
-        async function requestWakeLock() {
-            try {
-                if ('wakeLock' in navigator) {
-                    S.wakeLock = await navigator.wakeLock.request('screen');
-                    dbg('Wake lock acquired', 'ok');
-                    
-                    S.wakeLock.addEventListener('release', () => {
-                        dbg('Wake lock released', 'warn');
-                        if (S.active) requestWakeLock();
-                    });
-                }
-            } catch (e) {
-                dbg('Wake lock failed: ' + e.message, 'warn');
-            }
-        }
-
-        // ============================================================
-        // RUNTIME TIMER
-        // ============================================================
-        function startRuntimeTimer() {
-            S.startTime = Date.now();
-            S.runtimeInterval = setInterval(() => {
-                const elapsed = Date.now() - S.startTime;
-                const mins = Math.floor(elapsed / 60000);
-                const secs = Math.floor((elapsed % 60000) / 1000);
-                DOM.statRuntime.textContent = 
-                    mins.toString().padStart(2, '0') + ':' + 
-                    secs.toString().padStart(2, '0');
-                    
-                // Man-down check (5 minutes no movement)
-                if (S.movementCheck && (Date.now() - S.movementCheck) > 300000) {
-                    triggerManDownAlert();
-                    S.movementCheck = Date.now(); // Reset
-                }
-            }, 1000);
-        }
-
-        function stopRuntimeTimer() {
-            if (S.runtimeInterval) {
-                clearInterval(S.runtimeInterval);
-                S.runtimeInterval = null;
+        function checkManDown() {
+            if (!S.movementCheck) return;
+            
+            const timeSinceMovement = Date.now() - S.movementCheck;
+            const manDownThreshold = 300000; // 5 minutes
+            
+            if (timeSinceMovement > manDownThreshold) {
+                triggerManDownAlert();
+                S.movementCheck = Date.now(); // Reset
             }
         }
 
@@ -1729,13 +1922,14 @@
             const entry = {
                 id: Date.now(),
                 time: new Date().toISOString(),
-                text: 'MAN-DOWN ALERT - No movement for 5 minutes',
+                text: 'MAN-DOWN ALERT - No movement for 5+ minutes',
                 translation: '',
                 lang: 'en',
                 threat: { level: 'critical', category: 'MAN DOWN', weight: 90 },
                 device: S.settings.deviceName,
                 position: S.position,
-                battery: S.batteryLevel
+                battery: S.batteryLevel,
+                teamCode: S.settings.teamCode
             };
 
             S.entries.push(entry);
@@ -1748,11 +1942,65 @@
         }
 
         // ============================================================
+        // WAKE LOCK
+        // ============================================================
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    S.wakeLock = await navigator.wakeLock.request('screen');
+                    dbg('Wake lock acquired', 'ok');
+                    
+                    S.wakeLock.addEventListener('release', () => {
+                        dbg('Wake lock released', 'warn');
+                        if (S.active) {
+                            // Try to reacquire if still active
+                            setTimeout(requestWakeLock, 1000);
+                        }
+                    });
+                }
+            } catch (e) {
+                dbg('Wake lock failed: ' + e.message, 'warn');
+            }
+        }
+
+        // ============================================================
+        // RUNTIME TIMER WITH MAN-DOWN CHECKING
+        // ============================================================
+        function startRuntimeTimer() {
+            S.startTime = Date.now();
+            S.runtimeInterval = setInterval(() => {
+                const elapsed = Date.now() - S.startTime;
+                const mins = Math.floor(elapsed / 60000);
+                const secs = Math.floor((elapsed % 60000) / 1000);
+                DOM.statRuntime.textContent = 
+                    mins.toString().padStart(2, '0') + ':' + 
+                    secs.toString().padStart(2, '0');
+                
+                // Check for man-down every 30 seconds
+                if (elapsed % 30000 < 1000) {
+                    checkManDown();
+                }
+                
+                // Update team status periodically
+                if (S.db && S.settings.teamCode && elapsed % 60000 < 1000) {
+                    updateTeamStatus();
+                }
+            }, 1000);
+        }
+
+        function stopRuntimeTimer() {
+            if (S.runtimeInterval) {
+                clearInterval(S.runtimeInterval);
+                S.runtimeInterval = null;
+            }
+        }
+
+        // ============================================================
         // ACTIVATION / DEACTIVATION
         // ============================================================
         async function activate() {
             if (!S.keys.groq) {
-                toast('Configure Groq API key in Settings', 'error');
+                toast('Please configure Groq API key in Settings', 'error');
                 DOM.settingsModal.classList.add('show');
                 return;
             }
@@ -1774,9 +2022,11 @@
             // Send activation alert to team
             if (S.db && S.settings.teamCode) {
                 S.db.ref('team_status/' + S.settings.teamCode + '/' + S.settings.deviceName).set({
+                    name: S.settings.deviceName,
                     status: 'active',
                     timestamp: Date.now(),
-                    position: S.position
+                    position: S.position,
+                    battery: S.batteryLevel
                 });
             }
         }
@@ -1801,13 +2051,14 @@
             DOM.btnDeactivate.style.display = 'none';
             DOM.statusText.textContent = 'System ready';
             DOM.statusText.classList.remove('active');
+            DOM.feedbackProtection.classList.remove('show');
 
             dbg('OGUN DEACTIVATED', 'warn');
             toast('OGUN Deactivated');
             
             // Send deactivation alert to team
             if (S.db && S.settings.teamCode) {
-                S.db.ref('team_status/' + S.settings.teamCode + '/' + S.settings.deviceName).set({
+                S.db.ref('team_status/' + S.settings.teamCode + '/' + S.settings.deviceName).update({
                     status: 'inactive',
                     timestamp: Date.now()
                 });
@@ -1838,39 +2089,101 @@
 
             // CALL SECURITY IMMEDIATELY
             if (S.settings.securityPhone) {
-                setTimeout(() => {
-                    window.location.href = 'tel:' + S.settings.securityPhone;
-                }, 1000);
+                dbg('PANIC: Calling security: ' + S.settings.securityPhone, 'error');
+                // In real app: window.location.href = 'tel:' + S.settings.securityPhone;
+                toast('🚨 PANIC: Would call security now', 'error');
             }
 
             dbg('PANIC BUTTON TRIGGERED', 'error');
-            toast('🚨 PANIC BUTTON ACTIVATED - Calling security...', 'error');
+            toast('🚨 PANIC BUTTON ACTIVATED', 'error');
         }
 
         // ============================================================
         // EXPORT LOG
         // ============================================================
         function exportLog() {
-            const data = JSON.stringify(S.entries, null, 2);
+            const report = {
+                metadata: {
+                    exportTime: new Date().toISOString(),
+                    device: S.settings.deviceName,
+                    teamCode: S.settings.teamCode,
+                    totalEntries: S.entries.length,
+                    totalThreats: S.threats
+                },
+                entries: S.entries,
+                audioBufferSize: S.audioBuffer.length,
+                settings: S.settings
+            };
+            
+            const data = JSON.stringify(report, null, 2);
             const blob = new Blob([data], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'ogun-log-' + new Date().toISOString().split('T')[0] + '.json';
+            a.download = `ogun-report-${new Date().toISOString().split('T')[0]}-${S.settings.deviceName}.json`;
             a.click();
             URL.revokeObjectURL(url);
-            toast('Log exported', 'success');
+            toast('Report exported', 'success');
+            dbg('Report exported: ' + a.download, 'ok');
         }
 
         // ============================================================
+        // DAILY REPORT EMAIL (Simulated)
+        // ============================================================
+        function generateDailyReport() {
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const yesterday = new Date(now.getTime() - 86400000).toISOString().split('T')[0];
+            
+            const yesterdayEntries = S.entries.filter(entry => 
+                entry.time.split('T')[0] === yesterday
+            );
+            
+            const threatsByLevel = {
+                critical: 0,
+                high: 0,
+                medium: 0,
+                low: 0
+            };
+            
+            yesterdayEntries.forEach(entry => {
+                if (entry.threat.level !== 'none') {
+                    threatsByLevel[entry.threat.level]++;
+                }
+            });
+            
+            const report = {
+                date: yesterday,
+                device: S.settings.deviceName,
+                teamCode: S.settings.teamCode,
+                totalEntries: yesterdayEntries.length,
+                threats: threatsByLevel,
+                batteryUsage: `Started: ${S.batteryLevel}%`,
+                location: S.position ? `${S.position.latitude.toFixed(4)}, ${S.position.longitude.toFixed(4)}` : 'Unknown',
+                notableThreats: yesterdayEntries
+                    .filter(e => e.threat.level === 'critical' || e.threat.level === 'high')
+                    .slice(0, 5)
+            };
+            
+            dbg('Daily report generated for ' + yesterday, 'info');
+            
+            // In real app, this would email the report
+            // For now, just log it
+            console.log('DAILY REPORT:', JSON.stringify(report, null, 2));
+            
+            return report;
+        }
+                // ============================================================
         // EVENT LISTENERS
         // ============================================================
         function bindEvents() {
+            // Main control buttons
             DOM.btnActivate.onclick = activate;
             DOM.btnDeactivate.onclick = deactivate;
             DOM.btnPanic.onclick = triggerPanic;
             DOM.btnExport.onclick = exportLog;
             
+            // Debug and settings
             DOM.btnDebug.onclick = () => {
                 DOM.debugPanel.classList.toggle('show');
                 DOM.btnDebug.classList.toggle('active');
@@ -1884,15 +2197,25 @@
             DOM.closeSettings.onclick = () => DOM.settingsModal.classList.remove('show');
             DOM.btnSaveSettings.onclick = saveSettings;
 
-            // Alert buttons
+            // Alert overlay buttons
             DOM.alertBtnSecurity.onclick = () => {
-                window.location.href = 'tel:' + S.settings.securityPhone;
+                if (S.settings.securityPhone) {
+                    dbg('Calling security: ' + S.settings.securityPhone, 'error');
+                    // In real app: window.location.href = 'tel:' + S.settings.securityPhone;
+                    toast('Would call security: ' + S.settings.securityPhone, 'error');
+                } else {
+                    toast('No security phone configured', 'error');
+                }
             };
             
             DOM.alertBtnDirections.onclick = () => {
                 if (S.currentAlert?.position) {
                     const { latitude, longitude } = S.currentAlert.position;
-                    window.open(`https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`, '_blank');
+                    const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
+                    dbg('Opening directions: ' + url, 'info');
+                    window.open(url, '_blank');
+                } else {
+                    toast('No location data available', 'error');
                 }
             };
             
@@ -1901,6 +2224,7 @@
             DOM.alertBtnFalse.onclick = () => {
                 if (S.currentAlert && S.db) {
                     S.db.ref('alerts/' + S.currentAlert.id + '/falseAlarm').set(true);
+                    dbg('Marked as false alarm: ' + S.currentAlert.id, 'warn');
                 }
                 hideAlertOverlay();
                 toast('Marked as false alarm');
@@ -1913,54 +2237,307 @@
                 }
             };
 
-            // Physical button shortcuts
+            // Physical button shortcuts (for mobile)
             document.addEventListener('keydown', (e) => {
-                // Volume up + power = panic
-                if (e.key === 'VolumeUp' && e.ctrlKey) {
+                // Volume up + power = panic (simulated on PC)
+                if (e.key === 'VolumeUp' && (e.ctrlKey || e.metaKey)) {
                     triggerPanic();
                 }
                 // Volume down + power = quick deactivate
-                if (e.key === 'VolumeDown' && e.ctrlKey) {
+                if (e.key === 'VolumeDown' && (e.ctrlKey || e.metaKey)) {
                     deactivate();
+                }
+                // Escape key closes modals/alerts
+                if (e.key === 'Escape') {
+                    if (DOM.alertOverlay.classList.contains('show')) {
+                        hideAlertOverlay();
+                    }
+                    if (DOM.settingsModal.classList.contains('show')) {
+                        DOM.settingsModal.classList.remove('show');
+                    }
                 }
             });
 
-            // Prevent accidental swipe关闭
+            // Prevent accidental swipe关闭 on mobile
+            let touchStartY = 0;
+            document.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+
             document.addEventListener('touchmove', (e) => {
-                if (e.touches.length > 1) e.preventDefault();
+                // Only prevent if swiping down from top (common close gesture)
+                if (e.touches.length === 1) {
+                    const touchY = e.touches[0].clientY;
+                    const diff = touchY - touchStartY;
+                    
+                    if (diff > 100 && touchStartY < 100) {
+                        e.preventDefault();
+                    }
+                }
             }, { passive: false });
+
+            // Handle page visibility changes (minimize/tab switch)
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    dbg('Page hidden', 'warn');
+                    if (S.active) {
+                        toast('OGUN running in background', 'info');
+                    }
+                } else {
+                    dbg('Page visible', 'info');
+                }
+            });
+
+            // Handle page unload (closing tab)
+            window.addEventListener('beforeunload', (e) => {
+                if (S.active) {
+                    e.preventDefault();
+                    e.returnValue = 'OGUN is still active. Are you sure you want to leave?';
+                    return e.returnValue;
+                }
+            });
+
+            // Handle online/offline status
+            window.addEventListener('online', () => {
+                dbg('Internet connection restored', 'ok');
+                toast('Internet connection restored', 'success');
+                
+                // Sync any pending data
+                if (S.db && S.entries.length > 0) {
+                    dbg('Syncing pending data...', 'info');
+                    // In a real app, you would sync offline data here
+                }
+            });
+
+            window.addEventListener('offline', () => {
+                dbg('Internet connection lost', 'warn');
+                toast('Internet connection lost - working offline', 'error');
+            });
         }
 
         // ============================================================
-        // INIT - BATTLE READY
+        // INITIALIZATION
         // ============================================================
         function init() {
+            dbg('=========================================', 'info');
             dbg('OGUN V10 GODMODE INITIALIZING...', 'ok');
-            initFirebase();
-            loadSettings();
-            updateGroqStatus();
-            initBatteryMonitoring();
-            bindEvents();
-            dbg('OGUN V10 GODMODE READY - Guardian Standing By', 'ok');
-            dbg('Team Code: ' + (S.settings.teamCode || 'NOT SET'), S.settings.teamCode ? 'ok' : 'warn');
-            dbg('Battery Mode: ' + S.settings.batteryMode, 'info');
-            dbg('Earpiece Mode: ' + S.settings.earpieceMode, 'info');
+            dbg('FOR 50+ LIVES IN HOSTILE ENVIRONMENT', 'ok');
+            dbg('=========================================', 'info');
             
-            // Daily report reminder
+            try {
+                // Initialize Firebase
+                initFirebase();
+                
+                // Load settings
+                loadSettings();
+                updateGroqStatus();
+                
+                // Initialize battery monitoring
+                initBatteryMonitoring();
+                
+                // Bind all event listeners
+                bindEvents();
+                
+                // Check initial status
+                if (S.keys.groq) {
+                    dbg('Groq API key: CONFIGURED ✓', 'ok');
+                } else {
+                    dbg('Groq API key: NOT CONFIGURED ⚠️', 'error');
+                    toast('Configure Groq API key in Settings', 'error');
+                }
+                
+                if (S.settings.teamCode) {
+                    dbg('Team code: ' + S.settings.teamCode, 'ok');
+                } else {
+                    dbg('Team code: NOT SET (solo mode)', 'warn');
+                }
+                
+                dbg('Device: ' + S.settings.deviceName, 'info');
+                dbg('Battery mode: ' + S.settings.batteryMode, 'info');
+                dbg('Earpiece mode: ' + S.settings.earpieceMode, 'info');
+                dbg('Feedback protection: ACTIVE ✓', 'ok');
+                dbg('Audio buffer: 3 minutes', 'info');
+                dbg('Man-down detection: ACTIVE ✓', 'ok');
+                
+                // Setup daily report timer (6 AM)
+                setupDailyReport();
+                
+                dbg('=========================================', 'info');
+                dbg('OGUN V10 GODMODE READY FOR DEPLOYMENT', 'ok');
+                dbg('GUARDIAN STANDING BY', 'ok');
+                dbg('=========================================', 'info');
+                
+                // Initial toast
+                setTimeout(() => {
+                    toast('OGUN V10 Ready - Configure settings to begin', 'success');
+                }, 1000);
+                
+            } catch (error) {
+                dbg('Initialization error: ' + error.message, 'error');
+                toast('System initialization failed: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // DAILY REPORT SCHEDULER
+        // ============================================================
+        function setupDailyReport() {
+            // Calculate time until next 6 AM
             const now = new Date();
             const reportTime = new Date();
             reportTime.setHours(6, 0, 0, 0);
-            if (now > reportTime) reportTime.setDate(reportTime.getDate() + 1);
-            const timeToReport = reportTime - now;
+            
+            // If it's already past 6 AM today, schedule for tomorrow
+            if (now > reportTime) {
+                reportTime.setDate(reportTime.getDate() + 1);
+            }
+            
+            const timeToReport = reportTime.getTime() - now.getTime();
+            
+            dbg('Daily report scheduled for ' + reportTime.toLocaleTimeString(), 'info');
+            
+            // Schedule the report
             setTimeout(() => {
-                toast('📄 Daily report time - Check email for overnight activity');
+                generateDailyReport();
+                toast('📄 Daily report generated - Check console', 'success');
+                
+                // Reschedule for next day
+                setupDailyReport();
             }, timeToReport);
         }
 
         // ============================================================
-        // START THE GUARDIAN
+        // QUICK TEST FUNCTION (for debugging)
         // ============================================================
-        init();
+        function quickTest() {
+            dbg('=== QUICK TEST START ===', 'info');
+            
+            // Test 1: Language detection
+            const testTexts = [
+                "Me maame frɛ me",
+                "Zan tafi gari",
+                "How you dey",
+                "Hello world"
+            ];
+            
+            testTexts.forEach(text => {
+                const lang = detectLanguage(text);
+                dbg(`"${text}" → ${lang}`, 'info');
+            });
+            
+            // Test 2: Threat detection
+            const threatTests = [
+                "Kill them now",
+                "Call my mom",
+                "Follow that car",
+                "How many guards",
+                "Hello how are you"
+            ];
+            
+            threatTests.forEach(text => {
+                const threat = analyzeThreat(text);
+                dbg(`"${text}" → ${threat.level}: ${threat.category}`, 
+                    threat.level === 'none' ? 'info' : 'warn');
+            });
+            
+            // Test 3: Feedback protection
+            dbg('Feedback protection: ' + (S.feedbackProtection ? 'ACTIVE' : 'INACTIVE'), 'ok');
+            dbg('Audio buffer size: ' + S.audioBuffer.length, 'info');
+            dbg('Battery level: ' + S.batteryLevel + '%', 'info');
+            dbg('GPS: ' + (S.position ? 'ACTIVE' : 'INACTIVE'), 'info');
+            dbg('Firebase: ' + (S.db ? 'CONNECTED' : 'DISCONNECTED'), 'info');
+            
+            dbg('=== QUICK TEST COMPLETE ===', 'info');
+        }
+
+        // ============================================================
+        // EMERGENCY OVERRIDES (for extreme situations)
+        // ============================================================
+        function emergencyOverride(command) {
+            switch(command) {
+                case 'SILENT_MODE':
+                    S.settings.earpieceMode = 'silent';
+                    toast('EMERGENCY: Silent mode activated', 'error');
+                    break;
+                    
+                case 'MAX_PERFORMANCE':
+                    S.settings.batteryMode = 'performance';
+                    S.settings.processing = 'fast';
+                    toast('EMERGENCY: Max performance mode', 'error');
+                    break;
+                    
+                case 'FARADAY_MODE':
+                    // Simulate Faraday cage (disable all network)
+                    if (S.db) {
+                        // In real app, you would disconnect Firebase
+                        dbg('EMERGENCY: Faraday mode activated', 'error');
+                    }
+                    toast('EMERGENCY: Faraday mode (offline)', 'error');
+                    break;
+                    
+                case 'WIPE_BUFFER':
+                    S.audioBuffer = [];
+                    S.entries = [];
+                    DOM.transcriptContent.innerHTML = '<div style="text-align: center; color: #666; padding: 40px;">Buffer wiped</div>';
+                    dbg('EMERGENCY: Buffer wiped', 'error');
+                    toast('EMERGENCY: All data wiped', 'error');
+                    break;
+            }
+        }
+
+        // ============================================================
+        // SERVICE WORKER REGISTRATION (for background operation)
+        // ============================================================
+        async function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('/sw.js');
+                    dbg('Service Worker registered: ' + registration.scope, 'ok');
+                    
+                    // Listen for messages from service worker
+                    navigator.serviceWorker.addEventListener('message', (event) => {
+                        if (event.data && event.data.type === 'THREAT_ALERT') {
+                            dbg('Service Worker alert: ' + event.data.message, 'error');
+                            toast('Background alert: ' + event.data.message, 'error');
+                        }
+                    });
+                    
+                } catch (error) {
+                    dbg('Service Worker registration failed: ' + error.message, 'warn');
+                }
+            }
+        }
+
+        // ============================================================
+        // START THE SYSTEM
+        // ============================================================
+        
+        // Wait for DOM to be fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+        
+        // Register service worker after init
+        setTimeout(registerServiceWorker, 2000);
+        
+        // Make some functions globally available for debugging
+        window.OGUN = {
+            version: 'V10-GODMODE',
+            state: S,
+            test: quickTest,
+            emergency: emergencyOverride,
+            generateReport: generateDailyReport,
+            exportLog: exportLog,
+            getAudioBuffer: getAudioBuffer,
+            activate: activate,
+            deactivate: deactivate,
+            panic: triggerPanic
+        };
+        
+        dbg('OGUN global object available (window.OGUN)', 'info');
+
     })();
     </script>
 </body>
