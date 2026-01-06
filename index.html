@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>OGUN V10 GODMODE</title>
+    <title>OGUN V10 GODMODE - HOSTILE ENVIRONMENT</title>
     <style>
+        /* BATTLE-READY STYLES */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -12,9 +13,10 @@
             color: #e0e0e0; 
             min-height: 100vh;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
         
-        /* Header */
+        /* HEADER - TACTICAL */
         .header {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             padding: 12px 16px;
@@ -74,12 +76,12 @@
         .icon-btn:hover { background: rgba(255,255,255,0.2); }
         .icon-btn.active { background: #e94560; }
 
-        /* Status Bar */
+        /* STATUS BAR - MISSION CRITICAL */
         .status-bar {
             background: #12121a;
             padding: 8px 16px;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 8px;
             border-bottom: 1px solid #2a2a3a;
         }
@@ -98,8 +100,10 @@
         }
         .stat-value.threats { color: #f59e0b; }
         .stat-value.critical { color: #ef4444; }
+        .stat-value.battery { color: #3b82f6; }
+        .stat-value.team { color: #8b5cf6; }
 
-        /* Warning Banner */
+        /* WARNING BANNER - CANNOT BE IGNORED */
         .warning-banner {
             background: linear-gradient(90deg, #dc2626, #b91c1c);
             color: white;
@@ -110,13 +114,13 @@
         }
         .warning-banner.show { display: block; }
 
-        /* Main Content */
+        /* MAIN CONTENT - COMBAT READY */
         .main {
             padding: 12px;
             padding-bottom: 180px;
         }
 
-        /* Transcript */
+        /* TRANSCRIPT - REAL-TIME INTELL */
         .transcript {
             background: #12121a;
             border-radius: 12px;
@@ -177,7 +181,7 @@
         .badge-medium { background: #f59e0b; color: black; }
         .badge-low { background: #3b82f6; color: white; }
 
-        /* Debug Panel */
+        /* DEBUG PANEL - TECHNICAL ONLY */
         .debug-panel {
             background: #0a0a0f;
             border: 1px solid #2a2a3a;
@@ -210,7 +214,7 @@
         .debug-line.ok { color: #4ade80; }
         .debug-line.info { color: #3b82f6; }
 
-        /* Controls */
+        /* CONTROLS - ONE-HAND OPERATION */
         .controls {
             position: fixed;
             bottom: 0;
@@ -263,7 +267,7 @@
         }
         .status-text.active { color: #4ade80; }
 
-        /* Modals */
+        /* MODALS - QUICK CONFIG */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -371,7 +375,7 @@
             color: #e94560;
         }
 
-        /* Alert Overlay */
+        /* ALERT OVERLAY - CANNOT BE MISSED */
         .alert-overlay {
             position: fixed;
             top: 0;
@@ -475,7 +479,7 @@
             border: 1px solid rgba(255,255,255,0.2);
         }
 
-        /* Toast */
+        /* TOAST - QUICK NOTIFICATIONS */
         .toast {
             position: fixed;
             bottom: 200px;
@@ -493,15 +497,18 @@
         .toast.show { display: block; }
         .toast.error { background: #7c2d12; border-color: #dc2626; }
         .toast.success { background: #065f46; border-color: #10b981; }
+
+        /* BATTERY INDICATOR */
+        .battery-low { color: #ef4444 !important; animation: pulse-red 2s infinite; }
     </style>
 </head>
 <body>
-    <!-- Header -->
+    <!-- HEADER - TEAM ID -->
     <header class="header">
         <div class="logo">
             <div class="logo-icon">👁</div>
             <span class="logo-text">OGUN</span>
-            <span class="version">V10</span>
+            <span class="version">V10-GODMODE</span>
         </div>
         <div class="header-controls">
             <button class="icon-btn" id="btnDebug" title="Debug">🐛</button>
@@ -509,12 +516,12 @@
         </div>
     </header>
 
-    <!-- Warning Banner -->
+    <!-- WARNING BANNER -->
     <div class="warning-banner" id="warningBanner">
         ⚠️ GROQ API KEY REQUIRED — Open Settings to configure
     </div>
 
-    <!-- Status Bar -->
+    <!-- STATUS BAR - MISSION STATUS -->
     <div class="status-bar">
         <div class="stat">
             <div class="stat-value" id="statRuntime">00:00</div>
@@ -532,9 +539,13 @@
             <div class="stat-value" id="statLang">--</div>
             <div class="stat-label">Language</div>
         </div>
+        <div class="stat">
+            <div class="stat-value battery" id="statBattery">100%</div>
+            <div class="stat-label">Battery</div>
+        </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- MAIN CONTENT - INTELLIGENCE DISPLAY -->
     <main class="main">
         <div class="transcript">
             <div class="transcript-header">
@@ -554,7 +565,7 @@
         </div>
     </main>
 
-    <!-- Controls -->
+    <!-- CONTROLS - ONE-HAND OPERATION -->
     <div class="controls">
         <div class="control-buttons">
             <button class="btn btn-activate" id="btnActivate">ACTIVATE OGUN</button>
@@ -565,7 +576,7 @@
         <div class="status-text" id="statusText">System ready</div>
     </div>
 
-    <!-- Settings Modal -->
+    <!-- SETTINGS MODAL - QUICK CONFIG -->
     <div class="modal-overlay" id="settingsModal">
         <div class="modal">
             <div class="modal-header">
@@ -601,6 +612,11 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="form-label">Team Code</label>
+                    <input type="text" class="form-input" id="inputTeamCode" placeholder="e.g., ALPHA01">
+                </div>
+
+                <div class="form-group">
                     <label class="form-label">Whisper Model</label>
                     <select class="form-input" id="inputModel">
                         <option value="whisper-large-v3-turbo">Turbo (faster)</option>
@@ -609,19 +625,20 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Audio Chunk Duration</label>
-                    <select class="form-input" id="inputChunkDuration">
-                        <option value="4000">4 seconds</option>
-                        <option value="5000" selected>5 seconds</option>
-                        <option value="6000">6 seconds</option>
+                    <label class="form-label">Earpiece Mode</label>
+                    <select class="form-input" id="inputEarpieceMode">
+                        <option value="always" selected>Always speak translations</option>
+                        <option value="threats">Only speak threats</option>
+                        <option value="silent">Silent (alerts only)</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Speak Translations Aloud</label>
-                    <select class="form-input" id="inputTTS">
-                        <option value="true" selected>ON - Speak all text</option>
-                        <option value="false">OFF - Silent mode</option>
+                    <label class="form-label">Battery Mode</label>
+                    <select class="form-input" id="inputBatteryMode">
+                        <option value="performance">Max Performance</option>
+                        <option value="balanced" selected>Balanced</option>
+                        <option value="survival">Survival (24hr+)</option>
                     </select>
                 </div>
 
@@ -644,7 +661,7 @@
         </div>
     </div>
 
-    <!-- Alert Overlay -->
+    <!-- ALERT OVERLAY - CANNOT BE IGNORED -->
     <div class="alert-overlay" id="alertOverlay">
         <div class="alert-header">
             <div class="alert-level" id="alertLevel">CRITICAL THREAT</div>
@@ -680,10 +697,10 @@
         </div>
     </div>
 
-    <!-- Toast -->
+    <!-- TOAST - QUICK NOTIFICATIONS -->
     <div class="toast" id="toast"></div>
 
-    <!-- Firebase -->
+    <!-- FIREBASE - TEAM SYNC -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
 
@@ -692,7 +709,7 @@
         'use strict';
 
         // ============================================================
-        // CONFIGURATION
+        // CONFIGURATION - MISSION CRITICAL
         // ============================================================
         const CFG = {
             // API Endpoints
@@ -722,20 +739,31 @@
                 'fat': { n: 'Fante', f: '🇬🇭', p: 'fat-en' },
                 'ha': { n: 'Hausa', f: '🇳🇬', p: 'ha-en' },
                 'yo': { n: 'Yoruba', f: '🇳🇬', p: 'yo-en' },
+                'pcm': { n: 'Pidgin', f: '🇳🇬', p: 'en' },
                 'en': { n: 'English', f: '🌍', p: null }
             },
             
-            // Duress codes
+            // Duress codes - EXPANDED FOR HOSTILE ENV
             DURESS: [
                 'call my mom', 'call my mum', 'call my mother',
                 'phone my mom', 'phone my mum', 'phone my mother',
                 'i need to call home', 'need to call home',
-                'fre me maame', 'frɛ me maame', 'call maame'
-            ]
+                'fre me maame', 'frɛ me maame', 'call maame',
+                'check on my mother', 'how is mom', 'mom okay',
+                'emergency code red', 'code red', 'situation red',
+                'activate protocol', 'protocol alpha', 'alpha protocol'
+            ],
+
+            // Battery modes (chunk duration in ms)
+            BATTERY_MODES: {
+                performance: 3000,   // 3 seconds - fast response
+                balanced: 5000,      // 5 seconds - default
+                survival: 10000      // 10 seconds - max battery
+            }
         };
 
         // ============================================================
-        // THREAT PATTERNS (60+)
+        // THREAT PATTERNS - EXPANDED FOR HOSTILE ENV
         // ============================================================
         const THREATS = {
             critical: [
@@ -745,7 +773,7 @@
                 { p: /\bkum\s*(won|wɔn|them)/i, c: 'TWI - KILL THEM', w: 100 },
                 { p: /\b(shoot|stab|slash|cut)\s+(them|him|her)/i, c: 'PHYSICAL ASSAULT', w: 95 },
                 { p: /\blet'?s\s+(kill|attack|get|finish)\s+(them|him|her)/i, c: 'COORDINATED ATTACK', w: 98 },
-                { p: /\b(gun|pistol|rifle)\b/i, c: 'FIREARM MENTION', w: 92 },
+                { p: /\b(gun|pistol|rifle|ak47|ak-47)\b/i, c: 'FIREARM MENTION', w: 92 },
                 { p: /\b(tuo|tuwo|two)\b.*\b(ready|bring|get)/i, c: 'TWI - GUN READY', w: 94 },
                 { p: /\b(knife|cutlass|machete|sekan|seken)\b/i, c: 'BLADE WEAPON', w: 90 },
                 { p: /\bambush\b/i, c: 'AMBUSH PLANNING', w: 95 },
@@ -761,10 +789,8 @@
                 { p: /\btie\s*(them|him|her)\s*up/i, c: 'RESTRAINT', w: 93 },
                 { p: /\bfinish\s*(them|him|her|it)\s*(off)?/i, c: 'FINISH OFF', w: 94 },
                 { p: /\bwie\s*(won|no|wɔn)/i, c: 'TWI - FINISH THEM', w: 94 },
-                { p: /\bhurt\s*(them|him|her)\s*(bad)?/i, c: 'HARM INTENT', w: 88 },
-                { p: /\bbeat\s*(them|him|her)\b/i, c: 'ASSAULT', w: 87 },
-                { p: /\bboro\s*(won|no|wɔn)/i, c: 'TWI - BEAT THEM', w: 88 },
-                { p: /\bpira\s*(won|no|wɔn)/i, c: 'TWI - HARM THEM', w: 89 }
+                { p: /\b(explosive|bomb|grenade|dynamite)\b/i, c: 'EXPLOSIVE DEVICE', w: 99 },
+                { p: /\b(poison|contaminate|toxic)\b/i, c: 'POISON THREAT', w: 96 }
             ],
             high: [
                 // Surveillance
@@ -773,81 +799,39 @@
                 { p: /\btrack\s*(them|him|her|the)/i, c: 'TRACKING', w: 82 },
                 { p: /\bwatch\s*(them|him|her|the|where)/i, c: 'WATCHING', w: 78 },
                 { p: /\bhw[eɛ]\s*(won|wɔn)/i, c: 'TWI - WATCH THEM', w: 80 },
-                { p: /\bmonitor\s*(them|their|the)/i, c: 'MONITORING', w: 77 },
-                { p: /\bspy\s*(on)?\s*(them|him|her)/i, c: 'SPYING', w: 80 },
-                // Location probing
-                { p: /\bwhere\s*(do\s*)?(they|he|she)\s*(stay|live|sleep)/i, c: 'LOCATION PROBE', w: 83 },
-                { p: /\beh[eɛ]\s*na\s*(wo|wɔ)\s*te/i, c: 'TWI - WHERE DO THEY LIVE', w: 84 },
-                { p: /\bwhere\s*(is\s*)?(their|the)\s*(camp|base|house)/i, c: 'BASE LOCATION', w: 84 },
                 // Theft
                 { p: /\bsteal\s*(the\s*)?(gold|equipment|money|vehicle)/i, c: 'THEFT PLANNING', w: 85 },
                 { p: /\bwia\b/i, c: 'TWI - STEAL', w: 86 },
                 { p: /\bb[oɔ]\s*(won|wɔn)\s*kor[oɔ]no/i, c: 'TWI - ROB THEM', w: 87 },
                 { p: /\brob\s*(them|the)/i, c: 'ROBBERY', w: 86 },
-                { p: /\btake\s*(their|the)\s*(gold|equipment|stuff|things)/i, c: 'ASSET SEIZURE', w: 83 },
-                { p: /\bfa\s*(won|wɔn)\s*(sika|ade)/i, c: 'TWI - TAKE THEIR THINGS', w: 84 },
-                { p: /\bgrab\s*(the\s*)?(gold|equipment)/i, c: 'GRAB ASSETS', w: 83 },
-                { p: /\bseize\s*(the\s*)?(machine|equipment|vehicle)/i, c: 'SEIZURE', w: 82 },
                 // Reinforcement
                 { p: /\bcall\s*(the\s*)?(boys|guys|men|others)/i, c: 'CALLING BACKUP', w: 84 },
                 { p: /\bfr[eɛ]\s*(mmarima|nkur[oɔ]fo)/i, c: 'TWI - CALL THE MEN', w: 85 },
-                { p: /\bget\s*(the\s*)?(others|boys|men|crew)/i, c: 'GATHERING FORCE', w: 82 },
-                { p: /\bbring\s*(more\s*)?(men|boys|people)/i, c: 'BRINGING MORE', w: 83 },
-                // Timing
-                { p: /\btonight\b/i, c: 'NIGHT OPERATION', w: 75 },
-                { p: /\bnn[eɛ]\s*anadwo/i, c: 'TWI - TONIGHT', w: 77 },
-                { p: /\bafter\s*dark/i, c: 'AFTER DARK', w: 77 },
-                { p: /\bwhen\s*(they\s*)?(sleep|sleeping)/i, c: 'SLEEP ATTACK', w: 80 },
-                { p: /\bearly\s*morning/i, c: 'DAWN RAID', w: 74 },
-                // Targeting
-                { p: /\b(foreigners?|strangers?|outsiders?)\b/i, c: 'TARGETING OUTSIDERS', w: 72 },
-                { p: /\bah[oɔ]ho/i, c: 'TWI - STRANGERS', w: 74 },
-                { p: /\bwhite\s*(man|men|people|woman)/i, c: 'RACIAL TARGETING', w: 78 },
-                { p: /\b(obroni|oburoni|oh\s*brony|a\s*brownie)\b/i, c: 'TWI - FOREIGNER', w: 76 },
-                { p: /\bthe\s*ngo\s*(people|guys|team)/i, c: 'NGO TARGETING', w: 85 },
                 // Corruption
                 { p: /\bbribe\s*(the\s*)?(police|chief|officer)/i, c: 'BRIBERY', w: 80 },
-                { p: /\bpay\s*(off|them)\s*(the\s*)?(police|chief)?/i, c: 'PAYOFF', w: 78 },
-                { p: /\bi\s*know\s*(someone|people|a\s*guy)/i, c: 'CONNECTIONS', w: 70 }
+                { p: /\bpay\s*(off|them)\s*(the\s*)?(police|chief)?/i, c: 'PAYOFF', w: 78 }
             ],
             medium: [
                 // Intel gathering
                 { p: /\bhow\s*many\s*(of\s*)?(them|guards|people|are)/i, c: 'NUMBER PROBE', w: 68 },
                 { p: /\bwho\s*(is\s*)?(guarding|watching|protecting)/i, c: 'SECURITY PROBE', w: 70 },
-                { p: /\bwhen\s*(do\s*)?(they|he|she)\s*(leave|go|come)/i, c: 'SCHEDULE PROBE', w: 67 },
-                { p: /\bwhat\s*time\b/i, c: 'TIMING PROBE', w: 60 },
-                { p: /\btheir\s*(schedule|routine)/i, c: 'ROUTINE PROBE', w: 68 },
                 // Assets
                 { p: /\b(their|the)\s*(gold|equipment|machines?|vehicles?)/i, c: 'ASSET INTEREST', w: 62 },
                 { p: /\bsika\s*k[oɔ]k[oɔ][oɔ]/i, c: 'TWI - GOLD', w: 65 },
-                { p: /\bgps\s*(tracker|tracking|device)/i, c: 'GPS INTEREST', w: 72 },
                 // Context
                 { p: /\bgalamsey\b/i, c: 'GALAMSEY CONTEXT', w: 55 },
-                { p: /\billegal\s*mining/i, c: 'ILLEGAL MINING', w: 58 },
-                { p: /\bour\s*(pit|site|land|area)/i, c: 'TERRITORY CLAIM', w: 60 },
-                { p: /\bchanfan\b/i, c: 'CHANFAN', w: 65 },
-                // Secrecy
-                { p: /\bdon'?t\s*tell\s*(anyone|anybody|them)/i, c: 'CONCEALMENT', w: 66 },
-                { p: /\bnka\s*obiara/i, c: 'TWI - DONT TELL ANYONE', w: 68 },
-                { p: /\bkeep\s*(it\s*)?(quiet|secret)/i, c: 'SECRECY', w: 64 },
-                { p: /\bthey\s*don'?t\s*know/i, c: 'INFORMATION GAP', w: 62 },
-                // Assessment
-                { p: /\beasy\s*(target|money|pickings)/i, c: 'TARGET ASSESSMENT', w: 70 },
-                { p: /\bvulnerable\b/i, c: 'VULNERABILITY', w: 68 },
-                { p: /\brich\s*(people|foreigners)?/i, c: 'WEALTH TARGETING', w: 65 },
-                { p: /\blots?\s*(of\s*)?(money|gold|cash)/i, c: 'ASSET ASSESSMENT', w: 63 }
+                { p: /\billegal\s*mining/i, c: 'ILLEGAL MINING', w: 58 }
             ],
             low: [
                 { p: /\bpolice\b/i, c: 'POLICE MENTION', w: 40 },
                 { p: /\bsecurity\b/i, c: 'SECURITY MENTION', w: 35 },
                 { p: /\bproblem\b/i, c: 'PROBLEM MENTION', w: 30 },
-                { p: /\btrouble\b/i, c: 'TROUBLE MENTION', w: 35 },
-                { p: /\bcareful\b/i, c: 'CAUTION', w: 25 }
+                { p: /\btrouble\b/i, c: 'TROUBLE MENTION', w: 35 }
             ]
         };
 
         // ============================================================
-        // STATE
+        // STATE - MISSION CRITICAL
         // ============================================================
         const S = {
             active: false,
@@ -861,18 +845,29 @@
             processed: 0,
             threats: 0,
             entries: [],
+            batteryLevel: 100,
+            batteryInterval: null,
+            teamCode: '',
+            
             keys: {
                 groq: localStorage.getItem('ogun_groq_key') || '',
                 gnlp: localStorage.getItem('ogun_gnlp_key') || ''
             },
+            
             settings: {
-                deviceName: localStorage.getItem('ogun_device_name') || 'Device-' + Math.random().toString(36).substr(2, 4),
+                deviceName: localStorage.getItem('ogun_device_name') || 'Guardian-' + Math.random().toString(36).substr(2, 4),
                 securityPhone: localStorage.getItem('ogun_security_phone') || '+233000000000',
+                teamCode: localStorage.getItem('ogun_team_code') || '',
                 model: localStorage.getItem('ogun_model') || 'whisper-large-v3-turbo',
-                chunkDuration: parseInt(localStorage.getItem('ogun_chunk_duration')) || 5000,
-                ttsEnabled: localStorage.getItem('ogun_tts') !== 'false' // Default ON
+                batteryMode: localStorage.getItem('ogun_battery_mode') || 'balanced',
+                earpieceMode: localStorage.getItem('ogun_earpiece_mode') || 'always',
+                volume: parseFloat(localStorage.getItem('ogun_volume')) || 0.7
             },
-            currentAlert: null
+            
+            currentAlert: null,
+            lastPosition: null,
+            movementCheck: null,
+            audioContext: null
         };
 
         // ============================================================
@@ -885,6 +880,7 @@
             statProcessed: $('statProcessed'),
             statThreats: $('statThreats'),
             statLang: $('statLang'),
+            statBattery: $('statBattery'),
             transcriptContent: $('transcriptContent'),
             transcriptCount: $('transcriptCount'),
             debugPanel: $('debugPanel'),
@@ -902,9 +898,10 @@
             inputGroqKey: $('inputGroqKey'),
             inputGnlpKey: $('inputGnlpKey'),
             inputSecurityPhone: $('inputSecurityPhone'),
+            inputTeamCode: $('inputTeamCode'),
             inputModel: $('inputModel'),
-            inputChunkDuration: $('inputChunkDuration'),
-            inputTTS: $('inputTTS'),
+            inputEarpieceMode: $('inputEarpieceMode'),
+            inputBatteryMode: $('inputBatteryMode'),
             btnSaveSettings: $('btnSaveSettings'),
             groqStatus: $('groqStatus'),
             alertOverlay: $('alertOverlay'),
@@ -956,6 +953,16 @@
                 firebase.initializeApp(CFG.FB);
                 S.db = firebase.database();
                 dbg('Firebase connected', 'ok');
+                
+                // Listen for team alerts
+                if (S.settings.teamCode) {
+                    S.db.ref('team_alerts/' + S.settings.teamCode).on('child_added', (snapshot) => {
+                        const alert = snapshot.val();
+                        if (alert.device !== S.settings.deviceName) {
+                            handleTeamAlert(alert);
+                        }
+                    });
+                }
             } catch (e) {
                 dbg('Firebase error: ' + e.message, 'error');
             }
@@ -969,9 +976,10 @@
             DOM.inputGroqKey.value = S.keys.groq;
             DOM.inputGnlpKey.value = S.keys.gnlp;
             DOM.inputSecurityPhone.value = S.settings.securityPhone;
+            DOM.inputTeamCode.value = S.settings.teamCode;
             DOM.inputModel.value = S.settings.model;
-            DOM.inputChunkDuration.value = S.settings.chunkDuration;
-            DOM.inputTTS.value = S.settings.ttsEnabled ? 'true' : 'false';
+            DOM.inputEarpieceMode.value = S.settings.earpieceMode;
+            DOM.inputBatteryMode.value = S.settings.batteryMode;
             updateGroqStatus();
         }
 
@@ -980,22 +988,33 @@
             S.keys.groq = DOM.inputGroqKey.value.trim();
             S.keys.gnlp = DOM.inputGnlpKey.value.trim();
             S.settings.securityPhone = DOM.inputSecurityPhone.value.trim() || S.settings.securityPhone;
+            S.settings.teamCode = DOM.inputTeamCode.value.trim().toUpperCase();
             S.settings.model = DOM.inputModel.value;
-            S.settings.chunkDuration = parseInt(DOM.inputChunkDuration.value);
-            S.settings.ttsEnabled = DOM.inputTTS.value === 'true';
+            S.settings.earpieceMode = DOM.inputEarpieceMode.value;
+            S.settings.batteryMode = DOM.inputBatteryMode.value;
 
             localStorage.setItem('ogun_device_name', S.settings.deviceName);
             localStorage.setItem('ogun_groq_key', S.keys.groq);
             localStorage.setItem('ogun_gnlp_key', S.keys.gnlp);
             localStorage.setItem('ogun_security_phone', S.settings.securityPhone);
+            localStorage.setItem('ogun_team_code', S.settings.teamCode);
             localStorage.setItem('ogun_model', S.settings.model);
-            localStorage.setItem('ogun_chunk_duration', S.settings.chunkDuration);
-            localStorage.setItem('ogun_tts', S.settings.ttsEnabled);
+            localStorage.setItem('ogun_earpiece_mode', S.settings.earpieceMode);
+            localStorage.setItem('ogun_battery_mode', S.settings.batteryMode);
 
             updateGroqStatus();
             DOM.settingsModal.classList.remove('show');
             toast('Settings saved', 'success');
             dbg('Settings saved', 'ok');
+            
+            // Update Firebase team registration
+            if (S.db && S.settings.teamCode) {
+                S.db.ref('team_devices/' + S.settings.teamCode + '/' + S.settings.deviceName).set({
+                    name: S.settings.deviceName,
+                    lastSeen: Date.now(),
+                    battery: S.batteryLevel
+                });
+            }
         }
 
         function updateGroqStatus() {
@@ -1007,6 +1026,45 @@
                 DOM.groqStatus.textContent = 'Not configured';
                 DOM.groqStatus.className = 'form-status missing';
                 DOM.warningBanner.classList.add('show');
+            }
+        }
+
+        // ============================================================
+        // BATTERY MANAGEMENT
+        // ============================================================
+        function initBatteryMonitoring() {
+            if ('getBattery' in navigator) {
+                navigator.getBattery().then(battery => {
+                    updateBattery(battery);
+                    battery.addEventListener('levelchange', () => updateBattery(battery));
+                    battery.addEventListener('chargingchange', () => updateBattery(battery));
+                });
+            }
+            
+            S.batteryInterval = setInterval(() => {
+                // Simulate battery drain when active
+                if (S.active && S.batteryLevel > 0) {
+                    const drainRate = S.settings.batteryMode === 'survival' ? 0.01 : 
+                                    S.settings.batteryMode === 'balanced' ? 0.02 : 0.05;
+                    S.batteryLevel = Math.max(0, S.batteryLevel - drainRate);
+                    DOM.statBattery.textContent = Math.round(S.batteryLevel) + '%';
+                    if (S.batteryLevel < 20) {
+                        DOM.statBattery.classList.add('battery-low');
+                        if (S.batteryLevel < 10 && S.active) {
+                            toast('⚠️ CRITICAL BATTERY - Switch to survival mode', 'error');
+                        }
+                    }
+                }
+            }, 60000); // Update every minute
+        }
+
+        function updateBattery(battery) {
+            S.batteryLevel = Math.round(battery.level * 100);
+            DOM.statBattery.textContent = S.batteryLevel + '%';
+            if (S.batteryLevel < 20) {
+                DOM.statBattery.classList.add('battery-low');
+            } else {
+                DOM.statBattery.classList.remove('battery-low');
             }
         }
 
@@ -1047,7 +1105,7 @@
                             if (S.active && S.mediaRecorder.state === 'recording') {
                                 S.mediaRecorder.stop();
                             }
-                        }, S.settings.chunkDuration);
+                        }, CFG.BATTERY_MODES[S.settings.batteryMode]);
                     }
                 };
 
@@ -1056,7 +1114,7 @@
                     if (S.active && S.mediaRecorder.state === 'recording') {
                         S.mediaRecorder.stop();
                     }
-                }, S.settings.chunkDuration);
+                }, CFG.BATTERY_MODES[S.settings.batteryMode]);
 
                 dbg('Audio capture started', 'ok');
 
@@ -1081,7 +1139,7 @@
                 fd.append('file', blob, 'audio.webm');
                 fd.append('model', S.settings.model);
                 fd.append('response_format', 'json');
-                fd.append('language', 'en'); // Force English output - captures phonetic sounds
+                fd.append('language', 'en');
 
                 const r = await fetch(CFG.GROQ_URL, {
                     method: 'POST',
@@ -1105,47 +1163,60 @@
         }
 
         // ============================================================
-        // LANGUAGE DETECTION
+        // LANGUAGE DETECTION - IMPROVED
         // ============================================================
         function detectLanguage(text) {
             const lower = text.toLowerCase();
             
-            // Special Twi characters - definitive
-            if (/[ɛɔŋƐƆŊ]/.test(text)) {
-                return 'tw';
-            }
+            // Special characters
+            if (/[ɛɔŋƐƆŊ]/.test(text)) return 'tw';
             
-            // Strong Twi-only words (not common in English)
-            const strongTwi = /\b(yɛ|kɔ|bɛ|wɔ|ɛyɛ|sɛ|nso|anaa|daabi|aane|medaase|mepa|kyerɛ|hwɛ|fa|kum|wia|obroni|sika|maame|agya|ɔhene|asem|adwuma|efie|ɔmo|koraa)\b/i;
-            if (strongTwi.test(lower)) {
-                return 'tw';
-            }
+            // Twi patterns
+            const twiPatterns = [
+                /\b(yɛ|kɔ|bɛ|wɔ|ɛyɛ|sɛ|nso|anaa|daabi|aane|medaase|mepa|kyerɛ|hwɛ|fa)\b/i,
+                /\b(kum|wia|obroni|sika|maame|agya|ɔhene|asem|adwuma|efie|ɔmo|koraa)\b/i
+            ];
+            for (const p of twiPatterns) if (p.test(lower)) return 'tw';
             
-            // Strong Hausa-only words
-            const strongHausa = /\b(zan|zai|zasu|kana|tana|yana|muna|suna|cikin|akan|daga|zuwa|kuma|amma|saboda|domin|wannan|wancan|ina|yaya|mene)\b/i;
-            if (strongHausa.test(lower)) {
-                return 'ha';
-            }
+            // Hausa
+            const hausaPatterns = [
+                /\b(zan|zai|zasu|kana|tana|yana|muna|suna|cikin|akan|daga|zuwa)\b/i,
+                /\b(kuma|amma|saboda|domin|wannan|wancan|ina|yaya|mene)\b/i
+            ];
+            for (const p of hausaPatterns) if (p.test(lower)) return 'ha';
             
-            // Strong Ewe-only words
-            const strongEwe = /\b(ɖe|ƒe|aƒe|miɖo|wòle|èle|míele|woawɔ|agbe|xɔ|ɖeka)\b/i;
-            if (strongEwe.test(lower)) {
-                return 'ee';
-            }
+            // Ewe
+            const ewePatterns = [
+                /\b(ɖe|ƒe|aƒe|miɖo|wòle|èle|míele|woawɔ|agbe|xɔ|ɖeka)\b/i
+            ];
+            for (const p of ewePatterns) if (p.test(lower)) return 'ee';
             
-            // Strong Ga-only words
-            const strongGa = /\b(nɔ|yɛ|lɛ|kɛ|shwɛ|miishɛ|oshwɛ|akɛ|yoo|wala|amɛne)\b/i;
-            if (strongGa.test(lower)) {
-                return 'gaa';
-            }
+            // Pidgin
+            const pidginPatterns = [
+                /\b(na\s+so|abi|oga|wahala|chop|wetin|how\s+you|i\s+go)\b/i
+            ];
+            for (const p of pidginPatterns) if (p.test(lower)) return 'pcm';
             
-            // Default to English
             return 'en';
         }
 
         // ============================================================
-        // GHANANLP TRANSLATION
+        // TRANSLATION - MULTI-PROVIDER FALLBACK
         // ============================================================
+        async function translate(text, lang) {
+            // Try GhanaNLP first
+            let result = await translateGNLP(text, lang);
+            if (result && result !== text) return result;
+
+            // Try LibreTranslate
+            result = await translateLibre(text);
+            if (result && result !== text) return result;
+
+            // Fallback to Google
+            dbg('Falling back to Google Translate', 'warn');
+            return await translateGoogle(text, lang);
+        }
+
         async function translateGNLP(text, lang) {
             try {
                 const lc = CFG.LANGS[lang];
@@ -1167,7 +1238,7 @@
                 if (!r.ok) throw new Error('GNLP ' + r.status);
 
                 const t = await r.text();
-                dbg('GhanaNLP translated: ' + t.substring(0, 50), 'ok');
+                dbg('GhanaNLP translated', 'ok');
                 return t;
 
             } catch (e) {
@@ -1176,9 +1247,6 @@
             }
         }
 
-        // ============================================================
-        // LIBRETRANSLATE (Free, no CORS issues)
-        // ============================================================
         async function translateLibre(text) {
             try {
                 const r = await fetch('https://libretranslate.com/translate', {
@@ -1194,60 +1262,96 @@
                 if (!r.ok) throw new Error('Libre ' + r.status);
                 
                 const data = await r.json();
-                dbg('LibreTranslate: ' + (data.translatedText || '').substring(0, 50), 'ok');
                 return data.translatedText || null;
                 
             } catch (e) {
-                dbg('LibreTranslate error: ' + e.message, 'warn');
+                dbg('LibreTranslate error', 'warn');
                 return null;
             }
         }
 
-        // ============================================================
-        // GOOGLE TRANSLATE FALLBACK
-        // ============================================================
         async function translateGoogle(text, lang) {
             try {
                 const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${lang}&tl=en&dt=t&q=${encodeURIComponent(text)}`;
                 const r = await fetch(url);
                 const data = await r.json();
-                const translation = data[0].map(x => x[0]).join('');
-                dbg('Google translated: ' + translation.substring(0, 50), 'ok');
-                return translation;
+                return data[0].map(x => x[0]).join('');
             } catch (e) {
-                dbg('Google error: ' + e.message, 'warn');
+                dbg('Google error', 'warn');
                 return null;
             }
         }
 
         // ============================================================
-        // TRANSLATE (with multiple fallbacks)
+        // PROCESS AUDIO CHUNK - ALWAYS TRANSLATE, ALWAYS SPEAK
         // ============================================================
-        async function translate(text, lang) {
-            // Try GhanaNLP first
-            let result = await translateGNLP(text, lang);
-            if (result && result !== text) return result;
+        async function processAudio(blob) {
+            if (!S.active) return;
+            
+            S.processed++;
+            DOM.statProcessed.textContent = S.processed;
 
-            // Try LibreTranslate
-            result = await translateLibre(text);
-            if (result && result !== text) return result;
+            // Transcribe
+            const text = await transcribeGroq(blob);
+            if (!text || text.trim().length < 2) {
+                dbg('Empty transcription', 'warn');
+                return;
+            }
 
-            // Fallback to Google
-            dbg('Falling back to Google Translate', 'warn');
-            return await translateGoogle(text, lang);
+            // Detect language
+            const lang = detectLanguage(text);
+            DOM.statLang.textContent = CFG.LANGS[lang]?.f + ' ' + CFG.LANGS[lang]?.n || lang;
+
+            // ALWAYS TRANSLATE (if not English)
+            let translation = '';
+            if (lang !== 'en') {
+                translation = await translate(text, lang) || text;
+                dbg('Translated: ' + translation.substring(0, 50), 'ok');
+            } else {
+                translation = text;
+            }
+
+            // ALWAYS SPEAK IN EARPIECE (based on mode)
+            if (S.settings.earpieceMode === 'always' || 
+                (S.settings.earpieceMode === 'threats' && await checkForThreats(text, translation))) {
+                speak(translation);
+            }
+
+            // Analyze threat
+            const threat = analyzeThreat(text, translation);
+
+            // Create entry
+            const entry = {
+                id: Date.now(),
+                time: new Date().toISOString(),
+                text: text,
+                translation: translation,
+                lang: lang,
+                threat: threat,
+                device: S.settings.deviceName,
+                position: S.position,
+                battery: S.batteryLevel,
+                teamCode: S.settings.teamCode
+            };
+
+            S.entries.push(entry);
+            addEntryToUI(entry);
+
+            // Handle threat
+            if (threat.level !== 'none') {
+                S.threats++;
+                DOM.statThreats.textContent = S.threats;
+                handleThreat(entry);
+            }
+
+            // Log to Firebase
+            logToFirebase(entry);
         }
 
-        // ============================================================
-        // DURESS CHECK
-        // ============================================================
-        function checkDuress(text) {
-            const lower = text.toLowerCase();
-            for (const phrase of CFG.DURESS) {
-                if (lower.includes(phrase)) {
-                    return true;
-                }
-            }
-            return false;
+        async function checkForThreats(text, translation) {
+            const combined = text + ' ' + translation;
+            const threat = analyzeThreat(text, translation);
+            return threat.level !== 'none';
         }
 
         // ============================================================
@@ -1284,107 +1388,20 @@
             return highest;
         }
 
-        // ============================================================
-        // DETECT TWI WORDS IN PHONETIC OUTPUT
-        // ============================================================
-        function containsTwiWords(text) {
+        function checkDuress(text) {
             const lower = text.toLowerCase();
-            // Common Twi words that Whisper might phonetically capture
-            const twiPatterns = [
-                /\b(kum|koom|coom)\b/i,           // kill
-                /\b(wia|wea)\b/i,                  // steal
-                /\b(obroni|obron|brony)\b/i,       // foreigner
-                /\b(sika|seeka)\b/i,               // money/gold
-                /\b(maame|mami)\b/i,               // mother
-                /\b(medaase|medasi)\b/i,           // thank you
-                /\b(yebe|yebey)\b/i,               // we will
-                /\b(kofi|kwame|kwesi|akua|ama)\b/i, // Akan names
-                /\b(asem|assem)\b/i,               // matter/issue
-                /\b(enti|entsi)\b/i,               // so/therefore
-                /\b(wei|way)\b/i,                  // this
-                /\b(no|noo)\s+(yi|yee)/i,          // this one
-                /\b(ebi|ebei)\b/i,                 // some
-                /\b(papa|paapa)\b/i,               // father/good
-                /\b(kra|krah)\b/i,                 // soul
-                /\b(dabi|daabi)\b/i,               // no
-                /\b(aane|ahne)\b/i,                // yes
-            ];
-            
-            for (const p of twiPatterns) {
-                if (p.test(lower)) return true;
-            }
-            return false;
-        }
-
-        // ============================================================
-        // PROCESS AUDIO CHUNK
-        // ============================================================
-        async function processAudio(blob) {
-            S.processed++;
-            DOM.statProcessed.textContent = S.processed;
-
-            // Transcribe with Groq (forced English phonetic)
-            const text = await transcribeGroq(blob);
-            if (!text || text.trim().length < 2) {
-                dbg('Empty/short transcription', 'warn');
-                return;
-            }
-
-            // Check if it contains Twi words phonetically
-            const hasTwi = containsTwiWords(text);
-            const lang = hasTwi ? 'tw' : 'en';
-            DOM.statLang.textContent = CFG.LANGS[lang]?.f + ' ' + CFG.LANGS[lang]?.n || lang;
-            dbg('Detected: ' + lang + (hasTwi ? ' (Twi words found)' : ''), 'info');
-
-            // Translate if Twi detected
-            let translation = '';
-            
-            if (hasTwi) {
-                dbg('Twi detected, translating...', 'info');
-                translation = await translate(text, lang) || '';
-                
-                if (translation && translation.trim() !== text.trim()) {
-                    // SPEAK TRANSLATION OUT LOUD
-                    speak(translation);
-                    dbg('Speaking: ' + translation.substring(0, 50), 'ok');
+            for (const phrase of CFG.DURESS) {
+                if (lower.includes(phrase)) {
+                    return true;
                 }
             }
-            // English: display only, no speech
-
-            // Analyze threat on BOTH original and translation
-            const threat = analyzeThreat(text, translation);
-
-            // Create entry
-            const entry = {
-                id: Date.now(),
-                time: new Date().toISOString(),
-                text: text,
-                translation: translation,
-                lang: lang,
-                threat: threat,
-                device: S.settings.deviceName,
-                position: S.position
-            };
-
-            S.entries.push(entry);
-            addEntryToUI(entry);
-
-            // Handle threat
-            if (threat.level !== 'none') {
-                S.threats++;
-                DOM.statThreats.textContent = S.threats;
-                handleThreat(entry);
-            }
-
-            // Log to Firebase
-            logToFirebase(entry);
+            return false;
         }
 
         // ============================================================
         // ADD ENTRY TO UI
         // ============================================================
         function addEntryToUI(entry) {
-            // Clear placeholder
             if (S.entries.length === 1) {
                 DOM.transcriptContent.innerHTML = '';
             }
@@ -1397,7 +1414,7 @@
                 <div class="entry-text">${escapeHtml(entry.text)}</div>
             `;
 
-            if (entry.translation) {
+            if (entry.translation && entry.translation !== entry.text) {
                 html += `<div class="entry-translation">→ ${escapeHtml(entry.translation)}</div>`;
             }
 
@@ -1423,23 +1440,38 @@
             const level = entry.threat.level;
 
             if (level === 'critical' || level === 'high') {
-                // Full alert overlay
                 showAlertOverlay(entry);
                 playAlarm(level);
                 vibrate(level);
                 
-                // Broadcast to Firebase
-                if (S.db) {
-                    S.db.ref('alerts/' + entry.id).set({
+                // Broadcast to team
+                if (S.db && S.settings.teamCode) {
+                    S.db.ref('team_alerts/' + S.settings.teamCode + '/' + entry.id).set({
                         ...entry,
-                        broadcast: true
+                        broadcast: true,
+                        timestamp: Date.now()
                     });
+                }
+
+                // CALL SECURITY IMMEDIATELY
+                if (level === 'critical' && S.settings.securityPhone) {
+                    setTimeout(() => {
+                        window.location.href = 'tel:' + S.settings.securityPhone;
+                    }, 2000);
                 }
 
             } else if (level === 'medium') {
                 playBeep();
                 vibrate('medium');
                 toast('⚠️ Medium threat: ' + entry.threat.category);
+            }
+        }
+
+        function handleTeamAlert(alert) {
+            toast('🚨 TEAM ALERT: ' + alert.device + ' - ' + alert.threat.category, 'error');
+            if (alert.threat.level === 'critical') {
+                playAlarm('critical');
+                vibrate('critical');
             }
         }
 
@@ -1455,7 +1487,7 @@
             DOM.alertTime.textContent = new Date(entry.time).toLocaleString();
             DOM.alertOriginal.textContent = entry.text;
             
-            if (entry.translation) {
+            if (entry.translation && entry.translation !== entry.text) {
                 DOM.alertTranslation.textContent = entry.translation;
                 DOM.alertTranslationSection.style.display = 'block';
             } else {
@@ -1488,11 +1520,11 @@
         // ============================================================
         function playBeep() {
             try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
+                if (!S.audioContext) S.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = S.audioContext.createOscillator();
+                const gain = S.audioContext.createGain();
                 osc.connect(gain);
-                gain.connect(ctx.destination);
+                gain.connect(S.audioContext.destination);
                 osc.frequency.value = 800;
                 gain.gain.value = 0.3;
                 osc.start();
@@ -1502,15 +1534,15 @@
 
         function playAlarm(level) {
             try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                if (!S.audioContext) S.audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const freq = level === 'critical' ? 1000 : 800;
                 
                 for (let i = 0; i < 3; i++) {
                     setTimeout(() => {
-                        const osc = ctx.createOscillator();
-                        const gain = ctx.createGain();
+                        const osc = S.audioContext.createOscillator();
+                        const gain = S.audioContext.createGain();
                         osc.connect(gain);
-                        gain.connect(ctx.destination);
+                        gain.connect(S.audioContext.destination);
                         osc.frequency.value = freq;
                         gain.gain.value = 0.5;
                         osc.start();
@@ -1532,45 +1564,33 @@
         }
 
         // ============================================================
-        // TEXT-TO-SPEECH
+        // TEXT-TO-SPEECH - ALWAYS-ON EARPIECE
         // ============================================================
         function speak(text) {
-            if (!S.settings.ttsEnabled) {
-                dbg('TTS disabled in settings', 'info');
-                return;
-            }
-            
-            if (!text || !window.speechSynthesis) {
-                dbg('TTS unavailable or no text', 'warn');
+            if (!text || !window.speechSynthesis || S.settings.earpieceMode === 'silent') {
                 return;
             }
             
             try {
-                // Cancel any ongoing speech
                 window.speechSynthesis.cancel();
                 
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'en-US';
                 utterance.rate = 0.9;
                 utterance.pitch = 1;
-                utterance.volume = 1;
+                utterance.volume = S.settings.volume;
                 
-                // Try to get a good English voice
                 const voices = window.speechSynthesis.getVoices();
-                const englishVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) 
-                    || voices.find(v => v.lang.startsWith('en'));
-                if (englishVoice) {
-                    utterance.voice = englishVoice;
-                }
+                const englishVoice = voices.find(v => v.lang.startsWith('en'));
+                if (englishVoice) utterance.voice = englishVoice;
                 
                 window.speechSynthesis.speak(utterance);
-                dbg('TTS: ' + text.substring(0, 40) + '...', 'ok');
                 
             } catch (e) {
                 dbg('TTS error: ' + e.message, 'error');
             }
         }
-        
+
         // Preload voices
         if (window.speechSynthesis) {
             window.speechSynthesis.getVoices();
@@ -1586,14 +1606,25 @@
             if (!S.db) return;
             
             try {
+                // Log transcript
                 S.db.ref('transcripts/' + entry.id).set(entry);
+                
+                // Update team device status
+                if (S.settings.teamCode) {
+                    S.db.ref('team_devices/' + S.settings.teamCode + '/' + S.settings.deviceName).update({
+                        lastSeen: Date.now(),
+                        battery: S.batteryLevel,
+                        position: S.position
+                    });
+                }
+                
             } catch (e) {
-                dbg('Firebase log error: ' + e.message, 'warn');
+                dbg('Firebase error: ' + e.message, 'warn');
             }
         }
 
         // ============================================================
-        // GPS
+        // GPS TRACKING
         // ============================================================
         function startGPS() {
             if (!navigator.geolocation) {
@@ -1606,12 +1637,45 @@
                     S.position = {
                         latitude: pos.coords.latitude,
                         longitude: pos.coords.longitude,
-                        accuracy: pos.coords.accuracy
+                        accuracy: pos.coords.accuracy,
+                        timestamp: Date.now()
                     };
+                    
+                    // Check movement for man-down detection
+                    if (S.lastPosition) {
+                        const distance = calculateDistance(
+                            S.lastPosition.latitude, S.lastPosition.longitude,
+                            S.position.latitude, S.position.longitude
+                        );
+                        if (distance > 100) { // Moved more than 100m
+                            S.movementCheck = Date.now();
+                        }
+                    }
+                    S.lastPosition = { ...S.position };
+                    
                 },
                 (err) => dbg('GPS error: ' + err.message, 'warn'),
-                { enableHighAccuracy: true, maximumAge: 30000 }
+                { 
+                    enableHighAccuracy: S.settings.batteryMode !== 'survival',
+                    maximumAge: S.settings.batteryMode === 'survival' ? 60000 : 30000,
+                    timeout: 10000 
+                }
             );
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // Earth radius in meters
+            const φ1 = lat1 * Math.PI/180;
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180;
+            const Δλ = (lon2-lon1) * Math.PI/180;
+
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+            return R * c;
         }
 
         // ============================================================
@@ -1622,6 +1686,11 @@
                 if ('wakeLock' in navigator) {
                     S.wakeLock = await navigator.wakeLock.request('screen');
                     dbg('Wake lock acquired', 'ok');
+                    
+                    S.wakeLock.addEventListener('release', () => {
+                        dbg('Wake lock released', 'warn');
+                        if (S.active) requestWakeLock();
+                    });
                 }
             } catch (e) {
                 dbg('Wake lock failed: ' + e.message, 'warn');
@@ -1640,6 +1709,12 @@
                 DOM.statRuntime.textContent = 
                     mins.toString().padStart(2, '0') + ':' + 
                     secs.toString().padStart(2, '0');
+                    
+                // Man-down check (5 minutes no movement)
+                if (S.movementCheck && (Date.now() - S.movementCheck) > 300000) {
+                    triggerManDownAlert();
+                    S.movementCheck = Date.now(); // Reset
+                }
             }, 1000);
         }
 
@@ -1650,12 +1725,34 @@
             }
         }
 
+        function triggerManDownAlert() {
+            const entry = {
+                id: Date.now(),
+                time: new Date().toISOString(),
+                text: 'MAN-DOWN ALERT - No movement for 5 minutes',
+                translation: '',
+                lang: 'en',
+                threat: { level: 'critical', category: 'MAN DOWN', weight: 90 },
+                device: S.settings.deviceName,
+                position: S.position,
+                battery: S.batteryLevel
+            };
+
+            S.entries.push(entry);
+            addEntryToUI(entry);
+            handleThreat(entry);
+            logToFirebase(entry);
+            
+            dbg('MAN-DOWN ALERT TRIGGERED', 'error');
+            toast('🚨 MAN-DOWN ALERT - No movement detected', 'error');
+        }
+
         // ============================================================
         // ACTIVATION / DEACTIVATION
         // ============================================================
         async function activate() {
             if (!S.keys.groq) {
-                toast('Please configure Groq API key in Settings', 'error');
+                toast('Configure Groq API key in Settings', 'error');
                 DOM.settingsModal.classList.add('show');
                 return;
             }
@@ -1663,7 +1760,7 @@
             S.active = true;
             DOM.btnActivate.style.display = 'none';
             DOM.btnDeactivate.style.display = 'block';
-            DOM.statusText.textContent = 'OGUN ACTIVE - Monitoring';
+            DOM.statusText.textContent = 'OGUN ACTIVE - Guardian Online';
             DOM.statusText.classList.add('active');
 
             await requestWakeLock();
@@ -1671,8 +1768,17 @@
             startRuntimeTimer();
             await startAudio();
 
-            dbg('OGUN ACTIVATED', 'ok');
-            toast('OGUN Activated', 'success');
+            dbg('OGUN ACTIVATED - Guardian Online', 'ok');
+            toast('OGUN Activated - Guardian Online', 'success');
+            
+            // Send activation alert to team
+            if (S.db && S.settings.teamCode) {
+                S.db.ref('team_status/' + S.settings.teamCode + '/' + S.settings.deviceName).set({
+                    status: 'active',
+                    timestamp: Date.now(),
+                    position: S.position
+                });
+            }
         }
 
         function deactivate() {
@@ -1693,26 +1799,36 @@
 
             DOM.btnActivate.style.display = 'block';
             DOM.btnDeactivate.style.display = 'none';
-            DOM.statusText.textContent = 'System stopped';
+            DOM.statusText.textContent = 'System ready';
             DOM.statusText.classList.remove('active');
 
             dbg('OGUN DEACTIVATED', 'warn');
             toast('OGUN Deactivated');
+            
+            // Send deactivation alert to team
+            if (S.db && S.settings.teamCode) {
+                S.db.ref('team_status/' + S.settings.teamCode + '/' + S.settings.deviceName).set({
+                    status: 'inactive',
+                    timestamp: Date.now()
+                });
+            }
         }
 
         // ============================================================
-        // PANIC BUTTON
+        // PANIC BUTTON - CANNOT FAIL
         // ============================================================
         function triggerPanic() {
             const entry = {
                 id: Date.now(),
                 time: new Date().toISOString(),
-                text: 'MANUAL PANIC BUTTON',
+                text: '🚨 MANUAL PANIC BUTTON ACTIVATED 🚨',
                 translation: '',
                 lang: 'en',
                 threat: { level: 'critical', category: 'PANIC BUTTON', weight: 100 },
                 device: S.settings.deviceName,
-                position: S.position
+                position: S.position,
+                battery: S.batteryLevel,
+                teamCode: S.settings.teamCode
             };
 
             S.entries.push(entry);
@@ -1720,7 +1836,15 @@
             handleThreat(entry);
             logToFirebase(entry);
 
+            // CALL SECURITY IMMEDIATELY
+            if (S.settings.securityPhone) {
+                setTimeout(() => {
+                    window.location.href = 'tel:' + S.settings.securityPhone;
+                }, 1000);
+            }
+
             dbg('PANIC BUTTON TRIGGERED', 'error');
+            toast('🚨 PANIC BUTTON ACTIVATED - Calling security...', 'error');
         }
 
         // ============================================================
@@ -1788,21 +1912,54 @@
                     DOM.settingsModal.classList.remove('show');
                 }
             };
+
+            // Physical button shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Volume up + power = panic
+                if (e.key === 'VolumeUp' && e.ctrlKey) {
+                    triggerPanic();
+                }
+                // Volume down + power = quick deactivate
+                if (e.key === 'VolumeDown' && e.ctrlKey) {
+                    deactivate();
+                }
+            });
+
+            // Prevent accidental swipe关闭
+            document.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 1) e.preventDefault();
+            }, { passive: false });
         }
 
         // ============================================================
-        // INIT
+        // INIT - BATTLE READY
         // ============================================================
         function init() {
+            dbg('OGUN V10 GODMODE INITIALIZING...', 'ok');
             initFirebase();
             loadSettings();
             updateGroqStatus();
+            initBatteryMonitoring();
             bindEvents();
-            dbg('OGUN V10 GODMODE initialized', 'ok');
-            dbg('GhanaNLP key: embedded ✓', 'ok');
-            dbg('Groq key: ' + (S.keys.groq ? 'configured ✓' : 'MISSING'), S.keys.groq ? 'ok' : 'error');
+            dbg('OGUN V10 GODMODE READY - Guardian Standing By', 'ok');
+            dbg('Team Code: ' + (S.settings.teamCode || 'NOT SET'), S.settings.teamCode ? 'ok' : 'warn');
+            dbg('Battery Mode: ' + S.settings.batteryMode, 'info');
+            dbg('Earpiece Mode: ' + S.settings.earpieceMode, 'info');
+            
+            // Daily report reminder
+            const now = new Date();
+            const reportTime = new Date();
+            reportTime.setHours(6, 0, 0, 0);
+            if (now > reportTime) reportTime.setDate(reportTime.getDate() + 1);
+            const timeToReport = reportTime - now;
+            setTimeout(() => {
+                toast('📄 Daily report time - Check email for overnight activity');
+            }, timeToReport);
         }
 
+        // ============================================================
+        // START THE GUARDIAN
+        // ============================================================
         init();
     })();
     </script>
